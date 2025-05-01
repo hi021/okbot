@@ -1,0 +1,255 @@
+{
+	"Pants": {
+		"emoji": "🩲",
+		"type": "stinky",
+		"sort": 4,
+		"price": 1,
+		"rare": 55000,
+		"aq": 0
+	},
+	"Water": {
+		"emoji": "💧",
+		"type": "stinky",
+		"sort": 4,
+		"price": 1,
+		"rare": 60000,
+		"aq": 0
+	},
+	"bugger": {
+		"emoji": "🐛",
+		"type": "stinky",
+		"sort": 4,
+		"price": 2,
+		"rare": 60000,
+		"aq": 0.1
+	},
+	"it is just a boot": {
+		"emoji": "👢",
+		"type": "stinky",
+		"sort": 4,
+		"price": 5,
+		"rare": 60000,
+		"aq": 0
+	},
+	"Battery": {
+		"emoji": "🔋",
+		"type": "stinky",
+		"sort": 4,
+		"price": 4,
+		"rare": 40000,
+		"aq": 0
+	},
+	"Takeout": {
+		"emoji": "🥡",
+		"type": "stinky",
+		"sort": 4,
+		"price": 3,
+		"rare": 45000,
+		"aq": 0
+	},
+	"Shopping Cart!?": {
+		"emoji": "🛒",
+		"type": "stinky",
+		"sort": 4,
+		"price": 100,
+		"rare": 10000,
+		"aq": 0
+	},
+	"booger": {
+		"emoji": "<:wazowski:496720098019508224>",
+		"type": "ok",
+		"sort": 3,
+		"price": 15,
+		"rare": 33000,
+		"aq": 0.4
+	},
+	"potato": {
+		"emoji": "🥔",
+		"type": "ok",
+		"sort": 3,
+		"price": 14,
+		"rare": 25000,
+		"aq": 0.25
+	},
+	"Brain": {
+		"emoji": "🧠",
+		"type": "ok",
+		"sort": 3,
+		"price": 40,
+		"rare": 18000,
+		"aq": 0.35
+	},
+	"Saxophone": {
+		"emoji": "🎷",
+		"type": "ok",
+		"sort": 3,
+		"price": 45,
+		"rare": 13000,
+		"aq": 0.3
+	},
+	"egg": {
+		"emoji": "🥚",
+		"type": "ok",
+		"sort": 3,
+		"price": 15,
+		"rare": 15000,
+		"aq": 0.2
+	},
+	"Snalea": {
+		"emoji": "🐌",
+		"type": "ok",
+		"sort": 3,
+		"price": 35,
+		"rare": 15000,
+		"aq": 0.9
+	},
+	"Argentina": {
+		"emoji": ":flag_ar:",
+		"type": "ok",
+		"sort": 3,
+		"price": 25,
+		"rare": 2500,
+		"aq": 0.25
+	},
+	"Ring": {
+		"emoji": "💍",
+		"type": "cool",
+		"sort": 2,
+		"price": 140,
+		"rare": 6500,
+		"aq": 0.5
+	},
+	"CPU": {
+		"emoji": "<:cpu:414135323421966358>",
+		"type": "cool",
+		"sort": 2,
+		"price": 230,
+		"rare": 1800,
+		"aq": 1.1
+	},
+	"Duck": {
+		"emoji": "🦆",
+		"type": "cool",
+		"sort": 2,
+		"price": 95,
+		"rare": 7500,
+		"aq": 1.1
+	},
+	"Wheelchair": {
+		"emoji": "🦽",
+		"type": "cool",
+		"sort": 2,
+		"price": 125,
+		"rare": 6000,
+		"aq": 0.9
+	},
+	"Hot chick": {
+		"emoji": "🐥",
+		"type": "cool",
+		"sort": 2,
+		"price": 80,
+		"rare": 9000,
+		"aq": 1
+	},
+	"Adam": {
+		"emoji": "<:adam:1007621226379886652>",
+		"type": "rare",
+		"sort": 1,
+		"price": 50,
+		"rare": 2000,
+		"aq": 2
+	},
+	"Turtle": {
+		"emoji": "🐢",
+		"type": "rare",
+		"sort": 1,
+		"price": 900,
+		"rare": 450,
+		"aq": 3.1
+	},
+	"BLÅHAJ": {
+		"emoji": "🦈",
+		"type": "rare",
+		"sort": 1,
+		"price": 1000,
+		"rare": 320,
+		"aq": 4.4
+	},
+	"The Moon": {
+		"emoji": "🌜",
+		"type": "rare",
+		"sort": 1,
+		"price": 2500,
+		"rare": 220,
+		"aq": 4.4
+	},
+	"Fucking dragon": {
+		"emoji": "🐉",
+		"type": "rare",
+		"sort": 1,
+		"price": 3000,
+		"rare": 190,
+		"aq": 5
+	},
+	"Peachie": {
+		"emoji": "<:peachisfinesthour:455991590263980032>",
+		"type": "rare",
+		"sort": 1,
+		"price": 4199,
+		"rare": 170,
+		"aq": 5.25
+	},
+	"Gil": {
+		"emoji": "🐦",
+		"type": "rare",
+		"sort": 1,
+		"price": 4200,
+		"rare": 170,
+		"aq": 5.25
+	},
+	"The Singularity": {
+		"emoji": "♾️",
+		"type": "rare",
+		"sort": 1,
+		"price": 6999,
+		"rare": 86,
+		"aq": 5.8
+	},
+	"Alien artifact": {
+		"emoji": "👽",
+		"type": "collectors",
+		"sort": 0,
+		"rare": 2
+	},
+	"Ancient skeleton": {
+		"emoji": "🦴",
+		"type": "collectors",
+		"sort": 0,
+		"rare": 2
+	},
+	"Perfect genome": {
+		"emoji": "🧬",
+		"type": "collectors",
+		"sort": 0,
+		"rare": 2
+	},
+	"Lost crown": {
+		"emoji": "👑",
+		"type": "collectors",
+		"sort": 0,
+		"rare": 2
+	},
+	"Pure euphoria": {
+		"emoji": "🌈",
+		"type": "collectors",
+		"sort": 0,
+		"rare": 2
+	},
+	"Alien species": {
+		"emoji": "🪿",
+		"type": "collectors+",
+		"sort": 0,
+		"rare": 0,
+		"aq": 220
+	}
+}

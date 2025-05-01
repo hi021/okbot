@@ -1,0 +1,44 @@
+[
+	{
+		"_id": "FIS0000",
+		"cat": "Fishing accessory",
+		"nam": "Fishing rod upgrade I",
+		"desc": "Allows you to catch more fish per cast (+1)",
+		"price": 40000,
+		"v": 1
+	},
+	{
+		"_id": "FIS0001",
+		"cat": "Fishing accessory",
+		"nam": "Fishing rod upgrade II",
+		"desc": "Luck o' the sea but it's deterministic pseudorandomness (+1)",
+		"price": 125000,
+		"v": 1
+	},
+	{
+		"_id": "FIS0002",
+		"cat": "Fishing accessory",
+		"nam": "Fishing rod upgrade III",
+		"desc": "Adding decals to your rod makes you look sooo much cooler (+2)",
+		"price": 500000,
+		"v": 2
+	},
+	{
+		"_id": "FIS0003",
+		"cat": "Fishing accessory",
+		"nam": "Temporary fishing rod upgrade I",
+		"desc": "Increase your casting power for 10 minutes (+5) (Active immediately)",
+		"price": 8000,
+		"timed": true,
+		"v": [5, 600000]
+	},
+	{
+		"_id": "FIS0004",
+		"cat": "Fishing accessory",
+		"nam": "Temporary fishing rod upgrade II",
+		"desc": "Fish pheromones to increase casting power for 60 minutes (+2)",
+		"price": 16000,
+		"timed": true,
+		"v": [2, 3600000]
+	}
+]

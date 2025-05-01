@@ -1,0 +1,317 @@
+[
+	{
+		"_id": "BDG0000",
+		"cat": "Profile badge",
+		"nam": "Smiley",
+		"desc": "aww",
+		"price": 150,
+		"v": "🙂",
+		"emoji": "🙂"
+	},
+	{
+		"_id": "BDG0001",
+		"cat": "Profile badge",
+		"nam": "Potato",
+		"desc": "nom",
+		"price": 150,
+		"v": "🥔",
+		"emoji": "🥔"
+	},
+	{
+		"_id": "BDG0002",
+		"cat": "Profile badge",
+		"nam": "USA",
+		"desc": "tei tei tei",
+		"price": 300,
+		"v": ":flag_us:",
+		"emoji": ":flag_us:"
+	},
+	{
+		"_id": "BDG0003",
+		"cat": "Profile badge",
+		"nam": "Cotton candy",
+		"desc": "such pretty colors",
+		"price": 500,
+		"v": ":transgender_flag:",
+		"emoji": ":transgender_flag:"
+	},
+	{
+		"_id": "BDG0004",
+		"cat": "Profile badge",
+		"nam": "Winged currency",
+		"desc": "This is insane",
+		"price": 800,
+		"v": "💸",
+		"emoji": "💸"
+	},
+	{
+		"_id": "BDG0005",
+		"cat": "Profile badge",
+		"nam": "GPU",
+		"desc": "Pay up",
+		"price": 4500,
+		"v": "<:gpu:414135459506290709>",
+		"emoji": "<:gpu:414135459506290709>"
+	},
+	{
+		"_id": "BDG0006",
+		"cat": "Profile badge",
+		"nam": "Star",
+		"desc": "Shine bright like a diamond",
+		"price": 1200,
+		"v": "⭐",
+		"emoji": "⭐"
+	},
+	{
+		"_id": "BDG0007",
+		"cat": "Profile badge",
+		"nam": "Gem",
+		"desc": "Shine bright like a diamond II",
+		"price": 1500,
+		"v": "💎",
+		"emoji": "💎"
+	},
+	{
+		"_id": "BDG0008",
+		"cat": "Profile badge",
+		"nam": "Nutella",
+		"desc": "It might not be healthy for you",
+		"price": 222,
+		"v": "💩",
+		"emoji": "💩"
+	},
+	{
+		"_id": "BDG0009",
+		"cat": "Profile badge",
+		"nam": "Cowboy",
+		"desc": "He is so cute",
+		"price": 300,
+		"v": "🤠",
+		"emoji": "🤠"
+	},
+	{
+		"_id": "BDG0010",
+		"cat": "Profile badge",
+		"nam": "Sunglasses",
+		"desc": "I wear my sunglasses at night",
+		"price": 300,
+		"v": "😎",
+		"emoji": "😎"
+	},
+	{
+		"_id": "BDG0011",
+		"cat": "Profile badge",
+		"nam": "Rainbow",
+		"desc": "It has got all the colors of the rainbow!",
+		"price": 500,
+		"v": "🌈",
+		"emoji": "🌈"
+	},
+	{
+		"_id": "BDG0012",
+		"cat": "Profile badge",
+		"nam": "Hearts",
+		"desc": "princess lily",
+		"price": 880,
+		"v": "💕",
+		"emoji": "💕"
+	},
+	{
+		"_id": "BDG0013",
+		"cat": "Profile badge",
+		"nam": "Bread",
+		"desc": "The fluffiest",
+		"price": 400,
+		"v": "🍞",
+		"emoji": "🍞"
+	},
+	{
+		"_id": "BDG0014",
+		"cat": "Profile badge",
+		"nam": "Adam",
+		"desc": "Absolutely legendary",
+		"price": 15150,
+		"v": "<:adam:1007621226379886652>",
+		"emoji": "<:adam:1007621226379886652>"
+	},
+	{
+		"_id": "BDG0015",
+		"cat": "Profile badge",
+		"nam": "Ribbon",
+		"desc": ".·´¯·.·★ dolls are for girls ★·.·`¯·.",
+		"price": 1500,
+		"v": "🎀",
+		"emoji": "🎀"
+	},
+	{
+		"_id": "BDG0016",
+		"cat": "Profile badge",
+		"nam": "Sparkles",
+		"desc": "Squeakyy",
+		"price": 960,
+		"v": "✨",
+		"emoji": "✨"
+	},
+	{
+		"_id": "BDG0017",
+		"cat": "Profile badge",
+		"nam": "Black heart",
+		"desc": "emo emo I'm so emo",
+		"price": 650,
+		"v": "🖤",
+		"emoji": "🖤"
+	},
+	{
+		"_id": "BDG0018",
+		"cat": "Profile badge",
+		"nam": "Broken heart",
+		"desc": "Look at what you've done.",
+		"price": 500,
+		"v": "💔",
+		"emoji": "💔"
+	},
+	{
+		"_id": "BDG0019",
+		"cat": "Profile badge",
+		"nam": "Heart on fire",
+		"desc": "Love dripping with blood (and napalm)",
+		"price": 909,
+		"v": ":heart_on_fire:",
+		"emoji": ":heart_on_fire:"
+	},
+	{
+		"_id": "BDG0020",
+		"cat": "Profile badge",
+		"nam": "Cherry blossom",
+		"desc": "innocent bliss",
+		"price": 707,
+		"v": "🌸",
+		"emoji": "🌸"
+	},
+	{
+		"_id": "BDG0021",
+		"cat": "Profile badge",
+		"nam": "Crocodile",
+		"desc": "she just like me",
+		"price": 350,
+		"v": "🐊",
+		"emoji": "🐊"
+	},
+	{
+		"_id": "BDG0022",
+		"cat": "Profile badge",
+		"nam": "Bugger",
+		"desc": "toot",
+		"price": 350,
+		"v": "🐛",
+		"emoji": "🐛"
+	},
+	{
+		"_id": "BDG0023",
+		"cat": "Profile badge",
+		"nam": "Cat",
+		"desc": "Bestest fren",
+		"price": 720,
+		"v": "🐱",
+		"emoji": "🐱"
+	},
+	{
+		"_id": "BDG0024",
+		"cat": "Profile badge",
+		"nam": "Moon",
+		"desc": "takes me by surprise the Moon's not in your eyes",
+		"price": 555,
+		"v": "🌑",
+		"emoji": "🌑"
+	},
+	{
+		"_id": "BDG0025",
+		"cat": "Profile badge",
+		"nam": "8-pointed star",
+		"desc": "💉",
+		"price": 808,
+		"v": "✴️",
+		"emoji": "✴️"
+	},
+	{
+		"_id": "BDG0026",
+		"cat": "Profile badge",
+		"nam": "Explosion",
+		"desc": "ouweh",
+		"price": 540,
+		"v": "💥",
+		"emoji": "💥"
+	},
+	{
+		"_id": "BDG0027",
+		"cat": "Profile badge",
+		"nam": "Globe",
+		"desc": "Mr. Worldwide",
+		"price": 670,
+		"v": "🌐",
+		"emoji": "🌐"
+	},
+	{
+		"_id": "BDG0028",
+		"cat": "Profile badge",
+		"nam": "Crown",
+		"desc": "You should see me in one",
+		"price": 812,
+		"v": "👑",
+		"emoji": "👑"
+	},
+	{
+		"_id": "BDG0029",
+		"cat": "Profile badge",
+		"nam": "Swords",
+		"desc": "bloxxer",
+		"price": 400,
+		"v": "⚔️",
+		"emoji": "⚔️"
+	},
+	{
+		"_id": "BDG0030",
+		"cat": "Profile badge",
+		"nam": "Flying",
+		"desc": "popping off",
+		"price": 550,
+		"v": "🤸",
+		"emoji": "🤸"
+	},
+	{
+		"_id": "BDG0031",
+		"cat": "Profile badge",
+		"nam": "Wheelchair",
+		"desc": "zooming vrooming",
+		"price": 600,
+		"v": ":person_in_manual_wheelchair:",
+		"emoji": ":person_in_manual_wheelchair:"
+	},
+	{
+		"_id": "BDG0032",
+		"cat": "Profile badge",
+		"nam": "Imp",
+		"desc": "yeah it's gay",
+		"price": 660,
+		"v": "😈",
+		"emoji": "😈"
+	},
+	{
+		"_id": "BDG0033",
+		"cat": "Profile badge",
+		"nam": "Skull",
+		"desc": "brother..",
+		"price": 600,
+		"v": "💀",
+		"emoji": "💀"
+	},
+	{
+		"_id": "BDG0034",
+		"cat": "Profile badge",
+		"nam": "Unhappi",
+		"desc": "every dai",
+		"price": 2400,
+		"v": "<:unhappiday:731631576269586595>",
+		"emoji": "<:unhappiday:731631576269586595>"
+	}
+]

@@ -1,0 +1,93 @@
+[
+	{
+		"_id": "BOS0000",
+		"cat": "Booster",
+		"nam": "Base daily payout +30",
+		"desc": "Increase the amount of money received for dailies",
+		"maxQ": 2,
+		"price": 10000,
+		"v": 30
+	},
+	{
+		"_id": "BOS0001",
+		"cat": "Booster",
+		"nam": "Base daily payout +50",
+		"desc": "Buy money with cash",
+		"maxQ": 3,
+		"price": 25000,
+		"v": 50
+	},
+	{
+		"_id": "BOS0002",
+		"cat": "Booster",
+		"nam": "Base daily payout +100",
+		"desc": "The monetary system is a lie",
+		"maxQ": 4,
+		"price": 100000,
+		"v": 100
+	},
+	{
+		"_id": "BOS0003",
+		"cat": "Booster",
+		"nam": "Aquarium income multiplier +0.5x",
+		"desc": "Increase your aquarium income, only if you have an aquarium already",
+		"price": 50000,
+		"v": 0.5
+	},
+	{
+		"_id": "BOS0004",
+		"cat": "Booster",
+		"nam": "Aquarium income multiplier +1.0x",
+		"desc": "Put small hats on your fish to justify the increased ticket prices",
+		"price": 200000,
+		"v": 1
+	},
+	{
+		"_id": "BOS0005",
+		"cat": "Booster",
+		"nam": "Aquarium income multiplier +1.5x",
+		"desc": "Add flowing water ambient sounds and charge people for restrooms",
+		"price": 500000,
+		"v": 1.5
+	},
+	{
+		"_id": "BOS0006",
+		"cat": "Booster",
+		"nam": "Booster cooldown -2h",
+		"desc": "Decrease timed boosters' cooldown by 2 hours",
+		"price": 50000,
+		"v": 7200
+	},
+	{
+		"_id": "BOS0007",
+		"cat": "Booster",
+		"nam": "Booster cooldown -3h",
+		"desc": "Your impatience knows no limits",
+		"price": 175000,
+		"maxQ": 2,
+		"v": 10800
+	},
+	{
+		"_id": "BOS0008",
+		"cat": "Booster",
+		"nam": "Aquarium income storage +25000",
+		"desc": "Increase the maximum 💵 your aquarium can hold at the same time, only if you have an aquarium already",
+		"price": 75000,
+		"v": 25000
+	},
+	{
+		"_id": "BOS0009",
+		"cat": "Booster",
+		"nam": "Aquarium income storage +125000",
+		"desc": "Get some cardboard boxes",
+		"price": 2500000,
+		"v": 125000
+	},
+	{
+		"_id": "BOS0010",
+		"cat": "Booster",
+		"nam": "Casino High Roller card",
+		"desc": "VIP pass increasing both minimum and maximum bets for most casino games",
+		"price": 17777777
+	}
+]

@@ -1,0 +1,146 @@
+[
+	{
+		"_id": "CLR0000",
+		"cat": "Profile color",
+		"nam": "Blue",
+		"desc": "blue daba dee",
+		"price": 3000,
+		"v": "#42A5F5",
+		"emoji": "<:color_blue:1008339627066806392>"
+	},
+	{
+		"_id": "CLR0001",
+		"cat": "Profile color",
+		"nam": "Yellow",
+		"desc": "yelor: you jknow it",
+		"price": 1200,
+		"v": "#FFEE58",
+		"emoji": "<:color_yellow:1008342291984957480>"
+	},
+	{
+		"_id": "CLR0002",
+		"cat": "Profile color",
+		"nam": "Perfect white",
+		"desc": "spotless.",
+		"price": 9999,
+		"v": "#FFFFFF",
+		"showV": true
+	},
+	{
+		"_id": "CLR0003",
+		"cat": "Profile color",
+		"nam": "Indigo",
+		"desc": "Those dark nights colored by a sprinkle of moonlight",
+		"price": 5000,
+		"v": "#283593",
+		"emoji": "<:color_indigo:1021103403016929321>"
+	},
+	{
+		"_id": "CLR0004",
+		"cat": "Profile color",
+		"nam": "Hot red",
+		"desc": "Scientifically proven to make you faster",
+		"price": 6000,
+		"v": "#D50000",
+		"emoji": "<:color_hotRed:1008342290529529997>"
+	},
+	{
+		"_id": "CLR0005",
+		"cat": "Profile color",
+		"nam": "Light red",
+		"desc": "girl in light red",
+		"price": 4000,
+		"v": "#EF9A9A",
+		"emoji": "<:color_lightRed:1008342289300598854>"
+	},
+	{
+		"_id": "CLR0006",
+		"cat": "Profile color",
+		"nam": "Red",
+		"desc": "You should be familiar with this color",
+		"price": 6600,
+		"v": "#E53935",
+		"emoji": "<:color_red:1008342287916478544>"
+	},
+	{
+		"_id": "CLR0007",
+		"cat": "Profile color",
+		"nam": "Pink",
+		"desc": "Inlet's Fav. Color",
+		"price": 7000,
+		"v": "#FF80AB",
+		"emoji": "<:color_pink:1008342283973840956>"
+	},
+	{
+		"_id": "CLR0008",
+		"cat": "Profile color",
+		"nam": "Purple",
+		"desc": "It's somewhat violet",
+		"price": 5500,
+		"v": "#AB47BC",
+		"emoji": "<:color_purple:1008342276784803890>"
+	},
+	{
+		"_id": "CLR0009",
+		"cat": "Profile color",
+		"nam": "Green",
+		"desc": "Filthy grass toucher",
+		"price": 2500,
+		"v": "#388E3C",
+		"emoji": "<:color_green:1008342278168916068>"
+	},
+	{
+		"_id": "CLR0010",
+		"cat": "Profile color",
+		"nam": "Light green",
+		"desc": "What did you eat to get this color",
+		"price": 4000,
+		"v": "#AED581",
+		"emoji": "<:color_lightGreen:1008342279506890762>"
+	},
+	{
+		"_id": "CLR0011",
+		"cat": "Profile color",
+		"nam": "Light cyan",
+		"desc": "Congratulations, blue.",
+		"price": 3600,
+		"v": "#80DEEA",
+		"emoji": "<:color_lightCyan:1008342280916193280>"
+	},
+	{
+		"_id": "CLR0012",
+		"cat": "Profile color",
+		"nam": "Light pink",
+		"desc": "Incredibly fluffy",
+		"price": 7700,
+		"v": "#FBB3FA",
+		"emoji": "<:color_lightPink:1008342282153513020>"
+	},
+	{
+		"_id": "CLR0013",
+		"cat": "Profile color",
+		"nam": "Dark pink",
+		"desc": "Because we don't have enough shades of red",
+		"price": 6400,
+		"v": "#AD1457",
+		"emoji": "<:color_darkPink:1021103406586282014>"
+	},
+	{
+		"_id": "CLR0014",
+		"cat": "Profile color",
+		"nam": "Orange",
+		"desc": "Bleached brown",
+		"price": 4500,
+		"v": "#FF5722",
+		"emoji": "<:color_orange:1021103401678938213>"
+	},
+	{
+		"_id": "CLR0015",
+		"cat": "Profile color",
+		"nam": "Amber gold",
+		"desc": "Too big to fail",
+		"price": 5800,
+		"v": "#FFAB00",
+		"emoji": "<:color_amberGold:1021103400210923531>"
+	}
+]

@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "ES2022",
+		"moduleResolution": "node",
+
+		"strict": true,
+		"baseUrl": "./",
+		"outDir": "./target",
+		"paths": {
+			"discord.js": ["node_modules/discord.js"]
+		},
+		"esModuleInterop": true,
+
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true
+	}
+}
