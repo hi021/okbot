@@ -1,11 +1,11 @@
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	GuildMember,
-	User
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    Colors,
+    EmbedBuilder,
+    GuildMember,
+    User
 } from 'discord.js';
 import { bot } from '../../okbot.js';
 import { getUserFromMsg, sendSimpleMessage } from '../../utils.js';

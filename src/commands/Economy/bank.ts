@@ -1,28 +1,27 @@
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	Snowflake,
-	User
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    Colors,
+    EmbedBuilder,
+    Snowflake,
+    User
 } from 'discord.js';
 import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
 import { bot } from '../../okbot.js';
 import { SET } from '../../settings.js';
 import {
-	calcMoneyLevelsGain,
-	createSimpleMessage,
-	createUserMsgEmbed,
-	e_blank,
-	formatDoler,
-	formatNumber,
-	getUserFromMsg,
-	parseNumberSuffix,
-	sendEphemeralReply,
-	sendSimpleMessage,
-	showUpgradeCost,
-	showUpgradeStat
+    calcMoneyLevelsGain,
+    createUserMsgEmbed,
+    e_blank,
+    formatDoler,
+    formatNumber,
+    getUserFromMsg,
+    parseNumberSuffix,
+    sendEphemeralReply,
+    sendSimpleMessage,
+    showUpgradeCost,
+    showUpgradeStat
 } from '../../utils.js';
 
 export const name = 'bank';

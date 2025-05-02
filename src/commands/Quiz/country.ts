@@ -1,6 +1,6 @@
 import { Colors, EmbedBuilder } from 'discord.js';
-import { capitalizeFirstLetter, sendSimpleMessage } from '../../utils.js';
 import { countries } from '../../countries.js';
+import { capitalizeFirstLetter, sendSimpleMessage } from '../../utils.js';
 
 export const name = 'country';
 export const alias = ['countryinfo', 'flaginfo'];

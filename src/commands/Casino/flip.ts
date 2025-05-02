@@ -1,18 +1,18 @@
 import { Colors, Message } from 'discord.js';
 import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
-import { Players_in_collector } from '../../volatile.js';
 import { SET } from '../../settings.js';
 import {
-	addCasinoStat,
-	calcMoneyLevelsGain,
-	createSimpleMessage,
-	createUserMsgEmbed,
-	formatDoler,
-	parseNumberSuffix,
-	randomInt,
-	sendSimpleMessage,
-	showCasinoTopWins
+    addCasinoStat,
+    calcMoneyLevelsGain,
+    createSimpleMessage,
+    createUserMsgEmbed,
+    formatDoler,
+    parseNumberSuffix,
+    randomInt,
+    sendSimpleMessage,
+    showCasinoTopWins
 } from '../../utils.js';
+import { Players_in_collector } from '../../volatile.js';
 const BET_RANGES = { def: { min: 0, max: 10000000 }, vip: { min: 0, max: 50000000 } }; // min bet doesn't do anything - allow for no bet rolling
 const BIG_BET_PERCENT = 0.45; // need confirmation from user if bet amount is at least this fraction of user's money
 

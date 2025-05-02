@@ -8,11 +8,8 @@ function runFlipSimulation(iterations: number, odds: number) {
 	for (let i = 0; i < iterations; i++) {
 		const res = randomInt(1, 100);
 
-		if (res >= odds) {
-			++won;
-		} else {
-			++lost;
-		}
+		if (res >= odds) ++won;
+		else ++lost;
 	}
 
 	return { won, lost };

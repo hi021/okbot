@@ -2,15 +2,15 @@ import { Colors, EmbedBuilder } from 'discord.js';
 import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
 import { SET } from '../../settings.js';
 import {
-	addCasinoStat,
-	calcMoneyLevelsGain,
-	createSimpleMessage,
-	formatDoler,
-	formatNumber,
-	objLength,
-	parseNumberSuffix,
-	sendSimpleMessage,
-	showCasinoTopWins
+    addCasinoStat,
+    calcMoneyLevelsGain,
+    createSimpleMessage,
+    formatDoler,
+    formatNumber,
+    objLength,
+    parseNumberSuffix,
+    sendSimpleMessage,
+    showCasinoTopWins
 } from '../../utils.js';
 import { Jackpot_games } from '../../volatile.js';
 

@@ -1,9 +1,9 @@
 import canvasModule from 'canvas';
 import fetch from 'cross-fetch';
-import jsdom from 'jsdom';
-import path from 'path';
 import * as d3 from 'd3';
 import fs from 'fs';
+import jsdom from 'jsdom';
+import path from 'path';
 const { JSDOM } = jsdom;
 const DOM = new JSDOM('<!DOCTYPE html><html><body></body></html>');
 const API_URL = 'https://poggers.ltd/api/';

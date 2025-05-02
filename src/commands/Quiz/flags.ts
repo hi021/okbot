@@ -1,10 +1,10 @@
 import { Colors, EmbedBuilder, Snowflake } from 'discord.js';
 import {
-	countries,
-	countries_common,
-	countries_us_states,
-	CountryRegion,
-	CountryType
+    countries,
+    countries_common,
+    countries_us_states,
+    CountryRegion,
+    CountryType
 } from '../../countries.js';
 import { db_plr_add } from '../../db/db.js';
 import { SET } from '../../settings.js';

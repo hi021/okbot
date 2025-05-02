@@ -1,26 +1,25 @@
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonInteraction,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	MessageFlags,
-	User
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonInteraction,
+    ButtonStyle,
+    Colors,
+    EmbedBuilder,
+    MessageFlags,
+    User
 } from 'discord.js';
 import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
 import { bot } from '../../okbot.js';
 import {
-	calcMoneyLevelsGain,
-	createSimpleMessage,
-	drawProgressBar,
-	formatDoler,
-	formatNumber,
-	getUserFromMsg,
-	sendEphemeralReply,
-	sendSimpleMessage,
-	showUpgradeCost,
-	showUpgradeStat
+    calcMoneyLevelsGain,
+    drawProgressBar,
+    formatDoler,
+    formatNumber,
+    getUserFromMsg,
+    sendEphemeralReply,
+    sendSimpleMessage,
+    showUpgradeCost,
+    showUpgradeStat
 } from '../../utils.js';
 import { findFish } from './fish.js';
 
@@ -267,7 +266,7 @@ async function collect<T>(msg: okbot.MessageOrInteraction<T>) {
 		});
 
 		msg.message.edit({ embeds: [msge], components: [] });
-		return sendEphemeralReply(msg, content);
+		return sendEphemeralReply(msg, content, Colors.DarkGreen);
 	}
 
 	return sendSimpleMessage(msg, content, Colors.DarkGreen);

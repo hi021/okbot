@@ -3,11 +3,11 @@ import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
 import { bot } from '../../okbot.js';
 import { SET } from '../../settings.js';
 import {
-	createSimpleMessage,
-	e_blank,
-	formatMilliseconds,
-	getUserFromMsg,
-	sendSimpleMessage
+    createSimpleMessage,
+    e_blank,
+    formatMilliseconds,
+    getUserFromMsg,
+    sendSimpleMessage
 } from '../../utils.js';
 
 export const name = 'rep';

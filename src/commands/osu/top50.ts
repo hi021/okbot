@@ -1,16 +1,16 @@
 import { AttachmentBuilder, EmbedBuilder, User } from 'discord.js';
-import { db_osu_find_players } from '../../db/osu.js';
 import { db_plr_get } from '../../db/db.js';
+import { db_osu_find_players } from '../../db/osu.js';
 import { SET } from '../../settings.js';
 import { formatDate, formatNumber, getUsersFromMsg, sendSimpleMessage } from '../../utils.js';
 import {
-	getOsuAvatar,
-	merge_avatars,
-	merged_avatars_get,
-	osu_getId,
-	osu_getT50,
-	top50_chart_generate,
-	top50_chart_get
+    getOsuAvatar,
+    merge_avatars,
+    merged_avatars_get,
+    osu_getId,
+    osu_getT50,
+    top50_chart_generate,
+    top50_chart_get
 } from '../../utilsOsu.js';
 
 export const name = 'top50';

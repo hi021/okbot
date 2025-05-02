@@ -1,37 +1,37 @@
 import {
-	ActionRow,
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonComponent,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	MessageCollector,
-	SelectMenuComponentOptionData,
-	SendableChannels,
-	StringSelectMenuBuilder,
-	User
+    ActionRow,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonComponent,
+    ButtonStyle,
+    Colors,
+    EmbedBuilder,
+    MessageCollector,
+    SelectMenuComponentOptionData,
+    SendableChannels,
+    StringSelectMenuBuilder,
+    User
 } from 'discord.js';
-import {
-	db_store_get_all,
-	db_store_get_categories,
-	db_store_get_category,
-	db_store_get_item
-} from '../../db/store.js';
 import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
-import { bot } from '../../okbot.js';
-import { Players_in_collector } from '../../volatile.js';
 import {
-	checkBoosterValidity,
-	createCollector,
-	formatDoler,
-	formatMilliseconds,
-	formatNumber,
-	getGuildPrefix,
-	sendEphemeralReply,
-	sendSimpleMessage,
-	showItemName
+    db_store_get_all,
+    db_store_get_categories,
+    db_store_get_category,
+    db_store_get_item
+} from '../../db/store.js';
+import { bot } from '../../okbot.js';
+import {
+    checkBoosterValidity,
+    createCollector,
+    formatDoler,
+    formatMilliseconds,
+    formatNumber,
+    getGuildPrefix,
+    sendEphemeralReply,
+    sendSimpleMessage,
+    showItemName
 } from '../../utils.js';
+import { Players_in_collector } from '../../volatile.js';
 import { calculateAquaIncome } from '../Fish/aquarium.js';
 
 // TODO?: map of items instead of array (to reduce db queries)

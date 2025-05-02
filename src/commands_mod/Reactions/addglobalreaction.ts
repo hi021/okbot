@@ -1,6 +1,6 @@
 import { Colors, EmbedBuilder } from 'discord.js';
-import { bot } from '../../okbot.js';
 import { db_guild_add_reaction } from '../../db/guild.js';
+import { bot } from '../../okbot.js';
 import { SET } from '../../settings.js';
 import { getGuildPrefix, parseReaction, sendSimpleMessage } from '../../utils.js';
 

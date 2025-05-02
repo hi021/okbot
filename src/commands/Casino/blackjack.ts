@@ -1,25 +1,24 @@
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonInteraction,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	Interaction,
-	MessageFlags
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonInteraction,
+    ButtonStyle,
+    Colors,
+    EmbedBuilder,
+    Interaction
 } from 'discord.js';
 import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
 import { bot } from '../../okbot.js';
 import {
-	addCasinoStat,
-	calcMoneyLevelsGain,
-	formatDoler,
-	formatNumber,
-	parseNumberSuffix,
-	randomFromArray,
-	sendEphemeralReply,
-	sendSimpleMessage,
-	showCasinoTopWins
+    addCasinoStat,
+    calcMoneyLevelsGain,
+    formatDoler,
+    formatNumber,
+    parseNumberSuffix,
+    randomFromArray,
+    sendEphemeralReply,
+    sendSimpleMessage,
+    showCasinoTopWins
 } from '../../utils.js';
 import { Blackjack_games } from '../../volatile.js';
 

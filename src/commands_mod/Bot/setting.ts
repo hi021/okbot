@@ -1,6 +1,6 @@
 import { Colors } from 'discord.js';
-import { createSimpleMessage } from '../../utils.js';
 import { SET } from '../../settings.js';
+import { createSimpleMessage } from '../../utils.js';
 
 export const name = 'setting';
 export const alias = ['set'];

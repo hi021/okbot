@@ -3,15 +3,15 @@ import fs from 'fs';
 import { db_fish_add, db_fish_get, db_plr_add, db_plr_get } from '../../db/db.js';
 import { SET } from '../../settings.js';
 import {
-	calcMoneyLevelsGain,
-	checkBoosterValidity,
-	createSimpleMessage,
-	formatDoler,
-	formatNumber,
-	getUserFromMsg,
-	isOnCooldown,
-	randomInt,
-	sendSimpleMessage
+    calcMoneyLevelsGain,
+    checkBoosterValidity,
+    createSimpleMessage,
+    formatDoler,
+    formatNumber,
+    getUserFromMsg,
+    isOnCooldown,
+    randomInt,
+    sendSimpleMessage
 } from '../../utils.js';
 
 export const Fish: { tot: number; f: { [nam: string]: okbot.Fish } } = { tot: 0, f: {} };

@@ -1,10 +1,10 @@
 import Discord, { ChannelType, Colors } from 'discord.js';
 import io from 'socket.io-client';
-import { bot } from './okbot.js';
-import { getOsuAvatar } from './utilsOsu.js';
-import { formatDate, formatNumber } from './utils.js';
-import { db_osu_get_players } from './db/osu.js';
 import { db_guild_get } from './db/guild.js';
+import { db_osu_get_players } from './db/osu.js';
+import { bot } from './okbot.js';
+import { formatDate, formatNumber } from './utils.js';
+import { getOsuAvatar } from './utilsOsu.js';
 
 export async function rankingSocket() {
 	const socket = io(process.env.SOCKET_URI + '/poggers', {

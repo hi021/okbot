@@ -1,17 +1,16 @@
 import {
-	ButtonInteraction,
-	ColorResolvable,
-	Colors,
-	EmbedBuilder,
-	GuildMember,
-	Interaction,
-	Message,
-	MessageFlags,
-	MessageFlagsBitField,
-	MessageType,
-	SendableChannels,
-	Snowflake,
-	User
+    ButtonInteraction,
+    ColorResolvable,
+    Colors,
+    EmbedBuilder,
+    GuildMember,
+    Message,
+    MessageFlags,
+    MessageFlagsBitField,
+    MessageType,
+    SendableChannels,
+    Snowflake,
+    User
 } from 'discord.js';
 import { db_get_casino_top, db_plr_get, db_plr_set } from './db/db.js';
 import { SET } from './settings.js';

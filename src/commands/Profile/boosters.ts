@@ -2,11 +2,11 @@ import { EmbedBuilder } from 'discord.js';
 import { db_plr_get } from '../../db/db.js';
 import { SET } from '../../settings.js';
 import {
-	checkBoosterValidity,
-	drawProgressBar,
-	formatMilliseconds,
-	getUserFromMsg,
-	sendSimpleMessage
+    checkBoosterValidity,
+    drawProgressBar,
+    formatMilliseconds,
+    getUserFromMsg,
+    sendSimpleMessage
 } from '../../utils.js';
 export const name = 'boosters';
 export const alias = ['booster'];

@@ -218,7 +218,7 @@ const nounsCommon = [
 	'chaser',
 	'concept',
 	'cutie',
-    'daddy',
+	'daddy',
 	'dog',
 	'dolphin',
 	'fluffer',
@@ -227,7 +227,7 @@ const nounsCommon = [
 	'fujoshi',
 	'gal',
 	'girl',
-    'guy',
+	'guy',
 	'individual',
 	'kitsune',
 	'kitten',
@@ -308,8 +308,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const numAdjectives = Math.random() * 2;
 
 	const adj1 = randomFromArray(adjectives);
-	const ignoreVowel = adj1.startsWith('us') ||
-    (adj1.startsWith('un') && adj1 !== 'unusual' && adj1 !== 'undeniable' && adj1 !== 'unhappy');
+	const ignoreVowel =
+		adj1.startsWith('us') ||
+		(adj1.startsWith('un') && adj1 !== 'unusual' && adj1 !== 'undeniable' && adj1 !== 'unhappy');
 	string += (!ignoreVowel && isVowel(adj1[0]) ? 'an ' : 'a ') + adj1;
 
 	if (numAdjectives > 1) {

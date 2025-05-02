@@ -2,11 +2,11 @@ import { EmbedBuilder, User } from 'discord.js';
 import { db_plr_get, db_plr_set } from '../../db/db.js';
 import { SET } from '../../settings.js';
 import {
-	calcMoneyTotNeeded,
-	drawProgressBar,
-	formatDoler,
-	formatNumber,
-	getUserFromMsg
+    calcMoneyTotNeeded,
+    drawProgressBar,
+    formatDoler,
+    formatNumber,
+    getUserFromMsg
 } from '../../utils.js';
 
 export const name = 'stats';

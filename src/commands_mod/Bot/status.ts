@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
-import { SET } from '../../settings.js';
 import { bot } from '../../okbot.js';
+import { SET } from '../../settings.js';
 import { formatNumber } from '../../utils.js';
 
 export const name = 'status';

@@ -2,11 +2,11 @@ import { Colors, EmbedBuilder } from 'discord.js';
 import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
 import { SET } from '../../settings.js';
 import {
-	calcMoneyLevelsGain,
-	drawProgressBar,
-	formatDoler,
-	formatMilliseconds,
-	sendSimpleMessage
+    calcMoneyLevelsGain,
+    drawProgressBar,
+    formatDoler,
+    formatMilliseconds,
+    sendSimpleMessage
 } from '../../utils.js';
 
 export const name = 'daily';

@@ -1,9 +1,9 @@
-import { Collection, Db, MongoClient } from 'mongodb';
-import { Casino_tops } from '../volatile.js';
-import dotenv from 'dotenv';
-import { bot } from '../okbot.js';
 import { Snowflake } from 'discord.js';
+import dotenv from 'dotenv';
+import { Collection, Db, MongoClient } from 'mongodb';
+import { bot } from '../okbot.js';
 import { SET } from '../settings.js';
+import { Casino_tops } from '../volatile.js';
 import { db_store_init } from './store.js';
 dotenv.config();
 

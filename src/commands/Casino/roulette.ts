@@ -1,15 +1,15 @@
 import { Colors, EmbedBuilder, User } from 'discord.js';
 import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
 import {
-	addCasinoStat,
-	calcMoneyLevelsGain,
-	e_blank,
-	formatDoler,
-	formatNumber,
-	parseNumberSuffix,
-	randomInt,
-	sendSimpleMessage,
-	showCasinoTopWins
+    addCasinoStat,
+    calcMoneyLevelsGain,
+    e_blank,
+    formatDoler,
+    formatNumber,
+    parseNumberSuffix,
+    randomInt,
+    sendSimpleMessage,
+    showCasinoTopWins
 } from '../../utils.js';
 
 export const name = 'roulette';

@@ -1,21 +1,21 @@
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	SendableChannels
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    Colors,
+    EmbedBuilder,
+    SendableChannels
 } from 'discord.js';
 import { db_plr_add, db_plr_get } from '../../db/db.js';
 import { bot } from '../../okbot.js';
 import {
-	createSimpleMessage,
-	e_blank,
-	formatDoler,
-	formatNumber,
-	sendEphemeralReply,
-	sendSimpleMessage,
-	shuffleArray
+    createSimpleMessage,
+    e_blank,
+    formatDoler,
+    formatNumber,
+    sendEphemeralReply,
+    sendSimpleMessage,
+    shuffleArray
 } from '../../utils.js';
 import { Poker_games } from '../../volatile.js';
 
@@ -104,7 +104,7 @@ bot.on('interactionCreate', async interaction => {
 			return sendEphemeralReply(interaction, "This isn't your decision to make...");
 
 		const cards = `${plr.cards[0].clr} **${plr.cards[0].val}**${e_blank}${plr.cards[1].clr} **${plr.cards[1].val}**`;
-		return sendEphemeralReply(interaction, 'Your hand is\n' + cards);
+		return sendEphemeralReply(interaction, 'Your hand is\n' + cards, Colors.Blue);
 	}
 
 	if (split[0] === 'poker_call') {

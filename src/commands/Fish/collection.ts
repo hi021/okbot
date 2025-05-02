@@ -1,25 +1,25 @@
 import {
-	ActionRowBuilder,
-	APIEmbedField,
-	ButtonBuilder,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	User
+    ActionRowBuilder,
+    APIEmbedField,
+    ButtonBuilder,
+    ButtonStyle,
+    Colors,
+    EmbedBuilder,
+    User
 } from 'discord.js';
 import { db_fish_add, db_plr_add, db_plr_get } from '../../db/db.js';
 import { bot } from '../../okbot.js';
 import { SET } from '../../settings.js';
 import {
-	capitalizeFirstLetter,
-	createSimpleMessage,
-	formatDoler,
-	formatNumber,
-	getUserFromMsg,
-	numberToEmoji,
-	sendEphemeralReply,
-	sendSimpleMessage,
-	showItemName
+    capitalizeFirstLetter,
+    createSimpleMessage,
+    formatDoler,
+    formatNumber,
+    getUserFromMsg,
+    numberToEmoji,
+    sendEphemeralReply,
+    sendSimpleMessage,
+    showItemName
 } from '../../utils.js';
 import { BakeryStaff } from '../Business/bakery.js';
 import { Fish } from './fish.js';
