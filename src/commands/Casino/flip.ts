@@ -1,18 +1,18 @@
-import { Colors, Message } from 'discord.js';
-import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
-import { SET } from '../../settings.js';
+import { Colors, Message } from "discord.js";
+import { db_add_casino_top, db_plr_add, db_plr_get } from "../../db/db.js";
+import { SET } from "../../settings.js";
 import {
-    addCasinoStat,
-    calcMoneyLevelsGain,
-    createSimpleMessage,
-    createUserMsgEmbed,
-    formatDoler,
-    parseNumberSuffix,
-    randomInt,
-    sendSimpleMessage,
-    showCasinoTopWins
-} from '../../utils.js';
-import { Players_in_collector } from '../../volatile.js';
+	addCasinoStat,
+	calcMoneyLevelsGain,
+	createSimpleMessage,
+	createUserMsgEmbed,
+	formatDoler,
+	parseNumberSuffix,
+	randomInt,
+	sendSimpleMessage,
+	showCasinoTopWins
+} from "../../utils.js";
+import { Players_in_collector } from "../../volatile.js";
 const BET_RANGES = { def: { min: 0, max: 10000000 }, vip: { min: 0, max: 50000000 } }; // min bet doesn't do anything - allow for no bet rolling
 const BIG_BET_PERCENT = 0.45; // need confirmation from user if bet amount is at least this fraction of user's money
 
@@ -44,10 +44,10 @@ async function runFlip(
 				expense: { flip: bet }
 			});
 
-			await db_add_casino_top('flip', msg.author.id, msg.author.tag, bet, win + bet);
+			await db_add_casino_top("flip", msg.author.id, msg.author.tag, bet, win + bet);
 		} else msgR.setDescription(desc);
 
-		await addCasinoStat(msg.author.id, 'flip', 'win', bet, win);
+		await addCasinoStat(msg.author.id, "flip", "win", bet, win);
 	} else {
 		const desc = `Rolled a **${res}** which is not within ${odds} and 100.`;
 		msgR = createUserMsgEmbed(msg.author, Colors.Red);
@@ -61,19 +61,19 @@ async function runFlip(
 			msgR.addFields({ name: `Lost ${formatDoler(bet, false)}!`, value: desc });
 		} else msgR.setDescription(desc);
 
-		await addCasinoStat(msg.author.id, 'flip', 'lose', bet, -bet);
+		await addCasinoStat(msg.author.id, "flip", "lose", bet, -bet);
 	}
 	return msg.reply({ embeds: [msgR] });
 }
 
-export const name = 'flip';
-export const alias = ['bet', 'coin'];
-export const description = ':coin: Flip a coin and lose';
+export const name = "flip";
+export const alias = ["bet", "coin"];
+export const description = ":coin: Flip a coin and lose";
 export const usage = '<Bet amount (0-10M/50M 💵) OR "All" OR "Top"> <Odds (5-95%)>';
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (Players_in_collector[msg.author.id])
-		return sendSimpleMessage(msg, 'A different activity requires your attention first!');
+		return sendSimpleMessage(msg, "A different activity requires your attention first!");
 	const plrdat = (await db_plr_get({
 		_id: msg.author.id,
 		mon: 1,
@@ -87,14 +87,14 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		odds = 50;
 	if (args.length >= 1) {
 		const action = args[0].toLowerCase();
-		if (action === 'top')
+		if (action === "top")
 			return msg.reply({
-				embeds: [await showCasinoTopWins('flip', false)],
+				embeds: [await showCasinoTopWins("flip", false)],
 				allowedMentions: { repliedUser: false }
 			});
 
-		const MAX_BET = BET_RANGES[plrdat.itms?.BOS0010 ? 'vip' : 'def'].max;
-		if (action === 'all') bet = Math.min(Math.max(mon, 0), MAX_BET);
+		const MAX_BET = BET_RANGES[plrdat.itms?.BOS0010 ? "vip" : "def"].max;
+		if (action === "all") bet = Math.min(Math.max(mon, 0), MAX_BET);
 		else {
 			const betTmp = parseNumberSuffix(args[0]);
 			if (betTmp == null || isNaN(betTmp) || betTmp < 0) bet = 0;
@@ -118,7 +118,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				createSimpleMessage(
 					`That is a huge large bet of ${formatDoler(bet)} 😱!\n\n*Type (y)es or (n)o*.`,
 					Colors.DarkOrange,
-					'Are you sure?'
+					"Are you sure?"
 				)
 			]
 		});
@@ -129,12 +129,12 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			time: SET.DEF_COLLECTOR_TIMEOUT || 30000
 		});
 
-		collector.on('collect', async m => {
+		collector.on("collect", async m => {
 			const mc = m.content.toLowerCase();
-			if (mc === 'n' || mc === 'no' || mc === 'cancel') {
+			if (mc === "n" || mc === "no" || mc === "cancel") {
 				collector.stop();
-			} else if (mc === 'y' || mc === 'yes' || mc === 'ok') {
-				collector.stop('confirm');
+			} else if (mc === "y" || mc === "yes" || mc === "ok") {
+				collector.stop("confirm");
 				// avoid going into the negative in case user spent money before confirming the bet
 				const plrdat_2 = await db_plr_get({ _id: msg.author.id, mon: 1 });
 				const mon = plrdat_2?.mon ?? 0;
@@ -145,10 +145,10 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			}
 		});
 
-		collector.on('end', (_collected, reason) => {
+		collector.on("end", (_collected, reason) => {
 			delete Players_in_collector[msg.author.id];
-			if (reason !== 'confirm') {
-				msg.reply('Canceled your bet.');
+			if (reason !== "confirm") {
+				msg.reply("Canceled your bet.");
 				return;
 			}
 		});

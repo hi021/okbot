@@ -1,27 +1,27 @@
-import { Colors } from 'discord.js';
-import { SET } from '../../settings.js';
-import { createSimpleMessage } from '../../utils.js';
+import { Colors } from "discord.js";
+import { SET } from "../../settings.js";
+import { createSimpleMessage } from "../../utils.js";
 
-export const name = 'setting';
-export const alias = ['set'];
-export const description = 'set given variable';
+export const name = "setting";
+export const alias = ["set"];
+export const description = "set given variable";
 export const usage =
-	'<Setting name> [Flag - use _UNDEF to set undefined value, use _NUM to set numeric value, use _F to set undefined settings] <Setting value, defaults to empty string>';
-export const restrict = 'BOT_ADMIN';
+	"<Setting name> [Flag - use _UNDEF to set undefined value, use _NUM to set numeric value, use _F to set undefined settings] <Setting value, defaults to empty string>";
+export const restrict = "BOT_ADMIN";
 
 function settingVal(args: string[]) {
-	if (args[0] == '_NUM') return Number(args[2]);
-	if (args[0] == '_UNDEF') return undefined;
-	if (args[0]) return args.join(' ');
+	if (args[0] == "_NUM") return Number(args[2]);
+	if (args[0] == "_UNDEF") return undefined;
+	if (args[0]) return args.join(" ");
 
-	return '';
+	return "";
 }
 
 function displaySettings(msg: okbot.Message) {
-	let str = '';
+	let str = "";
 	for (const i in SET) str += `\`${i.toUpperCase()}\`: ${(SET as any)[i]}\n`;
 
-	msg.reply({ embeds: [createSimpleMessage(str, Colors.White, 'Current settings')] });
+	msg.reply({ embeds: [createSimpleMessage(str, Colors.White, "Current settings")] });
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
@@ -29,7 +29,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	const setting = args.shift()!.toUpperCase();
 	let force = false;
-	if (args[0] == '_F') {
+	if (args[0] == "_F") {
 		force = true;
 		args.shift();
 	}

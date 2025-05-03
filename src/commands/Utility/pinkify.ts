@@ -1,8 +1,8 @@
-import canvasModule from 'canvas';
-import { AttachmentBuilder, Colors, EmbedBuilder } from 'discord.js';
-import fs from 'fs';
-import path from 'path';
-import { getImageUrlFromMsg, sendSimpleMessage } from '../../utils.js';
+import canvasModule from "canvas";
+import { AttachmentBuilder, Colors, EmbedBuilder } from "discord.js";
+import fs from "fs";
+import path from "path";
+import { getImageUrlFromMsg, sendSimpleMessage } from "../../utils.js";
 
 // sets random pixels to black, higher threshold = more noise
 function generateNoise(ctx: canvasModule.CanvasRenderingContext2D, noiseThreshold = 0.2, noiseColor = 255) {
@@ -35,19 +35,19 @@ function applyThreshold(ctx: canvasModule.CanvasRenderingContext2D, threshold = 
 	ctx.putImageData(imgData, 0, 0);
 }
 
-export const name = 'pinkify';
+export const name = "pinkify";
 export const description =
-	'<:color_lightPink:1008342282153513020> Makes images ridiculously pink (or any other color)';
-export const alias = ['twinkify', 'sandpaper'];
+	"<:color_lightPink:1008342282153513020> Makes images ridiculously pink (or any other color)";
+export const alias = ["twinkify", "sandpaper"];
 export const usage =
-	'[Image OR Image URL OR Mention OR Username (spaces replaced with _)] <Threshold (0-255)> <Max dimensions (WxH)> <Noise threshold (0-1)> <#Hex color>';
-export const usageDetail = 'Default color is #FF5ED7';
+	"[Image OR Image URL OR Mention OR Username (spaces replaced with _)] <Threshold (0-255)> <Max dimensions (WxH)> <Noise threshold (0-1)> <#Hex color>";
+export const usageDetail = "Default color is #FF5ED7";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	const url = await getImageUrlFromMsg(msg, args);
-	if (!url) return sendSimpleMessage(msg, 'The usage for this command is:\n`' + usage + '`', Colors.White);
+	if (!url) return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
 
-	let color: `#${string}` = '#FF5ED7';
+	let color: `#${string}` = "#FF5ED7";
 	let threshold = 175;
 	let maxW = 2048,
 		maxH = 2048;
@@ -61,7 +61,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		}
 
 		if (args.length) {
-			const dim = args[0].split('x');
+			const dim = args[0].split("x");
 			const newW = parseInt(dim[0]);
 			const newH = parseInt(dim[1]);
 			if (!isNaN(newW) && !isNaN(newH) && newW >= 10 && newH > 10) {
@@ -77,15 +77,15 @@ export async function execute(msg: okbot.Message, args: string[]) {
 					args.shift();
 				}
 
-				if (args[0]?.startsWith('#')) {
+				if (args[0]?.startsWith("#")) {
 					const colorString = args[0].slice(1);
-					const colorInt = Number('0x' + colorString);
+					const colorInt = Number("0x" + colorString);
 
 					if (!isNaN(colorInt)) {
 						if (colorString.length === 6) {
 							color = args.shift() as `#${string}`;
 						} else if (colorString.length === 3) {
-							color = ('#' +
+							color = ("#" +
 								colorString[0].repeat(2) +
 								colorString[1].repeat(2) +
 								colorString[2].repeat(2)) as `#${string}`;
@@ -102,7 +102,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	try {
 		// draw original image and threshold it
 		const canvasImage = canvasModule.createCanvas(maxW, maxH);
-		const contextImage = canvasImage.getContext('2d');
+		const contextImage = canvasImage.getContext("2d");
 
 		const image = new canvasModule.Image();
 		const imagePromise: Promise<{ w: number; h: number }> = new Promise((resolve, reject) => {
@@ -139,10 +139,10 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 		// fill bg
 		const canvasMain = canvasModule.createCanvas(w, h);
-		const contextMain = canvasMain.getContext('2d');
+		const contextMain = canvasMain.getContext("2d");
 		contextMain.fillStyle = color;
 		contextMain.fillRect(0, 0, maxW, maxH);
-		contextMain.globalCompositeOperation = 'overlay';
+		contextMain.globalCompositeOperation = "overlay";
 
 		const imageURI = canvasImage.toDataURL();
 		const imageFiltered = new canvasModule.Image();
@@ -151,13 +151,13 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				imageFiltered.onload = () => {
 					contextMain.drawImage(imageFiltered, 0, 0, w, h);
 
-					const filePath = path.join(process.env.IMG_EDIT_PATH ?? './', filename);
+					const filePath = path.join(process.env.IMG_EDIT_PATH ?? "./", filename);
 					const writeStream = fs.createWriteStream(filePath);
 					const pngStream = canvasMain.createPNGStream();
 
 					pngStream.pipe(writeStream);
-					writeStream.on('finish', () => {
-						console.log('PNG created in ' + filePath);
+					writeStream.on("finish", () => {
+						console.log("PNG created in " + filePath);
 						resolve(filePath);
 					});
 				};
@@ -181,7 +181,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		console.error(`Failed to pinkify ${url}:\n`, e);
 		return sendSimpleMessage(
 			msg,
-			'No suitable image found.\nIt might not exist or be of an unsupported type (e.g. .webp).'
+			"No suitable image found.\nIt might not exist or be of an unsupported type (e.g. .webp)."
 		);
 	}
 }

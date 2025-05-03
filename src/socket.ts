@@ -1,22 +1,22 @@
-import Discord, { ChannelType, Colors } from 'discord.js';
-import io from 'socket.io-client';
-import { db_guild_get } from './db/guild.js';
-import { db_osu_get_players } from './db/osu.js';
-import { bot } from './okbot.js';
-import { formatDate, formatNumber } from './utils.js';
-import { getOsuAvatar } from './utilsOsu.js';
+import Discord, { ChannelType, Colors } from "discord.js";
+import io from "socket.io-client";
+import { db_guild_get } from "./db/guild.js";
+import { db_osu_get_players } from "./db/osu.js";
+import { bot } from "./okbot.js";
+import { formatDate, formatNumber } from "./utils.js";
+import { getOsuAvatar } from "./utilsOsu.js";
 
 export async function rankingSocket() {
-	const socket = io(process.env.SOCKET_URI + '/poggers', {
+	const socket = io(process.env.SOCKET_URI + "/poggers", {
 		path: process.env.SOCKET_PATH
 	});
 
 	return await new Promise((resolve, reject) => {
-		socket.on('connect', () => {
-			socket.emit('room', 'ranking-update-listeners');
-			console.log('Connected to socket.');
+		socket.on("connect", () => {
+			socket.emit("room", "ranking-update-listeners");
+			console.log("Connected to socket.");
 
-			socket.on('ranking-update', async (g50: { id: number; nam: string; g50: number }) => {
+			socket.on("ranking-update", async (g50: { id: number; nam: string; g50: number }) => {
 				console.log(`Poggers ranking updated:`, g50);
 				if (!g50?.g50) {
 					console.warn("Assuming ranking data is malformed - won't notify listeners");
@@ -27,7 +27,7 @@ export async function rankingSocket() {
 				// scrape guilds to look for channels that track players
 				const guilds = await db_guild_get({ otrack: { $exists: true } }, { _id: 1, otrack: 1 });
 				const plrIds = new Set<number>(); // players to fetch from poggers db
-				const destinationGuilds: Array<Omit<okbot.OsuTrackSettings, 'chn'> & { chn: Discord.TextChannel }> =
+				const destinationGuilds: Array<Omit<okbot.OsuTrackSettings, "chn"> & { chn: Discord.TextChannel }> =
 					[];
 
 				for (const i in guilds) {
@@ -44,22 +44,22 @@ export async function rankingSocket() {
 				// get all needed players from the db
 				const plrArr = await db_osu_get_players([...plrIds]);
 				if (!plrArr?.length) {
-					console.warn('No data for players with given ids:\n', [...plrIds]);
+					console.warn("No data for players with given ids:\n", [...plrIds]);
 					return;
 				}
 
 				// convert array to map _id => {...player info}
 				const plrMap = new Map();
 				for (const i of plrArr) plrMap.set(i._id, { ...i });
-				const poggerslink = 'https://poggers.ltd/ranking/gains/' + formatDate(new Date(), 'alphabetical');
+				const poggerslink = "https://poggers.ltd/ranking/gains/" + formatDate(new Date(), "alphabetical");
 
 				// send to text channels
 				for (const i of destinationGuilds) {
 					const msge = new Discord.EmbedBuilder()
-						.setTitle('Tracked top 50s update')
+						.setTitle("Tracked top 50s update")
 						.setFooter({
-							text: 'poggers.ltd',
-							iconURL: 'https://poggers.ltd/senkoicon.png'
+							text: "poggers.ltd",
+							iconURL: "https://poggers.ltd/senkoicon.png"
 						})
 						.setColor(Colors.LuminousVividPink)
 						.setURL(poggerslink);
@@ -77,7 +77,7 @@ export async function rankingSocket() {
 						// have to check if pdata exists because add -id doesn't validate players
 						if (pdata?.cur && (i.minGain == null || pdata.g50 >= i.minGain)) {
 							const t50 = `${formatNumber(pdata.t50 - pdata.g50)} → ${formatNumber(pdata.t50)}`;
-							const g50 = `${pdata.g50 >= 0 ? '+' : ''}${pdata.g50}`;
+							const g50 = `${pdata.g50 >= 0 ? "+" : ""}${pdata.g50}`;
 
 							msge.addFields({
 								name: `:flag_${pdata.cntr.toLowerCase()}:  ${pdata.nam} (#${pdata.pos})`,
@@ -94,6 +94,6 @@ export async function rankingSocket() {
 			});
 		});
 
-		socket.on('connect_failed', () => reject('Socket connection failed'));
+		socket.on("connect_failed", () => reject("Socket connection failed"));
 	});
 }

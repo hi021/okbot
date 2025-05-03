@@ -1,30 +1,24 @@
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder } from "discord.js";
+import { db_add_casino_top, db_plr_add, db_plr_get } from "../../db/db.js";
+import { bot } from "../../okbot.js";
+import { SET } from "../../settings.js";
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    Colors,
-    EmbedBuilder
-} from 'discord.js';
-import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
-import { bot } from '../../okbot.js';
-import { SET } from '../../settings.js';
-import {
-    addCasinoStat,
-    calcMoneyLevelsGain,
-    createSimpleMessage,
-    formatDoler,
-    formatMilliseconds,
-    objLength,
-    parseNumberSuffix,
-    randomFromArray,
-    sendEphemeralReply,
-    sendSimpleMessage,
-    showCasinoTopWins
-} from '../../utils.js';
-import { Bingo_games } from '../../volatile.js';
+	addCasinoStat,
+	calcMoneyLevelsGain,
+	createSimpleMessage,
+	formatDoler,
+	formatMilliseconds,
+	objLength,
+	parseNumberSuffix,
+	randomFromArray,
+	sendEphemeralReply,
+	sendSimpleMessage,
+	showCasinoTopWins
+} from "../../utils.js";
+import { Bingo_games } from "../../volatile.js";
 
-export const name = 'bingo';
-export const description = '🔢 Play bingo';
+export const name = "bingo";
+export const description = "🔢 Play bingo";
 export const usage =
 	'<"Start" OR "Cancel" OR "Top" (blank to join existing game)> <Bet amount (0-2M 💵)> <16 space-separated numbers 0-99>';
 export const usageDetail =
@@ -39,8 +33,8 @@ const allNumbers = [
 	83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99
 ];
 
-bot.on('interactionCreate', interaction => {
-	if (!interaction.isButton() || !interaction.inGuild() || interaction.customId !== 'show_board') return;
+bot.on("interactionCreate", interaction => {
+	if (!interaction.isButton() || !interaction.inGuild() || interaction.customId !== "show_board") return;
 
 	const game = Bingo_games[interaction.guildId];
 	if (!game?.plr?.[interaction.user.id])
@@ -73,7 +67,7 @@ function parseNumbers(num: string[]) {
 		const previousSize = set.size;
 		let n = Number(num[i]);
 		if (isNaN(n) || n < 0 || n > 99)
-			return { board: null, e: 'All numbers must be between **0** and **99**.' };
+			return { board: null, e: "All numbers must be between **0** and **99**." };
 
 		n = Math.floor(n);
 		set.add(n);
@@ -114,7 +108,7 @@ function checkBoardWin(board: number[]) {
 			break;
 		}
 	}
-	if (win) return 'Diagonal-LR';
+	if (win) return "Diagonal-LR";
 
 	for (let i = 0; i < 4; i++) {
 		if (board[i * 3 + 3] < 100) {
@@ -122,7 +116,7 @@ function checkBoardWin(board: number[]) {
 			break;
 		}
 	}
-	if (win) return 'Diagonal-RL';
+	if (win) return "Diagonal-RL";
 
 	return null;
 }
@@ -138,7 +132,7 @@ function rollNumber(guildId: string) {
 		game.msg.channel.send({ embeds: [msge] });
 
 		removeTimeouts(Bingo_games[guildId]);
-		updateParticipants(game, 'This game has ended.');
+		updateParticipants(game, "This game has ended.");
 		delete Bingo_games[guildId];
 		return;
 	}
@@ -166,30 +160,30 @@ function rollNumber(guildId: string) {
 	}
 
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-		new ButtonBuilder().setCustomId('show_board').setLabel('Show board').setStyle(ButtonStyle.Secondary)
+		new ButtonBuilder().setCustomId("show_board").setLabel("Show board").setStyle(ButtonStyle.Secondary)
 	);
 	const msge = new EmbedBuilder()
 		.setAuthor({ name: `Bingo game ● round ${round}` })
 		.setColor(Colors.Yellow)
 		.setDescription(`The number is **${rolled}**!`)
-		.setFooter({ text: 'Say bingo! if you crossed out all numbers in a row, column, or diagonally' });
+		.setFooter({ text: "Say bingo! if you crossed out all numbers in a row, column, or diagonally" });
 	game.msg.channel.send({ embeds: [msge], components: [row] });
 
 	return playersHit;
 }
 
 function visualizeBoard(board: number[]) {
-	let s = '```c\n';
+	let s = "```c\n";
 	for (let i = 0; i < 4; i++) {
 		for (let j = 0; j < 4; j++) {
 			const n = board[i * 4 + j];
-			const formatted = n >= 100 ? 'xx' : n.toString().padStart(2, '0');
+			const formatted = n >= 100 ? "xx" : n.toString().padStart(2, "0");
 			s += j ? `\t${formatted}` : formatted;
 		}
-		s += '\n';
+		s += "\n";
 	}
 
-	return s + '```';
+	return s + "```";
 }
 
 function updateParticipants(game: okbot.BingoGame, footer?: string) {
@@ -201,10 +195,10 @@ function updateParticipants(game: okbot.BingoGame, footer?: string) {
 		msgeEdit.setFooter({ text: footer });
 	} else {
 		msgeEdit.spliceFields(0, 1);
-		let s = '';
+		let s = "";
 		for (const i in game.plr) s += `<@${i}>: ${formatDoler(game.plr[i].bet, false)}\n`;
 
-		msgeEdit.addFields({ name: 'Participants', value: s });
+		msgeEdit.addFields({ name: "Participants", value: s });
 	}
 
 	game.msg.edit({ embeds: [msgeEdit] });
@@ -215,9 +209,9 @@ export async function sayBingo(msg: okbot.Message) {
 	if (!msg.inGuild()) return;
 	const game = Bingo_games[msg.guildId];
 	if (!game?.plr?.[msg.author.id]) return;
-	if (!game.plrWin.includes(msg.author.id)) return msg.react('🔫');
+	if (!game.plrWin.includes(msg.author.id)) return msg.react("🔫");
 
-	let missedChance = '';
+	let missedChance = "";
 	for (let i = 0; i < game.plrWin.length; i++)
 		if (game.plrWin[i] != msg.author.id) missedChance += `<@${game.plrWin[i]}> `;
 
@@ -231,7 +225,7 @@ export async function sayBingo(msg: okbot.Message) {
 			iconURL: msg.author.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
 		.setDescription(
-			(missedChance ? missedChance + 'missed their chance...\n' : '') +
+			(missedChance ? missedChance + "missed their chance...\n" : "") +
 				visualizeBoard(game.plr[msg.author.id].board)
 		);
 
@@ -249,19 +243,19 @@ export async function sayBingo(msg: okbot.Message) {
 			income: { bingo: winnings }
 		});
 
-		db_add_casino_top('bingo', msg.author.id, msg.author.tag, bet, winnings);
+		db_add_casino_top("bingo", msg.author.id, msg.author.tag, bet, winnings);
 	}
 
-	addCasinoStat(msg.author.id, 'bingo', 'win', bet, winningsMonTot);
+	addCasinoStat(msg.author.id, "bingo", "win", bet, winningsMonTot);
 	for (const i in game.plr) {
 		if (i === msg.author.id) continue;
-		addCasinoStat(i, 'bingo', 'lose', game.plr[i].bet, 0);
+		addCasinoStat(i, "bingo", "lose", game.plr[i].bet, 0);
 	}
 
 	game.msg.reply({ embeds: [msge], allowedMentions: { repliedUser: false } });
 
 	removeTimeouts(Bingo_games[msg.guild.id]);
-	updateParticipants(game, 'This game has ended.');
+	updateParticipants(game, "This game has ended.");
 	delete Bingo_games[msg.guild.id];
 }
 
@@ -276,11 +270,11 @@ function cancelGame(msg: okbot.Message, reason?: string) {
 	}
 
 	removeTimeouts(game);
-	updateParticipants(game, 'This game has been canceled.');
+	updateParticipants(game, "This game has been canceled.");
 	delete Bingo_games[msg.guild!.id];
 	return reason
-		? sendSimpleMessage<okbot.Message>(msg, 'The game has been canceled:\n' + reason)
-		: sendSimpleMessage<okbot.Message>(msg, 'Canceled the game.', Colors.DarkGreen);
+		? sendSimpleMessage<okbot.Message>(msg, "The game has been canceled:\n" + reason)
+		: sendSimpleMessage<okbot.Message>(msg, "Canceled the game.", Colors.DarkGreen);
 }
 
 const removeTimeouts = (game: okbot.BingoGame) => {
@@ -302,7 +296,7 @@ async function addGame(msg: okbot.Message, boardNumbers: string[], bet: number) 
 			name: `Bingo game started by ${msg.author.displayName}`,
 			iconURL: msg.author.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
-		.addFields({ name: 'Participants', value: `<@${msg.author.id}>: ${formatDoler(bet, false)}` })
+		.addFields({ name: "Participants", value: `<@${msg.author.id}>: ${formatDoler(bet, false)}` })
 		.setFooter({
 			text: `Use ${SET.PREFIX + name} <Bet amount> <16 numbers 0-99> to join\nUse ${SET.PREFIX + name} start to start the game`
 		});
@@ -324,14 +318,14 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (!args.length)
 		return sendSimpleMessage<okbot.Message>(
 			msg,
-			'The usage for this command is\n`' + usage + '`',
+			"The usage for this command is\n`" + usage + "`",
 			Colors.White
 		);
 
 	const game = Bingo_games[msg.guildId];
 
-	let action = '';
-	if (isNaN(parseInt(args[0]))) action = args.shift()?.toLowerCase() ?? '';
+	let action = "";
+	if (isNaN(parseInt(args[0]))) action = args.shift()?.toLowerCase() ?? "";
 
 	let bet = 0;
 	if (args.length === 1 || args.length > 16) {
@@ -345,7 +339,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	}
 
 	//
-	if (action === 'start') {
+	if (action === "start") {
 		if (!game) return await addGame(msg, args, bet); // create lobby
 		if (game.host != msg.author.id)
 			return sendSimpleMessage<okbot.Message>(msg, `Only the host (<@${game.host}>) can manage the game.`);
@@ -366,7 +360,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			Colors.DarkGreen,
 			false
 		);
-	} else if (action == 'cancel' || action == 'abort' || action == 'stop' || action == 'leave') {
+	} else if (action == "cancel" || action == "abort" || action == "stop" || action == "leave") {
 		if (!game)
 			return sendSimpleMessage<okbot.Message>(
 				msg,
@@ -395,9 +389,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			// if host, cancel game
 			return cancelGame(msg);
 		}
-	} else if (action === 'top') {
+	} else if (action === "top") {
 		return msg.reply({
-			embeds: [await showCasinoTopWins('bingo', true)],
+			embeds: [await showCasinoTopWins("bingo", true)],
 			allowedMentions: { repliedUser: false }
 		});
 	}
@@ -405,7 +399,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	// no action
 	if (!game) return await addGame(msg, args, bet);
 	if (game.int)
-		return sendSimpleMessage<okbot.Message>(msg, 'There is an ongoing game in this server already.');
+		return sendSimpleMessage<okbot.Message>(msg, "There is an ongoing game in this server already.");
 	// TODO?: update player instead
 	if (game.plr?.[msg.author.id])
 		return sendSimpleMessage<okbot.Message>(msg, "You're already participating in a game in this server.");

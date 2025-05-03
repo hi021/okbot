@@ -1,7 +1,7 @@
-import { randomInt } from '../../utils.js';
+import { randomInt } from "../../utils.js";
 
-export const name = 'randtest';
-export const description = 'see how rigged this is';
+export const name = "randtest";
+export const description = "see how rigged this is";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	const reps = Number(args[0]) || 100_000;

@@ -15,1931 +15,1931 @@ export enum CountryType {
 }
 
 export const countries_common = [
-	'us',
-	'ua',
-	'tr',
-	'se',
-	'sa',
-	'ru',
-	'qa',
-	'pt',
-	'pl',
-	'no',
-	'mx',
-	'kr',
-	'jp',
-	'in',
-	'il',
-	'gr',
-	'gb',
-	'fr',
-	'fi',
-	'es',
-	'de',
-	'cn',
-	'ch',
-	'ca',
-	'br',
-	'au',
-	'ar'
+	"us",
+	"ua",
+	"tr",
+	"se",
+	"sa",
+	"ru",
+	"qa",
+	"pt",
+	"pl",
+	"no",
+	"mx",
+	"kr",
+	"jp",
+	"in",
+	"il",
+	"gr",
+	"gb",
+	"fr",
+	"fi",
+	"es",
+	"de",
+	"cn",
+	"ch",
+	"ca",
+	"br",
+	"au",
+	"ar"
 ];
 
 // indexed by ISO 3166 code
 // full from https://flagcdn.com/en/codes.json
 export const countries: { [countryCode: string]: okbot.Country } = {
 	ad: {
-		nam: ['Andorra'],
+		nam: ["Andorra"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Andorra la Vella']
+		capital: ["Andorra la Vella"]
 	},
 	ae: {
-		nam: ['United Arab Emirates', 'UAE'],
+		nam: ["United Arab Emirates", "UAE"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Abu Dhabi']
+		capital: ["Abu Dhabi"]
 	},
 	af: {
-		nam: ['Afghanistan'],
+		nam: ["Afghanistan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Kabul']
+		capital: ["Kabul"]
 	},
 	ag: {
-		nam: ['Antigua and Barbuda', 'Antigua'],
+		nam: ["Antigua and Barbuda", "Antigua"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ["Saint John's", 'Saint John', 'St. John', "St. John's"]
+		capital: ["Saint John's", "Saint John", "St. John", "St. John's"]
 	},
 	ai: {
-		nam: ['Anguilla'],
+		nam: ["Anguilla"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['The Valley']
+		capital: ["The Valley"]
 	},
 	al: {
-		nam: ['Albania'],
+		nam: ["Albania"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Tirana', 'Tirane']
+		capital: ["Tirana", "Tirane"]
 	},
 	am: {
-		nam: ['Armenia'],
+		nam: ["Armenia"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Yerevan']
+		capital: ["Yerevan"]
 	},
 	ao: {
-		nam: ['Angola'],
+		nam: ["Angola"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Luanda']
+		capital: ["Luanda"]
 	},
 	aq: {
-		nam: ['Antarctica'],
-		regionDetail: 'Antarctica',
+		nam: ["Antarctica"],
+		regionDetail: "Antarctica",
 		type: CountryType.OTHER
 	},
 	ar: {
-		nam: ['Argentina'],
+		nam: ["Argentina"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Buenos Aires']
+		capital: ["Buenos Aires"]
 	},
 	as: {
-		nam: ['American Samoa'],
+		nam: ["American Samoa"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.TERRITORY,
-		capital: ['Pago Pago']
+		capital: ["Pago Pago"]
 	},
 	at: {
-		nam: ['Austria'],
+		nam: ["Austria"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Vienna']
+		capital: ["Vienna"]
 	},
 	au: {
-		nam: ['Australia'],
+		nam: ["Australia"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Australia and New Zealand',
+		regionDetail: "Australia and New Zealand",
 		type: CountryType.COUNTRY,
-		capital: ['Canberra']
+		capital: ["Canberra"]
 	},
 	aw: {
-		nam: ['Aruba'],
+		nam: ["Aruba"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Oranjestad']
+		capital: ["Oranjestad"]
 	},
 	ax: {
-		nam: ['Åland Islands', 'Aland', 'Aland Islands'],
+		nam: ["Åland Islands", "Aland", "Aland Islands"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ['Mariehamn']
+		capital: ["Mariehamn"]
 	},
 	az: {
-		nam: ['Azerbaijan'],
+		nam: ["Azerbaijan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Baku']
+		capital: ["Baku"]
 	},
 	ba: {
-		nam: ['Bosnia and Herzegovina', 'Bosnia'],
+		nam: ["Bosnia and Herzegovina", "Bosnia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Sarajevo']
+		capital: ["Sarajevo"]
 	},
 	bb: {
-		nam: ['Barbados'],
+		nam: ["Barbados"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Bridgetown']
+		capital: ["Bridgetown"]
 	},
 	bd: {
-		nam: ['Bangladesh'],
+		nam: ["Bangladesh"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Dhaka']
+		capital: ["Dhaka"]
 	},
 	be: {
-		nam: ['Belgium'],
+		nam: ["Belgium"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Brussels']
+		capital: ["Brussels"]
 	},
 	bf: {
-		nam: ['Burkina Faso'],
+		nam: ["Burkina Faso"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Ouagadougou']
+		capital: ["Ouagadougou"]
 	},
 	bg: {
-		nam: ['Bulgaria'],
+		nam: ["Bulgaria"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Sofia']
+		capital: ["Sofia"]
 	},
 	bh: {
-		nam: ['Bahrain'],
+		nam: ["Bahrain"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Manama']
+		capital: ["Manama"]
 	},
 	bi: {
-		nam: ['Burundi'],
+		nam: ["Burundi"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Gitega']
+		capital: ["Gitega"]
 	},
 	bj: {
-		nam: ['Benin'],
+		nam: ["Benin"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Porto Novo']
+		capital: ["Porto Novo"]
 	},
 	bl: {
-		nam: ['Saint Barthélemy', 'St. Barthélemy', 'Saint Barthelemy', 'St. Barthelemy', 'St. Barts'],
+		nam: ["Saint Barthélemy", "St. Barthélemy", "Saint Barthelemy", "St. Barthelemy", "St. Barts"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Gustavia', 'Le Carénage', 'Le Carenage', 'Carenage']
+		capital: ["Gustavia", "Le Carénage", "Le Carenage", "Carenage"]
 	},
 	bm: {
-		nam: ['Bermuda'],
+		nam: ["Bermuda"],
 		region: CountryRegion.NORTH_AMERICA,
-		regionDetail: 'Northern America',
+		regionDetail: "Northern America",
 		type: CountryType.TERRITORY,
-		capital: ['Hamilton']
+		capital: ["Hamilton"]
 	},
 	bn: {
-		nam: ['Brunei'],
+		nam: ["Brunei"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Bandar Seri Begawan']
+		capital: ["Bandar Seri Begawan"]
 	},
 	bo: {
-		nam: ['Bolivia'],
+		nam: ["Bolivia"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['La Paz', 'Sucre']
+		capital: ["La Paz", "Sucre"]
 	},
 	bq: {
-		nam: ['Caribbean Netherlands'],
+		nam: ["Caribbean Netherlands"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.TERRITORY
 	},
 	br: {
-		nam: ['Brazil'],
+		nam: ["Brazil"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Brasilia']
+		capital: ["Brasilia"]
 	},
 	bs: {
-		nam: ['Bahamas'],
+		nam: ["Bahamas"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Nassau']
+		capital: ["Nassau"]
 	},
 	bt: {
-		nam: ['Bhutan'],
+		nam: ["Bhutan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Thimphu']
+		capital: ["Thimphu"]
 	},
 	bw: {
-		nam: ['Botswana'],
+		nam: ["Botswana"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Gaborone']
+		capital: ["Gaborone"]
 	},
 	by: {
-		nam: ['Belarus'],
+		nam: ["Belarus"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Minsk']
+		capital: ["Minsk"]
 	},
 	bz: {
-		nam: ['Belize'],
+		nam: ["Belize"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Belmopan']
+		capital: ["Belmopan"]
 	},
 	ca: {
-		nam: ['Canada'],
+		nam: ["Canada"],
 		region: CountryRegion.NORTH_AMERICA,
-		regionDetail: 'Northern America',
+		regionDetail: "Northern America",
 		type: CountryType.COUNTRY,
-		capital: ['Ottawa']
+		capital: ["Ottawa"]
 	},
 	cc: {
-		nam: ['Cocos (Keeling) Islands', 'Cocos', 'Cocos Islands', 'Keeling Islands'],
+		nam: ["Cocos (Keeling) Islands", "Cocos", "Cocos Islands", "Keeling Islands"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Australia and New Zealand',
+		regionDetail: "Australia and New Zealand",
 		type: CountryType.TERRITORY,
-		capital: ['West Island']
+		capital: ["West Island"]
 	},
 	cd: {
-		nam: ['Democratic Republic of the Congo', 'DR Congo', 'Democratic Republic of Congo', 'DRC', 'Congo'],
+		nam: ["Democratic Republic of the Congo", "DR Congo", "Democratic Republic of Congo", "DRC", "Congo"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Kinshasa']
+		capital: ["Kinshasa"]
 	},
 	cf: {
-		nam: ['Central African Republic', 'CAR', 'Central Africa'],
+		nam: ["Central African Republic", "CAR", "Central Africa"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Bangui']
+		capital: ["Bangui"]
 	},
 	cg: {
-		nam: ['Republic of the Congo', 'Congo Republic', 'Republic of Congo'],
+		nam: ["Republic of the Congo", "Congo Republic", "Republic of Congo"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Brazzaville']
+		capital: ["Brazzaville"]
 	},
 	ch: {
-		nam: ['Switzerland'],
+		nam: ["Switzerland"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Bern']
+		capital: ["Bern"]
 	},
 	ci: {
-		nam: ["Côte d'Ivoire", 'Ivory Coast', "Cote d'Ivoire", 'Cote Ivoire'],
+		nam: ["Côte d'Ivoire", "Ivory Coast", "Cote d'Ivoire", "Cote Ivoire"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Yamoussoukro']
+		capital: ["Yamoussoukro"]
 	},
 	ck: {
-		nam: ['Cook Islands'],
+		nam: ["Cook Islands"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.TERRITORY,
-		capital: ['Avarua', 'Avarua District']
+		capital: ["Avarua", "Avarua District"]
 	},
 	cl: {
-		nam: ['Chile'],
+		nam: ["Chile"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Santiago']
+		capital: ["Santiago"]
 	},
 	cm: {
-		nam: ['Cameroon'],
+		nam: ["Cameroon"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Yaounde']
+		capital: ["Yaounde"]
 	},
 	cn: {
-		nam: ['China'],
+		nam: ["China"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Beijing']
+		capital: ["Beijing"]
 	},
 	co: {
-		nam: ['Colombia'],
+		nam: ["Colombia"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Bogota']
+		capital: ["Bogota"]
 	},
 	cr: {
-		nam: ['Costa Rica'],
+		nam: ["Costa Rica"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['San Jose']
+		capital: ["San Jose"]
 	},
 	cu: {
-		nam: ['Cuba'],
+		nam: ["Cuba"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Havana']
+		capital: ["Havana"]
 	},
 	cv: {
-		nam: ['Cape Verde', 'Cabo Verde'],
+		nam: ["Cape Verde", "Cabo Verde"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Western Africa',
+		regionDetail: "Western Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Praia']
+		capital: ["Praia"]
 	},
 	cw: {
-		nam: ['Curaçao', 'Curacao'],
+		nam: ["Curaçao", "Curacao"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Willemstad']
+		capital: ["Willemstad"]
 	},
 	cx: {
-		nam: ['Christmas Island'],
+		nam: ["Christmas Island"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Australia and New Zealand',
+		regionDetail: "Australia and New Zealand",
 		type: CountryType.TERRITORY,
-		capital: ['Flying Fish Cove', 'Flying Fish']
+		capital: ["Flying Fish Cove", "Flying Fish"]
 	},
 	cy: {
-		nam: ['Cyprus'],
+		nam: ["Cyprus"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Nicosia']
+		capital: ["Nicosia"]
 	},
 	cz: {
-		nam: ['Czech Republic', 'Czechia'],
+		nam: ["Czech Republic", "Czechia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Prague']
+		capital: ["Prague"]
 	},
 	de: {
-		nam: ['Germany'],
+		nam: ["Germany"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Berlin']
+		capital: ["Berlin"]
 	},
 	dj: {
-		nam: ['Djibouti'],
+		nam: ["Djibouti"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Djibouti']
+		capital: ["Djibouti"]
 	},
 	dk: {
-		nam: ['Denmark'],
+		nam: ["Denmark"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Copenhagen']
+		capital: ["Copenhagen"]
 	},
 	dm: {
-		nam: ['Dominica'],
+		nam: ["Dominica"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Roseau']
+		capital: ["Roseau"]
 	},
 	do: {
-		nam: ['Dominican Republic'],
+		nam: ["Dominican Republic"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Santo Domingo']
+		capital: ["Santo Domingo"]
 	},
 	dz: {
-		nam: ['Algeria'],
+		nam: ["Algeria"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Northern Africa',
+		regionDetail: "Northern Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Algiers']
+		capital: ["Algiers"]
 	},
 	ec: {
-		nam: ['Ecuador'],
+		nam: ["Ecuador"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Quito']
+		capital: ["Quito"]
 	},
 	ee: {
-		nam: ['Estonia'],
+		nam: ["Estonia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Tallinn']
+		capital: ["Tallinn"]
 	},
 	eg: {
-		nam: ['Egypt'],
+		nam: ["Egypt"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Northern Africa',
+		regionDetail: "Northern Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Cairo']
+		capital: ["Cairo"]
 	},
 	eh: {
-		nam: ['Western Sahara'],
+		nam: ["Western Sahara"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Northern Africa',
+		regionDetail: "Northern Africa",
 		type: CountryType.TERRITORY,
-		capital: ['Laayoune', 'Laâyoune', 'El Aaiún', 'El Aaiun']
+		capital: ["Laayoune", "Laâyoune", "El Aaiún", "El Aaiun"]
 	},
 	er: {
-		nam: ['Eritrea'],
+		nam: ["Eritrea"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Asmara']
+		capital: ["Asmara"]
 	},
 	es: {
-		nam: ['Spain'],
+		nam: ["Spain"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Madrid']
+		capital: ["Madrid"]
 	},
 	et: {
-		nam: ['Ethiopia'],
+		nam: ["Ethiopia"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Addis Ababa']
+		capital: ["Addis Ababa"]
 	},
 	eu: {
-		nam: ['European Union', 'EU'],
+		nam: ["European Union", "EU"],
 		type: CountryType.OTHER
 	},
 	fi: {
-		nam: ['Finland'],
+		nam: ["Finland"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Helsinki']
+		capital: ["Helsinki"]
 	},
 	fj: {
-		nam: ['Fiji'],
+		nam: ["Fiji"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Melanesia',
+		regionDetail: "Melanesia",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Suva']
+		capital: ["Suva"]
 	},
 	fk: {
-		nam: ['Falkland Islands', 'Falklands', 'Malvinas'],
+		nam: ["Falkland Islands", "Falklands", "Malvinas"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Stanley']
+		capital: ["Stanley"]
 	},
 	fm: {
-		nam: ['Federated States of Micronesia', 'Micronesia'],
+		nam: ["Federated States of Micronesia", "Micronesia"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Micronesia',
+		regionDetail: "Micronesia",
 		type: CountryType.COUNTRY,
-		capital: ['Palikir']
+		capital: ["Palikir"]
 	},
 	fo: {
-		nam: ['Faroe Islands', 'Faroe'],
+		nam: ["Faroe Islands", "Faroe"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ['Tórshavn', 'Torshavn']
+		capital: ["Tórshavn", "Torshavn"]
 	},
 	fr: {
-		nam: ['France'],
+		nam: ["France"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Paris']
+		capital: ["Paris"]
 	},
 	ga: {
-		nam: ['Gabon'],
+		nam: ["Gabon"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Libreville']
+		capital: ["Libreville"]
 	},
 	gb: {
-		nam: ['United Kingdom', 'UK', 'GB', 'Great Britain'],
+		nam: ["United Kingdom", "UK", "GB", "Great Britain"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['London']
+		capital: ["London"]
 	},
 	gd: {
-		nam: ['Grenada'],
+		nam: ["Grenada"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ["Saint George's", 'Saint George', "St. George's", 'St. George']
+		capital: ["Saint George's", "Saint George", "St. George's", "St. George"]
 	},
 	ge: {
-		nam: ['Georgia'],
+		nam: ["Georgia"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Tbilisi']
+		capital: ["Tbilisi"]
 	},
 	gf: {
-		nam: ['French Guiana', 'French Guyana'],
+		nam: ["French Guiana", "French Guyana"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Cayenne']
+		capital: ["Cayenne"]
 	},
 	gg: {
-		nam: ['Guernsey'],
+		nam: ["Guernsey"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ['Saint Peter Port', 'St. Peter Port']
+		capital: ["Saint Peter Port", "St. Peter Port"]
 	},
 	gh: {
-		nam: ['Ghana'],
+		nam: ["Ghana"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Accra']
+		capital: ["Accra"]
 	},
 	gi: {
-		nam: ['Gibraltar'],
+		nam: ["Gibraltar"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.TERRITORY,
-		capital: ['Westside']
+		capital: ["Westside"]
 	},
 	gl: {
-		nam: ['Greenland'],
+		nam: ["Greenland"],
 		region: CountryRegion.NORTH_AMERICA,
-		regionDetail: 'Northern America',
+		regionDetail: "Northern America",
 		type: CountryType.COUNTRY,
-		capital: ['Nuuk']
+		capital: ["Nuuk"]
 	},
 	gm: {
-		nam: ['Gambia'],
+		nam: ["Gambia"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Banjul']
+		capital: ["Banjul"]
 	},
 	gn: {
-		nam: ['Guinea'],
+		nam: ["Guinea"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Conakry']
+		capital: ["Conakry"]
 	},
 	gp: {
-		nam: ['Guadeloupe'],
+		nam: ["Guadeloupe"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Basse-Terre', 'Basse Terre']
+		capital: ["Basse-Terre", "Basse Terre"]
 	},
 	gq: {
-		nam: ['Equatorial Guinea'],
+		nam: ["Equatorial Guinea"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Malabo']
+		capital: ["Malabo"]
 	},
 	gr: {
-		nam: ['Greece'],
+		nam: ["Greece"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Athens']
+		capital: ["Athens"]
 	},
 	gs: {
-		nam: ['South Georgia and the South Sandwich Islands', 'South Georgia', 'South Sandwich Islands'],
+		nam: ["South Georgia and the South Sandwich Islands", "South Georgia", "South Sandwich Islands"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.TERRITORY,
-		capital: ['King Edward Point']
+		capital: ["King Edward Point"]
 	},
 	gt: {
-		nam: ['Guatemala'],
+		nam: ["Guatemala"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Guatemala City']
+		capital: ["Guatemala City"]
 	},
 	gu: {
-		nam: ['Guam'],
+		nam: ["Guam"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Micronesia',
+		regionDetail: "Micronesia",
 		type: CountryType.TERRITORY,
-		capital: ['Hagåtña', 'Hagatna']
+		capital: ["Hagåtña", "Hagatna"]
 	},
 	gw: {
-		nam: ['Guinea-Bissau', 'Guinea Bissau'],
+		nam: ["Guinea-Bissau", "Guinea Bissau"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Bissau']
+		capital: ["Bissau"]
 	},
 	gy: {
-		nam: ['Guyana'],
+		nam: ["Guyana"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Georgetown']
+		capital: ["Georgetown"]
 	},
 	hk: {
-		nam: ['Hong Kong'],
+		nam: ["Hong Kong"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.TERRITORY
 	},
 	hm: {
-		nam: ['Heard Island and McDonald Islands', 'Heard Island', 'McDonald Islands', 'Australia'],
+		nam: ["Heard Island and McDonald Islands", "Heard Island", "McDonald Islands", "Australia"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Australia and New Zealand',
+		regionDetail: "Australia and New Zealand",
 		type: CountryType.TERRITORY
 	},
 	hn: {
-		nam: ['Honduras'],
+		nam: ["Honduras"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Tegucigalpa']
+		capital: ["Tegucigalpa"]
 	},
 	hr: {
-		nam: ['Croatia'],
+		nam: ["Croatia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Zagreb']
+		capital: ["Zagreb"]
 	},
 	ht: {
-		nam: ['Haiti'],
+		nam: ["Haiti"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Port au Prince']
+		capital: ["Port au Prince"]
 	},
 	hu: {
-		nam: ['Hungary'],
+		nam: ["Hungary"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Budapest']
+		capital: ["Budapest"]
 	},
 	id: {
-		nam: ['Indonesia'],
+		nam: ["Indonesia"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Jakarta']
+		capital: ["Jakarta"]
 	},
 	ie: {
-		nam: ['Ireland'],
+		nam: ["Ireland"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Dublin']
+		capital: ["Dublin"]
 	},
 	il: {
-		nam: ['Israel'],
+		nam: ["Israel"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Jerusalem']
+		capital: ["Jerusalem"]
 	},
 	im: {
-		nam: ['Isle of Man'],
+		nam: ["Isle of Man"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ['Douglas']
+		capital: ["Douglas"]
 	},
 	in: {
-		nam: ['India'],
+		nam: ["India"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['New Delhi']
+		capital: ["New Delhi"]
 	},
 	io: {
-		nam: ['British Indian Ocean Territory', 'British Indian Ocean'],
+		nam: ["British Indian Ocean Territory", "British Indian Ocean"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.TERRITORY,
-		capital: ['Camp Thunder Cove', 'Thunder Cove']
+		capital: ["Camp Thunder Cove", "Thunder Cove"]
 	},
 	iq: {
-		nam: ['Iraq'],
+		nam: ["Iraq"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Baghdad']
+		capital: ["Baghdad"]
 	},
 	ir: {
-		nam: ['Iran'],
+		nam: ["Iran"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Tehran']
+		capital: ["Tehran"]
 	},
 	is: {
-		nam: ['Iceland'],
+		nam: ["Iceland"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Reykjavik']
+		capital: ["Reykjavik"]
 	},
 	it: {
-		nam: ['Italy'],
+		nam: ["Italy"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Rome']
+		capital: ["Rome"]
 	},
 	je: {
-		nam: ['Bailiwick of Jersey', 'Jersey'],
+		nam: ["Bailiwick of Jersey", "Jersey"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ['Saint Helier', 'St. Helier']
+		capital: ["Saint Helier", "St. Helier"]
 	},
 	jm: {
-		nam: ['Jamaica'],
+		nam: ["Jamaica"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Kingston']
+		capital: ["Kingston"]
 	},
 	jo: {
-		nam: ['Jordan'],
+		nam: ["Jordan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Amman']
+		capital: ["Amman"]
 	},
 	jp: {
-		nam: ['Japan'],
+		nam: ["Japan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Tokyo']
+		capital: ["Tokyo"]
 	},
 	ke: {
-		nam: ['Kenya'],
+		nam: ["Kenya"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Nairobi']
+		capital: ["Nairobi"]
 	},
 	kg: {
-		nam: ['Kyrgyzstan'],
+		nam: ["Kyrgyzstan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Central Asia',
+		regionDetail: "Central Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Bishkek']
+		capital: ["Bishkek"]
 	},
 	kh: {
-		nam: ['Cambodia'],
+		nam: ["Cambodia"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Phnom Penh']
+		capital: ["Phnom Penh"]
 	},
 	ki: {
-		nam: ['Kiribati'],
+		nam: ["Kiribati"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Micronesia',
+		regionDetail: "Micronesia",
 		type: CountryType.COUNTRY,
-		capital: ['Tarawa Atoll']
+		capital: ["Tarawa Atoll"]
 	},
 	km: {
-		nam: ['Comoros'],
+		nam: ["Comoros"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Moroni']
+		capital: ["Moroni"]
 	},
 	kn: {
-		nam: ['Saint Kitts and Nevis', 'Saint Kitts', 'St. Kitts', 'Kitts and Nevis'],
+		nam: ["Saint Kitts and Nevis", "Saint Kitts", "St. Kitts", "Kitts and Nevis"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Basseterre']
+		capital: ["Basseterre"]
 	},
 	kp: {
-		nam: ['North Korea'],
+		nam: ["North Korea"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Pyongyang']
+		capital: ["Pyongyang"]
 	},
 	kr: {
-		nam: ['South Korea'],
+		nam: ["South Korea"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Seoul']
+		capital: ["Seoul"]
 	},
 	kw: {
-		nam: ['Kuwait'],
+		nam: ["Kuwait"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Kuwait City']
+		capital: ["Kuwait City"]
 	},
 	ky: {
-		nam: ['Cayman Islands'],
+		nam: ["Cayman Islands"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['George Town']
+		capital: ["George Town"]
 	},
 	kz: {
-		nam: ['Kazakhstan'],
+		nam: ["Kazakhstan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Central Asia',
+		regionDetail: "Central Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Nur-Sultan', 'Nur Sultan']
+		capital: ["Nur-Sultan", "Nur Sultan"]
 	},
 	la: {
-		nam: ["Lao People's Democratic Republic", 'Laos'],
+		nam: ["Lao People's Democratic Republic", "Laos"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Vientiane']
+		capital: ["Vientiane"]
 	},
 	lb: {
-		nam: ['Lebanon'],
+		nam: ["Lebanon"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Beirut']
+		capital: ["Beirut"]
 	},
 	lc: {
-		nam: ['Saint Lucia', 'St. Lucia'],
+		nam: ["Saint Lucia", "St. Lucia"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Castries']
+		capital: ["Castries"]
 	},
 	li: {
-		nam: ['Liechtenstein'],
+		nam: ["Liechtenstein"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Vaduz']
+		capital: ["Vaduz"]
 	},
 	lk: {
-		nam: ['Sri Lanka'],
+		nam: ["Sri Lanka"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Sri Jayawardenapura Kotte']
+		capital: ["Sri Jayawardenapura Kotte"]
 	},
 	lr: {
-		nam: ['Liberia'],
+		nam: ["Liberia"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Monrovia']
+		capital: ["Monrovia"]
 	},
 	ls: {
-		nam: ['Lesotho'],
+		nam: ["Lesotho"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Maseru']
+		capital: ["Maseru"]
 	},
 	lt: {
-		nam: ['Lithuania'],
+		nam: ["Lithuania"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Vilnius']
+		capital: ["Vilnius"]
 	},
 	lu: {
-		nam: ['Luxembourg'],
+		nam: ["Luxembourg"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Luxembourg']
+		capital: ["Luxembourg"]
 	},
 	lv: {
-		nam: ['Latvia'],
+		nam: ["Latvia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Riga']
+		capital: ["Riga"]
 	},
 	ly: {
-		nam: ['Libya'],
+		nam: ["Libya"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Northern Africa',
+		regionDetail: "Northern Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Tripoli']
+		capital: ["Tripoli"]
 	},
 	ma: {
-		nam: ['Morocco'],
+		nam: ["Morocco"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Northern Africa',
+		regionDetail: "Northern Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Rabat']
+		capital: ["Rabat"]
 	},
 	mc: {
-		nam: ['Monaco'],
+		nam: ["Monaco"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Monaco']
+		capital: ["Monaco"]
 	},
 	md: {
-		nam: ['Republic of Moldova', 'Moldova'],
+		nam: ["Republic of Moldova", "Moldova"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Chișinău', 'Chisinau']
+		capital: ["Chișinău", "Chisinau"]
 	},
 	me: {
-		nam: ['Montenegro'],
+		nam: ["Montenegro"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Podgorica']
+		capital: ["Podgorica"]
 	},
 	mf: {
-		nam: ['Saint Martin', 'St. Martin'],
+		nam: ["Saint Martin", "St. Martin"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Marigot']
+		capital: ["Marigot"]
 	},
 	mg: {
-		nam: ['Madagascar'],
+		nam: ["Madagascar"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Antananarivo']
+		capital: ["Antananarivo"]
 	},
 	mh: {
-		nam: ['Marshall Islands'],
+		nam: ["Marshall Islands"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Micronesia',
+		regionDetail: "Micronesia",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Majuro']
+		capital: ["Majuro"]
 	},
 	mk: {
-		nam: ['North Macedonia', 'Macedonia'],
+		nam: ["North Macedonia", "Macedonia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Skopje']
+		capital: ["Skopje"]
 	},
 	ml: {
-		nam: ['Mali'],
+		nam: ["Mali"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Bamako']
+		capital: ["Bamako"]
 	},
 	mm: {
-		nam: ['Myanmar'],
+		nam: ["Myanmar"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Naypyidaw', 'Nay Pyi Daw']
+		capital: ["Naypyidaw", "Nay Pyi Daw"]
 	},
 	mn: {
-		nam: ['Mongolia'],
+		nam: ["Mongolia"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Ulaanbaatar']
+		capital: ["Ulaanbaatar"]
 	},
 	mo: {
-		nam: ['Macao', 'Macau'],
+		nam: ["Macao", "Macau"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.TERRITORY
 	},
 	mp: {
-		nam: ['Northern Mariana Islands', 'Mariana Islands'],
+		nam: ["Northern Mariana Islands", "Mariana Islands"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Micronesia',
+		regionDetail: "Micronesia",
 		type: CountryType.TERRITORY,
-		capital: ['Saipan']
+		capital: ["Saipan"]
 	},
 	mq: {
-		nam: ['Martinique'],
+		nam: ["Martinique"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Fort-de-France']
+		capital: ["Fort-de-France"]
 	},
 	mr: {
-		nam: ['Mauritania'],
+		nam: ["Mauritania"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Nouakchott']
+		capital: ["Nouakchott"]
 	},
 	ms: {
-		nam: ['Montserrat'],
+		nam: ["Montserrat"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Plymouth', 'Brades']
+		capital: ["Plymouth", "Brades"]
 	},
 	mt: {
-		nam: ['Malta'],
+		nam: ["Malta"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Valletta']
+		capital: ["Valletta"]
 	},
 	mu: {
-		nam: ['Mauritius'],
+		nam: ["Mauritius"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Port Louis']
+		capital: ["Port Louis"]
 	},
 	mv: {
-		nam: ['Maldives'],
+		nam: ["Maldives"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Male']
+		capital: ["Male"]
 	},
 	mw: {
-		nam: ['Malawi'],
+		nam: ["Malawi"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Lilongwe']
+		capital: ["Lilongwe"]
 	},
 	mx: {
-		nam: ['Mexico'],
+		nam: ["Mexico"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Mexico City']
+		capital: ["Mexico City"]
 	},
 	my: {
-		nam: ['Malaysia'],
+		nam: ["Malaysia"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Kuala Lumpur']
+		capital: ["Kuala Lumpur"]
 	},
 	mz: {
-		nam: ['Mozambique'],
+		nam: ["Mozambique"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Maputo']
+		capital: ["Maputo"]
 	},
 	na: {
-		nam: ['Namibia'],
+		nam: ["Namibia"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Windhoek']
+		capital: ["Windhoek"]
 	},
 	nc: {
-		nam: ['New Caledonia', 'Caledonia'],
+		nam: ["New Caledonia", "Caledonia"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Melanesia',
+		regionDetail: "Melanesia",
 		type: CountryType.TERRITORY,
-		capital: ['Nouméa', 'Noumea']
+		capital: ["Nouméa", "Noumea"]
 	},
 	ne: {
-		nam: ['Niger'],
+		nam: ["Niger"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Niamey']
+		capital: ["Niamey"]
 	},
 	nf: {
-		nam: ['Norfolk Island'],
+		nam: ["Norfolk Island"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Australia and New Zealand',
+		regionDetail: "Australia and New Zealand",
 		type: CountryType.TERRITORY,
-		capital: ['Kingston']
+		capital: ["Kingston"]
 	},
 	ng: {
-		nam: ['Nigeria'],
+		nam: ["Nigeria"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Abuja']
+		capital: ["Abuja"]
 	},
 	ni: {
-		nam: ['Nicaragua'],
+		nam: ["Nicaragua"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Managua']
+		capital: ["Managua"]
 	},
 	nl: {
-		nam: ['The Netherlands', 'Netherlands'],
+		nam: ["The Netherlands", "Netherlands"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Western Europe',
+		regionDetail: "Western Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Amsterdam']
+		capital: ["Amsterdam"]
 	},
 	no: {
-		nam: ['Norway'],
+		nam: ["Norway"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Oslo']
+		capital: ["Oslo"]
 	},
 	np: {
-		nam: ['Nepal'],
+		nam: ["Nepal"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Kathmandu']
+		capital: ["Kathmandu"]
 	},
 	nr: {
-		nam: ['Nauru'],
+		nam: ["Nauru"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Micronesia',
+		regionDetail: "Micronesia",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Yaren']
+		capital: ["Yaren"]
 	},
 	nu: {
-		nam: ['Niue'],
+		nam: ["Niue"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Alofi']
+		capital: ["Alofi"]
 	},
 	nz: {
-		nam: ['New Zealand'],
+		nam: ["New Zealand"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Australia and New Zealand',
+		regionDetail: "Australia and New Zealand",
 		type: CountryType.COUNTRY,
-		capital: ['Wellington']
+		capital: ["Wellington"]
 	},
 	om: {
-		nam: ['Oman'],
+		nam: ["Oman"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Muscat']
+		capital: ["Muscat"]
 	},
 	pa: {
-		nam: ['Panama'],
+		nam: ["Panama"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Panama City']
+		capital: ["Panama City"]
 	},
 	pe: {
-		nam: ['Peru'],
+		nam: ["Peru"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Lima']
+		capital: ["Lima"]
 	},
 	pf: {
-		nam: ['French Polynesia', 'Tahiti'],
+		nam: ["French Polynesia", "Tahiti"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.TERRITORY,
-		capital: ['Papeete']
+		capital: ["Papeete"]
 	},
 	pg: {
-		nam: ['Papua New Guinea'],
+		nam: ["Papua New Guinea"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Melanesia',
+		regionDetail: "Melanesia",
 		type: CountryType.COUNTRY,
-		capital: ['Port Moresby']
+		capital: ["Port Moresby"]
 	},
 	ph: {
-		nam: ['Philippines'],
+		nam: ["Philippines"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Manila']
+		capital: ["Manila"]
 	},
 	pk: {
-		nam: ['Pakistan'],
+		nam: ["Pakistan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Southern Asia',
+		regionDetail: "Southern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Islamabad']
+		capital: ["Islamabad"]
 	},
 	pl: {
-		nam: ['Poland'],
+		nam: ["Poland"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Warsaw']
+		capital: ["Warsaw"]
 	},
 	pm: {
-		nam: ['Saint Pierre and Miquelon', 'St. Pierre and Miquelon', 'Pierre and Miquelon'],
+		nam: ["Saint Pierre and Miquelon", "St. Pierre and Miquelon", "Pierre and Miquelon"],
 		region: CountryRegion.NORTH_AMERICA,
-		regionDetail: 'Northern America',
+		regionDetail: "Northern America",
 		type: CountryType.TERRITORY,
-		capital: ['Saint-Pierre', 'Saint Pierre', 'St. Pierre']
+		capital: ["Saint-Pierre", "Saint Pierre", "St. Pierre"]
 	},
 	pn: {
-		nam: ['Pitcairn Islands'],
+		nam: ["Pitcairn Islands"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.TERRITORY
 	},
 	pr: {
-		nam: ['Puerto Rico'],
+		nam: ["Puerto Rico"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['San Juan']
+		capital: ["San Juan"]
 	},
 	ps: {
-		nam: ['State of Palestine', 'Palestine'],
+		nam: ["State of Palestine", "Palestine"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Jerusalem']
+		capital: ["Jerusalem"]
 	},
 	pt: {
-		nam: ['Portugal'],
+		nam: ["Portugal"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Lisbon']
+		capital: ["Lisbon"]
 	},
 	pw: {
-		nam: ['Palau'],
+		nam: ["Palau"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Micronesia',
+		regionDetail: "Micronesia",
 		type: CountryType.COUNTRY,
-		capital: ['Melekeok']
+		capital: ["Melekeok"]
 	},
 	py: {
-		nam: ['Paraguay'],
+		nam: ["Paraguay"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Asuncion']
+		capital: ["Asuncion"]
 	},
 	qa: {
-		nam: ['Qatar'],
+		nam: ["Qatar"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Doha']
+		capital: ["Doha"]
 	},
 	re: {
-		nam: ['Réunion', 'Reunion'],
+		nam: ["Réunion", "Reunion"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.TERRITORY,
-		capital: ['Saint-Denis', 'Saint Denis', 'St. Denis']
+		capital: ["Saint-Denis", "Saint Denis", "St. Denis"]
 	},
 	ro: {
-		nam: ['Romania'],
+		nam: ["Romania"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Bucharest']
+		capital: ["Bucharest"]
 	},
 	rs: {
-		nam: ['Serbia'],
+		nam: ["Serbia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Belgrade']
+		capital: ["Belgrade"]
 	},
 	ru: {
-		nam: ['Russian Federation', 'Russia'],
+		nam: ["Russian Federation", "Russia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Moscow']
+		capital: ["Moscow"]
 	},
 	rw: {
-		nam: ['Rwanda'],
+		nam: ["Rwanda"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Kigali']
+		capital: ["Kigali"]
 	},
 	sa: {
-		nam: ['Saudi Arabia'],
+		nam: ["Saudi Arabia"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Riyadh']
+		capital: ["Riyadh"]
 	},
 	sb: {
-		nam: ['Solomon Islands'],
+		nam: ["Solomon Islands"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Melanesia',
+		regionDetail: "Melanesia",
 		type: CountryType.COUNTRY,
-		capital: ['Honiara']
+		capital: ["Honiara"]
 	},
 	sc: {
-		nam: ['Seychelles'],
+		nam: ["Seychelles"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Victoria']
+		capital: ["Victoria"]
 	},
 	sd: {
-		nam: ['Sudan'],
+		nam: ["Sudan"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Northern Africa',
+		regionDetail: "Northern Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Khartoum']
+		capital: ["Khartoum"]
 	},
 	se: {
-		nam: ['Sweden'],
+		nam: ["Sweden"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Northern Europe',
+		regionDetail: "Northern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Stockholm']
+		capital: ["Stockholm"]
 	},
 	sg: {
-		nam: ['Singapore'],
+		nam: ["Singapore"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Singapore']
+		capital: ["Singapore"]
 	},
 	sh: {
 		nam: [
-			'Saint Helena, Ascension and Tristan da Cunha',
-			'Saint Helena',
-			'St. Helena',
-			'Ascension',
-			'Tristan da Cunha'
+			"Saint Helena, Ascension and Tristan da Cunha",
+			"Saint Helena",
+			"St. Helena",
+			"Ascension",
+			"Tristan da Cunha"
 		],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.TERRITORY,
-		capital: ['Jamestown']
+		capital: ["Jamestown"]
 	},
 	si: {
-		nam: ['Slovenia'],
+		nam: ["Slovenia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Ljubljana']
+		capital: ["Ljubljana"]
 	},
 	sk: {
-		nam: ['Slovakia'],
+		nam: ["Slovakia"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Bratislava']
+		capital: ["Bratislava"]
 	},
 	sl: {
-		nam: ['Sierra Leone'],
+		nam: ["Sierra Leone"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Freetown']
+		capital: ["Freetown"]
 	},
 	sm: {
-		nam: ['San Marino'],
+		nam: ["San Marino"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['San Marino']
+		capital: ["San Marino"]
 	},
 	sn: {
-		nam: ['Senegal'],
+		nam: ["Senegal"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Dakar']
+		capital: ["Dakar"]
 	},
 	so: {
-		nam: ['Somalia'],
+		nam: ["Somalia"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Mogadishu']
+		capital: ["Mogadishu"]
 	},
 	sr: {
-		nam: ['Suriname'],
+		nam: ["Suriname"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Paramaribo']
+		capital: ["Paramaribo"]
 	},
 	ss: {
-		nam: ['South Sudan'],
+		nam: ["South Sudan"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Juba']
+		capital: ["Juba"]
 	},
 	st: {
-		nam: ['São Tomé and Príncipe', 'Sao Tome and Principe', 'Sao Tome'],
+		nam: ["São Tomé and Príncipe", "Sao Tome and Principe", "Sao Tome"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Sao Tome']
+		capital: ["Sao Tome"]
 	},
 	sv: {
-		nam: ['El Salvador'],
+		nam: ["El Salvador"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['San Salvador']
+		capital: ["San Salvador"]
 	},
 	sx: {
-		nam: ['Sint Maarten', 'Saint Martin'],
+		nam: ["Sint Maarten", "Saint Martin"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Philipsburg']
+		capital: ["Philipsburg"]
 	},
 	sy: {
-		nam: ['Syrian Arab Republic', 'Syria'],
+		nam: ["Syrian Arab Republic", "Syria"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Damascus']
+		capital: ["Damascus"]
 	},
 	sz: {
-		nam: ['Eswatini (Swaziland)', 'Swaziland', 'Eswatini'],
+		nam: ["Eswatini (Swaziland)", "Swaziland", "Eswatini"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Mbabane', 'Lobamba']
+		capital: ["Mbabane", "Lobamba"]
 	},
 	tc: {
-		nam: ['Turks and Caicos Islands', 'Turks and Caicos'],
+		nam: ["Turks and Caicos Islands", "Turks and Caicos"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Cockburn Town']
+		capital: ["Cockburn Town"]
 	},
 	td: {
-		nam: ['Chad'],
+		nam: ["Chad"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ["N'Djamena", 'N Djamena']
+		capital: ["N'Djamena", "N Djamena"]
 	},
 	tf: {
-		nam: ['French Southern and Antarctic Lands', 'French Southern Territories'],
+		nam: ["French Southern and Antarctic Lands", "French Southern Territories"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Eastern Africa',
+		regionDetail: "Eastern Africa",
 		type: CountryType.TERRITORY,
-		capital: ['Saint Pierre', 'St. Pierre']
+		capital: ["Saint Pierre", "St. Pierre"]
 	},
 	tg: {
-		nam: ['Togo'],
+		nam: ["Togo"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Lome']
+		capital: ["Lome"]
 	},
 	th: {
-		nam: ['Thailand'],
+		nam: ["Thailand"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Bangkok']
+		capital: ["Bangkok"]
 	},
 	tj: {
-		nam: ['Tajikistan'],
+		nam: ["Tajikistan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Central Asia',
+		regionDetail: "Central Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Dushanbe']
+		capital: ["Dushanbe"]
 	},
 	tk: {
-		nam: ['Tokelau'],
+		nam: ["Tokelau"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.TERRITORY,
-		capital: ['Nukunonu']
+		capital: ["Nukunonu"]
 	},
 	tl: {
-		nam: ['Democratic Republic of Timor-Leste', 'Timor-Leste', 'Timor Leste', 'East Timor'],
+		nam: ["Democratic Republic of Timor-Leste", "Timor-Leste", "Timor Leste", "East Timor"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Dili']
+		capital: ["Dili"]
 	},
 	tm: {
-		nam: ['Turkmenistan'],
+		nam: ["Turkmenistan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Central Asia',
+		regionDetail: "Central Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Ashgabat']
+		capital: ["Ashgabat"]
 	},
 	tn: {
-		nam: ['Tunisia'],
+		nam: ["Tunisia"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Northern Africa',
+		regionDetail: "Northern Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Tunis']
+		capital: ["Tunis"]
 	},
 	to: {
-		nam: ['Tonga'],
+		nam: ["Tonga"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.COUNTRY,
-		capital: ["Nuku'alofa", 'Nuku alofa']
+		capital: ["Nuku'alofa", "Nuku alofa"]
 	},
 	tr: {
-		nam: ['Turkey', 'Türkiye', 'Turkiye'],
+		nam: ["Turkey", "Türkiye", "Turkiye"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Ankara']
+		capital: ["Ankara"]
 	},
 	tt: {
-		nam: ['Trinidad and Tobago', 'Trinidad'],
+		nam: ["Trinidad and Tobago", "Trinidad"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Port of Spain']
+		capital: ["Port of Spain"]
 	},
 	tv: {
-		nam: ['Tuvalu'],
+		nam: ["Tuvalu"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.COUNTRY,
-		capital: ['Funafuti']
+		capital: ["Funafuti"]
 	},
 	tw: {
-		nam: ['Taiwan'],
+		nam: ["Taiwan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Eastern Asia',
+		regionDetail: "Eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Taipei City']
+		capital: ["Taipei City"]
 	},
 	tz: {
-		nam: ['United Republic of Tanzania', 'Republic of Tanzania', 'Tanzania'],
+		nam: ["United Republic of Tanzania", "Republic of Tanzania", "Tanzania"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Eastern Africa',
+		regionDetail: "Eastern Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Dodoma']
+		capital: ["Dodoma"]
 	},
 	ua: {
-		nam: ['Ukraine'],
+		nam: ["Ukraine"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Eastern Europe',
+		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Kyiv', 'Kiev']
+		capital: ["Kyiv", "Kiev"]
 	},
 	ug: {
-		nam: ['Uganda'],
+		nam: ["Uganda"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Kampala']
+		capital: ["Kampala"]
 	},
 	un: {
-		nam: ['United Nations', 'UN'],
+		nam: ["United Nations", "UN"],
 		type: CountryType.OTHER
 	},
 	us: {
-		nam: ['United States of America', 'United States', 'US', 'USA'],
+		nam: ["United States of America", "United States", "US", "USA"],
 		region: CountryRegion.NORTH_AMERICA,
-		regionDetail: 'Northern America',
+		regionDetail: "Northern America",
 		type: CountryType.COUNTRY,
-		capital: ['Washington, D.C.', 'Washington', 'Washington DC']
+		capital: ["Washington, D.C.", "Washington", "Washington DC"]
 	},
 	uy: {
-		nam: ['Uruguay'],
+		nam: ["Uruguay"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Montevideo']
+		capital: ["Montevideo"]
 	},
 	uz: {
-		nam: ['Uzbekistan'],
+		nam: ["Uzbekistan"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Central Asia',
+		regionDetail: "Central Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Tashkent']
+		capital: ["Tashkent"]
 	},
 	va: {
-		nam: ['Vatican City (Holy See)', 'Vatican', 'Vatican City', 'Holy See'],
+		nam: ["Vatican City (Holy See)", "Vatican", "Vatican City", "Holy See"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.SMALL_COUNTRY
 	},
 	vc: {
-		nam: ['Saint Vincent and the Grenadines', 'Saint Vincent', 'St. Vincent'],
+		nam: ["Saint Vincent and the Grenadines", "Saint Vincent", "St. Vincent"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ['Kingstown']
+		capital: ["Kingstown"]
 	},
 	ve: {
-		nam: ['Venezuela'],
+		nam: ["Venezuela"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.COUNTRY,
-		capital: ['Caracas']
+		capital: ["Caracas"]
 	},
 	vg: {
-		nam: ['British Virgin Islands', 'UK Virgin Islands', 'UK Virgin'],
+		nam: ["British Virgin Islands", "UK Virgin Islands", "UK Virgin"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Road Town']
+		capital: ["Road Town"]
 	},
 	vi: {
-		nam: ['United States Virgin Islands', 'US Virgin Islands', 'US Virgin', 'American Virgin Islands'],
+		nam: ["United States Virgin Islands", "US Virgin Islands", "US Virgin", "American Virgin Islands"],
 		region: CountryRegion.SOUTH_AMERICA,
-		regionDetail: 'Latin America and the Caribbean',
+		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ['Charlotte Amalie']
+		capital: ["Charlotte Amalie"]
 	},
 	vn: {
-		nam: ['Viet Nam', 'Vietnam'],
+		nam: ["Viet Nam", "Vietnam"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'South-eastern Asia',
+		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
-		capital: ['Hanoi']
+		capital: ["Hanoi"]
 	},
 	vu: {
-		nam: ['Vanuatu'],
+		nam: ["Vanuatu"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Melanesia',
+		regionDetail: "Melanesia",
 		type: CountryType.COUNTRY,
-		capital: ['Port Vila']
+		capital: ["Port Vila"]
 	},
 	wf: {
-		nam: ['Wallis and Futuna Islands', 'Wallis and Futuna Island', 'Wallis and Futuna', 'Wallis Futuna'],
+		nam: ["Wallis and Futuna Islands", "Wallis and Futuna Island", "Wallis and Futuna", "Wallis Futuna"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.TERRITORY,
-		capital: ["Matā'utu", 'Mata Utu', "Mata'utu", 'Matautu']
+		capital: ["Matā'utu", "Mata Utu", "Mata'utu", "Matautu"]
 	},
 	ws: {
-		nam: ['Samoa'],
+		nam: ["Samoa"],
 		region: CountryRegion.OCEANIA,
-		regionDetail: 'Polynesia',
+		regionDetail: "Polynesia",
 		type: CountryType.COUNTRY,
-		capital: ['Apia']
+		capital: ["Apia"]
 	},
 	xk: {
-		nam: ['Kosovo'],
+		nam: ["Kosovo"],
 		region: CountryRegion.EUROPE,
-		regionDetail: 'Southern Europe',
+		regionDetail: "Southern Europe",
 		type: CountryType.COUNTRY,
-		capital: ['Pristina']
+		capital: ["Pristina"]
 	},
 	ye: {
-		nam: ['Yemen'],
+		nam: ["Yemen"],
 		region: CountryRegion.ASIA,
-		regionDetail: 'Western Asia',
+		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ["Sana'a", 'Sanaa']
+		capital: ["Sana'a", "Sanaa"]
 	},
 	yt: {
-		nam: ['Mayotte'],
+		nam: ["Mayotte"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.TERRITORY,
-		capital: ['Mamoudzou']
+		capital: ["Mamoudzou"]
 	},
 	za: {
-		nam: ['South Africa', 'S Africa'],
+		nam: ["South Africa", "S Africa"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Pretoria', 'Bloemfontein', 'Cape Town']
+		capital: ["Pretoria", "Bloemfontein", "Cape Town"]
 	},
 	zm: {
-		nam: ['Zambia'],
+		nam: ["Zambia"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Lusaka']
+		capital: ["Lusaka"]
 	},
 	zw: {
-		nam: ['Zimbabwe'],
+		nam: ["Zimbabwe"],
 		region: CountryRegion.AFRICA,
-		regionDetail: 'Sub-Saharan Africa',
+		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
-		capital: ['Harare']
+		capital: ["Harare"]
 	}
 };
 
 export const countries_gb_states = {
-	'gb-eng': 'England',
-	'gb-nir': 'Northern Ireland',
-	'gb-sct': 'Scotland',
-	'gb-wls': 'Wales'
+	"gb-eng": "England",
+	"gb-nir": "Northern Ireland",
+	"gb-sct": "Scotland",
+	"gb-wls": "Wales"
 };
 
 export const countries_us_states: { [countryCode: string]: okbot.CountryState } = {
-	'us-ak': {
-		nam: ['Alaska']
+	"us-ak": {
+		nam: ["Alaska"]
 	},
-	'us-al': {
-		nam: ['Alabama']
+	"us-al": {
+		nam: ["Alabama"]
 	},
-	'us-ar': {
-		nam: ['Arkansas']
+	"us-ar": {
+		nam: ["Arkansas"]
 	},
-	'us-az': {
-		nam: ['Arizona']
+	"us-az": {
+		nam: ["Arizona"]
 	},
-	'us-ca': {
-		nam: ['California']
+	"us-ca": {
+		nam: ["California"]
 	},
-	'us-co': {
-		nam: ['Colorado']
+	"us-co": {
+		nam: ["Colorado"]
 	},
-	'us-ct': {
-		nam: ['Connecticut']
+	"us-ct": {
+		nam: ["Connecticut"]
 	},
-	'us-de': {
-		nam: ['Delaware']
+	"us-de": {
+		nam: ["Delaware"]
 	},
-	'us-fl': {
-		nam: ['Florida']
+	"us-fl": {
+		nam: ["Florida"]
 	},
-	'us-ga': {
-		nam: ['Georgia']
+	"us-ga": {
+		nam: ["Georgia"]
 	},
-	'us-hi': {
-		nam: ['Hawaii']
+	"us-hi": {
+		nam: ["Hawaii"]
 	},
-	'us-ia': {
-		nam: ['Iowa']
+	"us-ia": {
+		nam: ["Iowa"]
 	},
-	'us-id': {
-		nam: ['Idaho']
+	"us-id": {
+		nam: ["Idaho"]
 	},
-	'us-il': {
-		nam: ['Illinois']
+	"us-il": {
+		nam: ["Illinois"]
 	},
-	'us-in': {
-		nam: ['Indiana']
+	"us-in": {
+		nam: ["Indiana"]
 	},
-	'us-ks': {
-		nam: ['Kansas']
+	"us-ks": {
+		nam: ["Kansas"]
 	},
-	'us-ky': {
-		nam: ['Kentucky']
+	"us-ky": {
+		nam: ["Kentucky"]
 	},
-	'us-la': {
-		nam: ['Louisiana']
+	"us-la": {
+		nam: ["Louisiana"]
 	},
-	'us-ma': {
-		nam: ['Massachusetts']
+	"us-ma": {
+		nam: ["Massachusetts"]
 	},
-	'us-md': {
-		nam: ['Maryland']
+	"us-md": {
+		nam: ["Maryland"]
 	},
-	'us-me': {
-		nam: ['Maine']
+	"us-me": {
+		nam: ["Maine"]
 	},
-	'us-mi': {
-		nam: ['Michigan']
+	"us-mi": {
+		nam: ["Michigan"]
 	},
-	'us-mn': {
-		nam: ['Minnesota']
+	"us-mn": {
+		nam: ["Minnesota"]
 	},
-	'us-mo': {
-		nam: ['Missouri']
+	"us-mo": {
+		nam: ["Missouri"]
 	},
-	'us-ms': {
-		nam: ['Mississippi']
+	"us-ms": {
+		nam: ["Mississippi"]
 	},
-	'us-mt': {
-		nam: ['Montana']
+	"us-mt": {
+		nam: ["Montana"]
 	},
-	'us-nc': {
-		nam: ['North Carolina']
+	"us-nc": {
+		nam: ["North Carolina"]
 	},
-	'us-nd': {
-		nam: ['North Dakota']
+	"us-nd": {
+		nam: ["North Dakota"]
 	},
-	'us-ne': {
-		nam: ['Nebraska']
+	"us-ne": {
+		nam: ["Nebraska"]
 	},
-	'us-nh': {
-		nam: ['New Hampshire']
+	"us-nh": {
+		nam: ["New Hampshire"]
 	},
-	'us-nj': {
-		nam: ['New Jersey']
+	"us-nj": {
+		nam: ["New Jersey"]
 	},
-	'us-nm': {
-		nam: ['New Mexico']
+	"us-nm": {
+		nam: ["New Mexico"]
 	},
-	'us-nv': {
-		nam: ['Nevada']
+	"us-nv": {
+		nam: ["Nevada"]
 	},
-	'us-ny': {
-		nam: ['New York']
+	"us-ny": {
+		nam: ["New York"]
 	},
-	'us-oh': {
-		nam: ['Ohio']
+	"us-oh": {
+		nam: ["Ohio"]
 	},
-	'us-ok': {
-		nam: ['Oklahoma']
+	"us-ok": {
+		nam: ["Oklahoma"]
 	},
-	'us-or': {
-		nam: ['Oregon']
+	"us-or": {
+		nam: ["Oregon"]
 	},
-	'us-pa': {
-		nam: ['Pennsylvania']
+	"us-pa": {
+		nam: ["Pennsylvania"]
 	},
-	'us-ri': {
-		nam: ['Rhode Island']
+	"us-ri": {
+		nam: ["Rhode Island"]
 	},
-	'us-sc': {
-		nam: ['South Carolina']
+	"us-sc": {
+		nam: ["South Carolina"]
 	},
-	'us-sd': {
-		nam: ['South Dakota']
+	"us-sd": {
+		nam: ["South Dakota"]
 	},
-	'us-tn': {
-		nam: ['Tennessee']
+	"us-tn": {
+		nam: ["Tennessee"]
 	},
-	'us-tx': {
-		nam: ['Texas']
+	"us-tx": {
+		nam: ["Texas"]
 	},
-	'us-ut': {
-		nam: ['Utah']
+	"us-ut": {
+		nam: ["Utah"]
 	},
-	'us-va': {
-		nam: ['Virginia']
+	"us-va": {
+		nam: ["Virginia"]
 	},
-	'us-vt': {
-		nam: ['Vermont']
+	"us-vt": {
+		nam: ["Vermont"]
 	},
-	'us-wa': {
-		nam: ['Washington']
+	"us-wa": {
+		nam: ["Washington"]
 	},
-	'us-wi': {
-		nam: ['Wisconsin']
+	"us-wi": {
+		nam: ["Wisconsin"]
 	},
-	'us-wv': {
-		nam: ['West Virginia']
+	"us-wv": {
+		nam: ["West Virginia"]
 	},
-	'us-wy': {
-		nam: ['Wyoming']
+	"us-wy": {
+		nam: ["Wyoming"]
 	}
 };

@@ -1,19 +1,19 @@
-import { Colors } from 'discord.js';
-import { db_guild_set } from '../../db/guild.js';
-import { sendSimpleMessage } from '../../utils.js';
-import { Guilds } from '../../volatile.js';
+import { Colors } from "discord.js";
+import { db_guild_set } from "../../db/guild.js";
+import { sendSimpleMessage } from "../../utils.js";
+import { Guilds } from "../../volatile.js";
 
-export const name = 'setchanneldisabled';
-export const alias = ['channel', 'blacklist'];
-export const description = 'Toggle whether bot actions are ignored in the current channel';
+export const name = "setchanneldisabled";
+export const alias = ["channel", "blacklist"];
+export const description = "Toggle whether bot actions are ignored in the current channel";
 export const usage = '<"True" (ignored) OR "False" (enabled)>';
-export const restrict = 'GUILD_ADMIN';
+export const restrict = "GUILD_ADMIN";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!msg.inGuild())
 		return sendSimpleMessage(
 			msg,
-			'Use this command in the channel you wish to toggle blacklist on.',
+			"Use this command in the channel you wish to toggle blacklist on.",
 			Colors.DarkOrange
 		);
 
@@ -24,9 +24,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	let blacklist = Guilds[guildId]?.blacklist ?? [];
 	const isDisabled = blacklist.includes(channelId);
 
-	if (givenValue === 'true') {
+	if (givenValue === "true") {
 		newValue = true;
-	} else if (givenValue === 'false') {
+	} else if (givenValue === "false") {
 		newValue = false;
 	} else {
 		newValue = !isDisabled;
@@ -43,7 +43,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	sendSimpleMessage(
 		msg,
-		`Messages in this channel will \`${newValue ? 'be ignored' : 'not be ignored'}\`.\nThis setting does not apply to mod commands.`,
+		`Messages in this channel will \`${newValue ? "be ignored" : "not be ignored"}\`.\nThis setting does not apply to mod commands.`,
 		Colors.DarkGreen
 	);
 }

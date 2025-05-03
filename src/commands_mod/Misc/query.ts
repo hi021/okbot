@@ -1,34 +1,34 @@
-import { AttachmentBuilder } from 'discord.js';
-import { db_count, db_find, db_update } from '../../db/db.js';
-import { formatDate, objLength, sendSimpleMessage } from '../../utils.js';
+import { AttachmentBuilder } from "discord.js";
+import { db_count, db_find, db_update } from "../../db/db.js";
+import { formatDate, objLength, sendSimpleMessage } from "../../utils.js";
 
-export const name = 'query';
-export const alias = ['db'];
-export const description = '❓ query the db';
+export const name = "query";
+export const alias = ["db"];
+export const description = "❓ query the db";
 export const usage =
-	'[<Database>.[Collection]] [Action] <Filter> <Projection OR Update action> <Additional (e.g. sort)> (Flag +obj OR +noTable)';
+	"[<Database>.[Collection]] [Action] <Filter> <Projection OR Update action> <Additional (e.g. sort)> (Flag +obj OR +noTable)";
 export const usageDetail = "Action can be 'find', 'update', or 'count'.";
-export const restrict = 'BOT_ADMIN';
+export const restrict = "BOT_ADMIN";
 
 function objToString<T>(obj: Record<string, T> | {}, parseObjects = false) {
-	let string = '{';
+	let string = "{";
 	let i = 0;
 	for (const [k, v] of Object.entries(obj)) {
-		if (i) string += ', ';
+		if (i) string += ", ";
 		string += `${k}:${friendlyToString<T>(v, parseObjects)}`;
 		++i;
 	}
 
-	return string + '}';
+	return string + "}";
 }
 
 function friendlyToString<T>(a: T, parseObjects = false, forceToString = false) {
 	let formatted: T | string = a;
-	if (typeof a == 'string') formatted = '"' + a + '"';
-	else if (a === null) formatted = 'null';
-	else if (a === undefined) formatted = 'undefined';
+	if (typeof a == "string") formatted = '"' + a + '"';
+	else if (a === null) formatted = "null";
+	else if (a === undefined) formatted = "undefined";
 	else if (a instanceof Array) formatted = parseObjects ? a.toString() : `ARR[${a.length}]`;
-	else if (typeof a === 'object') formatted = parseObjects ? objToString(a) : `OBJ[${objLength(a)}]`;
+	else if (typeof a === "object") formatted = parseObjects ? objToString(a) : `OBJ[${objLength(a)}]`;
 	else if (forceToString) return a.toString();
 
 	return formatted;
@@ -37,19 +37,19 @@ function friendlyToString<T>(a: T, parseObjects = false, forceToString = false) 
 function parseArgs(args: string[]) {
 	if (!args?.length) return null;
 
-	let argsString = args.join(' ');
-	let splitByFlag = argsString.split('+');
+	let argsString = args.join(" ");
+	let splitByFlag = argsString.split("+");
 
 	const flags = [];
-	const queryRaw = splitByFlag.shift()!.split(' ');
+	const queryRaw = splitByFlag.shift()!.split(" ");
 
 	for (const j of splitByFlag) flags.push(j.trim().toLowerCase());
 	const flagsParsed = {
-		recursiveObjects: flags.includes('obj'),
-		defaultFormat: flags.includes('notable')
+		recursiveObjects: flags.includes("obj"),
+		defaultFormat: flags.includes("notable")
 	};
 
-	return { filter: queryRaw[0] ?? '{}', projection: queryRaw[1], other: queryRaw[2], flags: flagsParsed };
+	return { filter: queryRaw[0] ?? "{}", projection: queryRaw[1], other: queryRaw[2], flags: flagsParsed };
 }
 
 function tableFromObjects(arr: Array<Record<string, any>>, parseObjects = false) {
@@ -78,28 +78,28 @@ function tableFromObjects(arr: Array<Record<string, any>>, parseObjects = false)
 		++fieldIndex;
 	}
 
-	let head = '|';
-	for (const column of columns) head += ' ' + column.field.padEnd(column.len, ' ') + ' |';
-	const horizontalBar = '-'.repeat(head.length);
-	head = horizontalBar + '\n' + head + '\n' + horizontalBar;
+	let head = "|";
+	for (const column of columns) head += " " + column.field.padEnd(column.len, " ") + " |";
+	const horizontalBar = "-".repeat(head.length);
+	head = horizontalBar + "\n" + head + "\n" + horizontalBar;
 
-	let body = '|';
+	let body = "|";
 	for (const row in rows) {
 		for (const i in rows[row]) {
-			body += ' ' + rows[row][i]?.toString().padEnd(columns[i].len, ' ') + ' |';
+			body += " " + rows[row][i]?.toString().padEnd(columns[i].len, " ") + " |";
 		}
-		body += '\n' + horizontalBar + '\n';
-		if (Number(row) < rows.length - 1) body += '|';
+		body += "\n" + horizontalBar + "\n";
+		if (Number(row) < rows.length - 1) body += "|";
 	}
 
-	return head + '\n' + body;
+	return head + "\n" + body;
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (args.length < 2) return;
 
 	const dbcoll = args.shift() as string;
-	const dbcollSplit = dbcoll.split('.');
+	const dbcollSplit = dbcoll.split(".");
 	let db = process.env.DB_NAME;
 	let coll;
 	if (dbcollSplit.length >= 2) {
@@ -112,15 +112,15 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	try {
 		const action = args.shift()!.toLowerCase();
 		const argsParsed = parseArgs(args);
-		if (!argsParsed) throw new Error('Invalid arguments.');
+		if (!argsParsed) throw new Error("Invalid arguments.");
 
 		const filter = JSON.parse(argsParsed.filter);
-		const projection = argsParsed.projection?.startsWith('{') ? JSON.parse(argsParsed.projection) : undefined;
-		const other = argsParsed.other?.startsWith('{') ? JSON.parse(argsParsed.other) : undefined;
+		const projection = argsParsed.projection?.startsWith("{") ? JSON.parse(argsParsed.projection) : undefined;
+		const other = argsParsed.other?.startsWith("{") ? JSON.parse(argsParsed.other) : undefined;
 
-		if (action === 'find') {
+		if (action === "find") {
 			const res = await db_find(coll, filter, projection, other, db);
-			let formattedRes = '';
+			let formattedRes = "";
 
 			if (res?.length) {
 				if (argsParsed.flags.defaultFormat) {
@@ -130,12 +130,12 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				} else {
 					formattedRes = tableFromObjects(res, argsParsed.flags.recursiveObjects);
 				}
-			} else formattedRes = '<No result>';
+			} else formattedRes = "<No result>";
 
 			// will send as file if content too long or too wide (cool condition)
-			if (formattedRes.length > 1991 || formattedRes.startsWith('-'.repeat(91))) {
-				const file = new AttachmentBuilder(Buffer.from(formattedRes, 'utf-8'), {
-					name: `q_find_${formatDate(new Date(), 'alphabetical', undefined, true)}.txt`
+			if (formattedRes.length > 1991 || formattedRes.startsWith("-".repeat(91))) {
+				const file = new AttachmentBuilder(Buffer.from(formattedRes, "utf-8"), {
+					name: `q_find_${formatDate(new Date(), "alphabetical", undefined, true)}.txt`
 				});
 				await msg.reply({
 					content: `> Find result (${res.length})`,
@@ -148,10 +148,10 @@ export async function execute(msg: okbot.Message, args: string[]) {
 					allowedMentions: { repliedUser: false }
 				});
 			}
-		} else if (action === 'count') {
+		} else if (action === "count") {
 			const res = await db_count(coll, filter, db);
 			await msg.reply({ content: `\`\`\`js\n${res}\`\`\``, allowedMentions: { repliedUser: false } });
-		} else if (action === 'update') {
+		} else if (action === "update") {
 			// projection is update action in this case
 			const res = await db_update(coll, filter, projection, other, db);
 			await msg.reply({
@@ -159,9 +159,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				allowedMentions: { repliedUser: false }
 			});
 		} else {
-			throw new Error('Invalid action.');
+			throw new Error("Invalid action.");
 		}
 	} catch (e) {
-		return await sendSimpleMessage(msg, '`' + e + '`');
+		return await sendSimpleMessage(msg, "`" + e + "`");
 	}
 }

@@ -1,17 +1,17 @@
-import { EmbedBuilder, User } from 'discord.js';
-import { db_plr_get, db_plr_set } from '../../db/db.js';
-import { SET } from '../../settings.js';
+import { EmbedBuilder, User } from "discord.js";
+import { db_plr_get, db_plr_set } from "../../db/db.js";
+import { SET } from "../../settings.js";
 import {
-    calcMoneyTotNeeded,
-    drawProgressBar,
-    formatDoler,
-    formatNumber,
-    getUserFromMsg
-} from '../../utils.js';
+	calcMoneyTotNeeded,
+	drawProgressBar,
+	formatDoler,
+	formatNumber,
+	getUserFromMsg
+} from "../../utils.js";
 
-export const name = 'stats';
-export const description = '📊 states';
-export const usage = '<Username OR Mention>';
+export const name = "stats";
+export const description = "📊 states";
+export const usage = "<Username OR Mention>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	let user: User;
@@ -40,7 +40,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			name: user.displayName,
 			iconURL: user.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
-		.setFooter({ text: 'ok stats' });
+		.setFooter({ text: "ok stats" });
 
 	if (!plrdat) {
 		db_plr_set({
@@ -48,7 +48,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			mon: 0
 		});
 
-		statMsg.setDescription('🕸️ *There are no stats for this user...*');
+		statMsg.setDescription("🕸️ *There are no stats for this user...*");
 
 		msg.reply({ embeds: [statMsg] });
 		return;
@@ -78,25 +78,25 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	statMsg.addFields(
 		{
-			name: 'doler',
+			name: "doler",
 			value: `${formatDoler(plrdat.mon ?? 0)} **|** ${formatDoler(plrdat.monTot ?? 0, false)} total (Lv. ${
 				plrdat.monLv ?? 0
 			})\n${monProgressString}`,
 			inline: false
 		},
-		{ name: 'rapes', value: `${rep?.v ?? 0} ♂️ **|** ${rep?.am ?? 0} ♂️ given`, inline: true },
+		{ name: "rapes", value: `${rep?.v ?? 0} ♂️ **|** ${rep?.am ?? 0} ♂️ given`, inline: true },
 		{
-			name: 'dailies',
+			name: "dailies",
 			value: `${(SET.DAILY_AMOUNT ?? 0) + (day?.v ?? 0)} 💵 **|** ${day.am} claimed`,
 			inline: false
 		},
-		{ name: '\u200b', value: '╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼', inline: false },
-		{ name: 'okays', value: `${formatNumber(plrdat.okTot ?? 0)}`, inline: true },
-		{ name: 'fish', value: `${formatNumber(plrdat.fishTotC ?? 0)}`, inline: true },
-		{ name: 'gays', value: `${formatNumber(plrdat.gay ?? 0)}`, inline: true },
-		{ name: 'flags', value: `${formatNumber(plrdat.flags ?? 0)}`, inline: true },
-		{ name: 'boosters', value: `${formatNumber(plrdat.boosterC ?? 0)}`, inline: true },
-		{ name: '\u200b', value: '\u200b', inline: true }
+		{ name: "\u200b", value: "╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼", inline: false },
+		{ name: "okays", value: `${formatNumber(plrdat.okTot ?? 0)}`, inline: true },
+		{ name: "fish", value: `${formatNumber(plrdat.fishTotC ?? 0)}`, inline: true },
+		{ name: "gays", value: `${formatNumber(plrdat.gay ?? 0)}`, inline: true },
+		{ name: "flags", value: `${formatNumber(plrdat.flags ?? 0)}`, inline: true },
+		{ name: "boosters", value: `${formatNumber(plrdat.boosterC ?? 0)}`, inline: true },
+		{ name: "\u200b", value: "\u200b", inline: true }
 	);
 
 	if (plrdat.color) statMsg.setColor(plrdat.color);

@@ -1,22 +1,22 @@
 import {
-    ButtonInteraction,
-    ColorResolvable,
-    Colors,
-    EmbedBuilder,
-    GuildMember,
-    Message,
-    MessageFlags,
-    MessageFlagsBitField,
-    MessageType,
-    SendableChannels,
-    Snowflake,
-    User
-} from 'discord.js';
-import { db_get_casino_top, db_plr_get, db_plr_set } from './db/db.js';
-import { SET } from './settings.js';
-import { Casino_tops, Cooldowns, Guilds, Players_in_collector } from './volatile.js';
+	ButtonInteraction,
+	ColorResolvable,
+	Colors,
+	EmbedBuilder,
+	GuildMember,
+	Message,
+	MessageFlags,
+	MessageFlagsBitField,
+	MessageType,
+	SendableChannels,
+	Snowflake,
+	User
+} from "discord.js";
+import { db_get_casino_top, db_plr_get, db_plr_set } from "./db/db.js";
+import { SET } from "./settings.js";
+import { Casino_tops, Cooldowns, Guilds, Players_in_collector } from "./volatile.js";
 
-export const e_blank = '<:blank:986204417512575036>';
+export const e_blank = "<:blank:986204417512575036>";
 
 //UTIL
 export function randomFromArray<T>(arr: Array<T>): T {
@@ -41,17 +41,17 @@ export const objLength = (obj: Record<string, any>) => {
 };
 
 export const capitalizeFirstLetter = (str?: string) =>
-	str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : '';
+	str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : "";
 
-export const isVowel = (letter: string) => ['a', 'e', 'i', 'o', 'u', 'y'].includes(letter.toLowerCase());
+export const isVowel = (letter: string) => ["a", "e", "i", "o", "u", "y"].includes(letter.toLowerCase());
 //UTIL
 
 //FORMAT
-export const formatNumber = (num: number | string, delimiter = '\u00A0') =>
+export const formatNumber = (num: number | string, delimiter = "\u00A0") =>
 	num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
 
 export const formatDoler = (num: number | string, bolded = true) =>
-	bolded ? `**${formatNumber(num, '\u00A0')}** 💵` : `${formatNumber(num, '\u00A0')} 💵`;
+	bolded ? `**${formatNumber(num, "\u00A0")}** 💵` : `${formatNumber(num, "\u00A0")} 💵`;
 
 export function formatMilliseconds(ms: number) {
 	const dat = new Date(ms);
@@ -59,25 +59,25 @@ export function formatMilliseconds(ms: number) {
 	const h = dat.getUTCHours();
 	const m = dat.getUTCMinutes();
 	const s = dat.getUTCSeconds();
-	let str = '';
+	let str = "";
 
 	if (d) {
-		str += d + ' day';
-		if (d > 1) str += 's';
+		str += d + " day";
+		if (d > 1) str += "s";
 	}
 	if (h) {
-		str += ' ' + h + ' hour';
-		if (h > 1) str += 's';
+		str += " " + h + " hour";
+		if (h > 1) str += "s";
 	}
 	if (m) {
-		str += ' ' + m + ' minute';
-		if (m > 1) str += 's';
+		str += " " + m + " minute";
+		if (m > 1) str += "s";
 	}
 	if (s) {
-		str += ' ' + s + ' second';
-		if (s > 1) str += 's';
+		str += " " + s + " second";
+		if (s > 1) str += "s";
 	}
-	return str ? str.trim() : '< 1 second';
+	return str ? str.trim() : "< 1 second";
 }
 
 /**
@@ -87,29 +87,29 @@ export function formatMilliseconds(ms: number) {
 export function monthToShortString(month: number) {
 	switch (month) {
 		case 0:
-			return 'Jan';
+			return "Jan";
 		case 1:
-			return 'Feb';
+			return "Feb";
 		case 2:
-			return 'Mar';
+			return "Mar";
 		case 3:
-			return 'Apr';
+			return "Apr";
 		case 4:
-			return 'May';
+			return "May";
 		case 5:
-			return 'Jun';
+			return "Jun";
 		case 6:
-			return 'Jul';
+			return "Jul";
 		case 7:
-			return 'Aug';
+			return "Aug";
 		case 8:
-			return 'Sep';
+			return "Sep";
 		case 9:
-			return 'Oct';
+			return "Oct";
 		case 10:
-			return 'Nov';
+			return "Nov";
 		case 11:
-			return 'Dec';
+			return "Dec";
 		default:
 			return null;
 	}
@@ -117,41 +117,41 @@ export function monthToShortString(month: number) {
 
 export function formatDate(
 	dat: Date,
-	format: 'user' | 'alphabetical' = 'user',
+	format: "user" | "alphabetical" = "user",
 	compareToday?: string,
 	time?: boolean
 ) {
 	let formatted;
-	if (format === 'user') {
+	if (format === "user") {
 		formatted = `${dat.getUTCDate()} ${monthToShortString(dat.getUTCMonth())}, ${dat.getUTCFullYear()}`;
 
 		if (time)
-			formatted += ` at ${dat.getUTCHours()}:${dat.getUTCMinutes().toString().padStart(2, '0')}:${dat
+			formatted += ` at ${dat.getUTCHours()}:${dat.getUTCMinutes().toString().padStart(2, "0")}:${dat
 				.getUTCSeconds()
 				.toString()
-				.padStart(2, '0')}`;
+				.padStart(2, "0")}`;
 	} else {
-		formatted = `${dat.getUTCFullYear()}-${(dat.getUTCMonth() + 1).toString().padStart(2, '0')}-${dat
+		formatted = `${dat.getUTCFullYear()}-${(dat.getUTCMonth() + 1).toString().padStart(2, "0")}-${dat
 			.getUTCDate()
 			.toString()
-			.padStart(2, '0')}`;
+			.padStart(2, "0")}`;
 
 		if (time)
-			formatted += `-${dat.getUTCHours().toString().padStart(2, '0')}-${dat.getUTCMinutes().toString().padStart(2, '0')}-${dat
+			formatted += `-${dat.getUTCHours().toString().padStart(2, "0")}-${dat.getUTCMinutes().toString().padStart(2, "0")}-${dat
 				.getUTCSeconds()
 				.toString()
-				.padStart(2, '0')}`;
+				.padStart(2, "0")}`;
 	}
 
-	if (compareToday) return compareToday == formatted ? 'today' : formatted;
+	if (compareToday) return compareToday == formatted ? "today" : formatted;
 	return formatted;
 }
 
 export const showItemName = (itm: { nam: string; emoji?: string }, bold = true) =>
-	`${itm.emoji ? itm.emoji + ' ' : ''}${bold ? `**${itm.nam}**` : itm.nam}`;
+	`${itm.emoji ? itm.emoji + " " : ""}${bold ? `**${itm.nam}**` : itm.nam}`;
 //FORMAT
 
-export const drawProgressBar = (len: number, maxLen: number, activeSquare = '🟩', inactiveSquare = '⬛') => {
+export const drawProgressBar = (len: number, maxLen: number, activeSquare = "🟩", inactiveSquare = "⬛") => {
 	len = Math.max(0, len);
 	return `${activeSquare.repeat(len) + inactiveSquare.repeat(maxLen - len)}`;
 };
@@ -162,33 +162,33 @@ export const drawProgressBar = (len: number, maxLen: number, activeSquare = '�
 export const numberToEmoji = (a: number) => {
 	switch (a) {
 		case 0:
-			return ':zero:';
+			return ":zero:";
 		case 1:
-			return ':one:';
+			return ":one:";
 		case 2:
-			return ':two:';
+			return ":two:";
 		case 3:
-			return ':three:';
+			return ":three:";
 		case 4:
-			return ':four:';
+			return ":four:";
 		case 5:
-			return ':five:';
+			return ":five:";
 		case 6:
-			return ':six:';
+			return ":six:";
 		case 7:
-			return ':seven:';
+			return ":seven:";
 		case 8:
-			return ':eight:';
+			return ":eight:";
 		case 9:
-			return ':nine:';
+			return ":nine:";
 		case 10:
-			return '🔟';
+			return "🔟";
 		case 11:
-			return '**11**';
+			return "**11**";
 		case 12:
-			return '**12**';
+			return "**12**";
 		default:
-			return ':asterisk:';
+			return ":asterisk:";
 	}
 };
 
@@ -202,9 +202,9 @@ export function parseNumberSuffix(num: string) {
 	if (!isNaN(parseInt(suffix))) return parseInt(num); // no suffix
 	const value = num.slice(0, -1);
 	switch (suffix) {
-		case 'k':
+		case "k":
 			return Math.floor(parseFloat(value) * 1_000);
-		case 'm':
+		case "m":
 			return Math.floor(parseFloat(value) * 1_000_000);
 		default:
 			return null; // invalid suffix
@@ -217,7 +217,7 @@ export async function getUserFromMsg(msg: okbot.Message, args?: string[]) {
 	if (userMentioned) return userMentioned;
 
 	if (!args?.length || !msg.inGuild()) return undefined;
-	const query = args.join(' ');
+	const query = args.join(" ");
 	const userFetched = await msg.guild.members.fetch({ query, limit: 1 });
 	return userFetched?.first()?.user;
 }
@@ -320,7 +320,7 @@ export function calcMoneyTotNeeded(lv: number | undefined) {
 export async function addCasinoStat(
 	plrId: string,
 	game: okbot.CasinoGame,
-	result: 'win' | 'lose' | 'draw',
+	result: "win" | "lose" | "draw",
 	bet: number,
 	winnings: number,
 	additional?: {
@@ -346,17 +346,17 @@ export async function addCasinoStat(
 	const rl = additional?.rlColor;
 	if (rl) {
 		(stat as any)[rl] == undefined ? ((stat as any)[rl] = 1) : (stat as any)[rl]++;
-		if (result == 'win') {
-			const rlWin = rl + 'Win';
+		if (result == "win") {
+			const rlWin = rl + "Win";
 			(stat as any)[rlWin] == undefined ? ((stat as any)[rlWin] = 1) : (stat as any)[rlWin]++;
 		}
 	}
 
-	if (result == 'win') stat.win == undefined ? (stat.win = 1) : ++stat.win;
-	else if (result == 'draw' && additional?.countDraws)
+	if (result == "win") stat.win == undefined ? (stat.win = 1) : ++stat.win;
+	else if (result == "draw" && additional?.countDraws)
 		(stat as any).draw == undefined ? ((stat as any).draw = 1) : (stat as any).draw++;
 
-	if (result != 'lose' && (stat.highestWin?.v == undefined || winnings > stat.highestWin.v))
+	if (result != "lose" && (stat.highestWin?.v == undefined || winnings > stat.highestWin.v))
 		stat.highestWin = {
 			v: winnings,
 			date: Math.floor(new Date().getTime() / 1000)
@@ -365,7 +365,7 @@ export async function addCasinoStat(
 	if (additional?.is21) (stat as any).bj == undefined ? ((stat as any).bj = 1) : (stat as any).bj++;
 	if (additional?.bjDoubled) {
 		(stat as any).double == undefined ? ((stat as any).double = 1) : (stat as any).double++;
-		if (result == 'win')
+		if (result == "win")
 			(stat as any).doubleWin == undefined ? ((stat as any).doubleWin = 1) : (stat as any).doubleWin++;
 	}
 
@@ -376,7 +376,7 @@ export async function addCasinoStat(
 			? ((stat as any).totalScore = additional.diceScore)
 			: ((stat as any).totalScore += additional.diceScore);
 
-	const statName = 'casinoStat.' + game;
+	const statName = "casinoStat." + game;
 	await db_plr_set({ _id: plrId, [statName]: stat });
 }
 
@@ -387,13 +387,13 @@ export async function showCasinoTopWins(game: okbot.CasinoGame, showBets = true)
 		lb = Casino_tops[game] as okbot.CasinoTopStat[];
 	}
 
-	let description = '';
-	if (!lb.length) description = '🕸️ *No wins yet...*';
+	let description = "";
+	if (!lb.length) description = "🕸️ *No wins yet...*";
 	else {
 		for (const i in lb) {
-			const bet = showBets ? ` (**${Math.round((lb[i].won / lb[i].bet) * 100) / 100}**x bet)` : '';
+			const bet = showBets ? ` (**${Math.round((lb[i].won / lb[i].bet) * 100) / 100}**x bet)` : "";
 
-			description += `\`${('#' + (Number(i) + 1)).padStart(3, ' ')}\` ${lb[i].usernameDiscrim} won ${formatDoler(lb[i].won)}${bet} <t:${
+			description += `\`${("#" + (Number(i) + 1)).padStart(3, " ")}\` ${lb[i].usernameDiscrim} won ${formatDoler(lb[i].won)}${bet} <t:${
 				lb[i].date
 			}:R>\n`;
 		}
@@ -406,18 +406,18 @@ export async function getImageUrlFromMsg(msg: okbot.Message, args?: string[]) {
 	//1. check if uploaded an image
 	const files = msg.attachments.values();
 	for (const i of files) {
-		if (i?.contentType?.startsWith('image/')) return i.url;
+		if (i?.contentType?.startsWith("image/")) return i.url;
 	}
 
 	//2. check if mentions user (will force static avatar)
-	const usr = await getUserFromMsg(msg, args?.length ? [args[0].replace(/_/g, ' ')] : undefined);
+	const usr = await getUserFromMsg(msg, args?.length ? [args[0].replace(/_/g, " ")] : undefined);
 	if (usr) {
 		args?.shift();
 		const userGuild = await msg.guild!.members.fetch(usr); //to get server avatar
 		return userGuild.displayAvatarURL({
 			forceStatic: true,
 			size: 4096,
-			extension: 'png'
+			extension: "png"
 		});
 	}
 
@@ -428,7 +428,7 @@ export async function getImageUrlFromMsg(msg: okbot.Message, args?: string[]) {
 		//check if replied to has an image
 		const filesReference = reference.attachments.values();
 		for (const i of filesReference) {
-			if (i?.contentType?.startsWith('image/')) return i.url;
+			if (i?.contentType?.startsWith("image/")) return i.url;
 		}
 
 		//check if any of the embeds have an image
@@ -526,16 +526,16 @@ export const isStoreIdFormat = (txt: string) => /^([A-Z]|_){3}\d{4}$/.test(txt);
 export function storeCategoryToId(cat: string) {
 	cat = cat.toLowerCase();
 	switch (cat) {
-		case 'booster':
-			return 'BOS';
-		case 'profile badge':
-			return 'BDG';
-		case 'profile color':
-			return 'CLR';
-		case 'fishing accessory':
-			return 'FIS';
+		case "booster":
+			return "BOS";
+		case "profile badge":
+			return "BDG";
+		case "profile color":
+			return "CLR";
+		case "fishing accessory":
+			return "FIS";
 		default:
-			return '';
+			return "";
 	}
 }
 
@@ -545,15 +545,15 @@ export function storeCategoryToId(cat: string) {
  *Used in Mod command custom reactions
  */
 export function parseReaction(args: string[]) {
-	const reactionArr = args.join(' ');
+	const reactionArr = args.join(" ");
 	let reaction, response;
-	if (reactionArr.indexOf('||') >= 0) {
-		const reactionTmp = reactionArr.split('||');
+	if (reactionArr.indexOf("||") >= 0) {
+		const reactionTmp = reactionArr.split("||");
 		reaction = reactionTmp.shift();
-		response = reactionTmp.join('||');
+		response = reactionTmp.join("||");
 	} else {
 		reaction = args.shift();
-		response = args.join(' ');
+		response = args.join(" ");
 	}
 
 	return { reaction: reaction?.trim(), response: response?.trim() };
@@ -565,7 +565,7 @@ export function isOnCooldown(
 	activity: okbot.CooldownActivity,
 	usrId: Snowflake,
 	msg?: okbot.Message,
-	customMessage = '',
+	customMessage = "",
 	now = Math.floor(Date.now() / 1000)
 ) {
 	const cooldown = SET[`${activity.toUpperCase() as Uppercase<okbot.CooldownActivity>}_COOLDOWN`] ?? 0;

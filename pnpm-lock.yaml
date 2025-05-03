@@ -18,8 +18,8 @@ importers:
         specifier: ^7.9.0
         version: 7.9.0
       discord.js:
-        specifier: ^14.19.2
-        version: 14.19.2
+        specifier: ^14.19.3
+        version: 14.19.3
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
@@ -48,8 +48,8 @@ importers:
 
 packages:
 
-  '@asamuzakjp/css-color@3.1.5':
-    resolution: {integrity: sha512-w7AmVyTTiU41fNLsFDf+gA2Dwtbx2EJtn2pbJNAGSRAg50loXy1uLXA3hEpD8+eydcomTurw09tq5/AyceCaGg==}
+  '@asamuzakjp/css-color@3.1.7':
+    resolution: {integrity: sha512-Ok5fYhtwdyJQmU1PpEv6Si7Y+A4cYb8yNM9oiIJC9TzXPMuN9fvdonKJqcnz9TbFqV6bQ8z0giRq0iaOpGZV2g==}
 
   '@csstools/color-helpers@5.0.2':
     resolution: {integrity: sha512-JqWH1vsgdGcw2RR6VliXXdA0/59LttzlU8UlRT/iUUsEeWfYq8I+K0yhihEUTTHLRm1EXvpsCx3083EU15ecsA==}
@@ -79,8 +79,8 @@ packages:
     resolution: {integrity: sha512-UJnjoFsmxfKUdNYdWgOB0mWUypuLvAfQPH1+pyvRJs6euowbFkFC6P13w1l8mJyi3vxYMxc9kld5jZEGRQs6bw==}
     engines: {node: '>=18'}
 
-  '@discordjs/builders@1.11.1':
-    resolution: {integrity: sha512-2zDAVuoeAkdv0YQzYKO8vZfaDfB+1KZ60ymBKtD7QDpsh6lzAnQSUBLqeRkhlons6BT9+yRctOh9fPy94w6kDA==}
+  '@discordjs/builders@1.11.2':
+    resolution: {integrity: sha512-F1WTABdd8/R9D1icJzajC4IuLyyS8f3rTOz66JsSI3pKvpCAtsMBweu8cyNYsIyvcrKAVn9EPK+Psoymq+XC0A==}
     engines: {node: '>=16.11.0'}
 
   '@discordjs/collection@1.5.3':
@@ -462,11 +462,11 @@ packages:
     resolution: {integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==}
     engines: {node: '>=8'}
 
-  discord-api-types@0.38.1:
-    resolution: {integrity: sha512-vsjsqjAuxsPhiwbPjTBeGQaDPlizFmSkU0mTzFGMgRxqCDIRBR7iTY74HacpzrDV0QtERHRKQEk1tq7drZUtHg==}
+  discord-api-types@0.38.2:
+    resolution: {integrity: sha512-GAPY1/Kv3aqEoBYgUYXB2tHdWJCZXfytlCzxZ4QMQ1/TIQn1JI+xUOukehl4iEa9m7fCURnMIOpOxpaTWqzX2w==}
 
-  discord.js@14.19.2:
-    resolution: {integrity: sha512-L/ivhVefzzRcChHJSaGYsgA4Uqx6or2sst5JZ/ft9OBwrj8OJIzrrcutlkHnm/hlI0Hrm3es62TRVksU8VUqrg==}
+  discord.js@14.19.3:
+    resolution: {integrity: sha512-lncTRk0k+8Q5D3nThnODBR8fR8x2fM798o8Vsr40Krx0DjPwpZCuxxTcFMrXMQVOqM1QB9wqWgaXPg3TbmlHqA==}
     engines: {node: '>=18'}
 
   dom-serializer@2.0.0:
@@ -822,8 +822,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.18.1:
-    resolution: {integrity: sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==}
+  ws@8.18.2:
+    resolution: {integrity: sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -847,7 +847,7 @@ packages:
 
 snapshots:
 
-  '@asamuzakjp/css-color@3.1.5':
+  '@asamuzakjp/css-color@3.1.7':
     dependencies:
       '@csstools/css-calc': 2.1.3(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)
       '@csstools/css-color-parser': 3.0.9(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)
@@ -875,12 +875,12 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.3': {}
 
-  '@discordjs/builders@1.11.1':
+  '@discordjs/builders@1.11.2':
     dependencies:
       '@discordjs/formatters': 0.6.1
       '@discordjs/util': 1.1.1
       '@sapphire/shapeshift': 4.0.0
-      discord-api-types: 0.38.1
+      discord-api-types: 0.38.2
       fast-deep-equal: 3.1.3
       ts-mixer: 6.0.4
       tslib: 2.8.1
@@ -891,7 +891,7 @@ snapshots:
 
   '@discordjs/formatters@0.6.1':
     dependencies:
-      discord-api-types: 0.38.1
+      discord-api-types: 0.38.2
 
   '@discordjs/rest@2.5.0':
     dependencies:
@@ -900,7 +900,7 @@ snapshots:
       '@sapphire/async-queue': 1.5.5
       '@sapphire/snowflake': 3.5.3
       '@vladfrangu/async_event_emitter': 2.4.6
-      discord-api-types: 0.38.1
+      discord-api-types: 0.38.2
       magic-bytes.js: 1.12.1
       tslib: 2.8.1
       undici: 6.21.1
@@ -915,9 +915,9 @@ snapshots:
       '@sapphire/async-queue': 1.5.5
       '@types/ws': 8.18.1
       '@vladfrangu/async_event_emitter': 2.4.6
-      discord-api-types: 0.38.1
+      discord-api-types: 0.38.2
       tslib: 2.8.1
-      ws: 8.18.1
+      ws: 8.18.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -1149,7 +1149,7 @@ snapshots:
 
   cssstyle@4.3.1:
     dependencies:
-      '@asamuzakjp/css-color': 3.1.5
+      '@asamuzakjp/css-color': 3.1.7
       rrweb-cssom: 0.8.0
 
   d3-array@3.2.4:
@@ -1331,18 +1331,18 @@ snapshots:
 
   detect-libc@2.0.4: {}
 
-  discord-api-types@0.38.1: {}
+  discord-api-types@0.38.2: {}
 
-  discord.js@14.19.2:
+  discord.js@14.19.3:
     dependencies:
-      '@discordjs/builders': 1.11.1
+      '@discordjs/builders': 1.11.2
       '@discordjs/collection': 1.5.3
       '@discordjs/formatters': 0.6.1
       '@discordjs/rest': 2.5.0
       '@discordjs/util': 1.1.1
       '@discordjs/ws': 1.2.2
       '@sapphire/snowflake': 3.5.3
-      discord-api-types: 0.38.1
+      discord-api-types: 0.38.2
       fast-deep-equal: 3.1.3
       lodash.snakecase: 4.1.1
       magic-bytes.js: 1.12.1
@@ -1470,7 +1470,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.2.0
-      ws: 8.18.1
+      ws: 8.18.2
       xml-name-validator: 5.0.0
     optionalDependencies:
       canvas: 3.1.0
@@ -1707,7 +1707,7 @@ snapshots:
 
   ws@8.17.1: {}
 
-  ws@8.18.1: {}
+  ws@8.18.2: {}
 
   xml-name-validator@5.0.0: {}
 

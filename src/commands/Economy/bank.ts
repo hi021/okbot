@@ -1,46 +1,46 @@
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    Colors,
-    EmbedBuilder,
-    Snowflake,
-    User
-} from 'discord.js';
-import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
-import { bot } from '../../okbot.js';
-import { SET } from '../../settings.js';
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	Snowflake,
+	User
+} from "discord.js";
+import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
+import { bot } from "../../okbot.js";
+import { SET } from "../../settings.js";
 import {
-    calcMoneyLevelsGain,
-    createUserMsgEmbed,
-    e_blank,
-    formatDoler,
-    formatNumber,
-    getUserFromMsg,
-    parseNumberSuffix,
-    sendEphemeralReply,
-    sendSimpleMessage,
-    showUpgradeCost,
-    showUpgradeStat
-} from '../../utils.js';
+	calcMoneyLevelsGain,
+	createUserMsgEmbed,
+	e_blank,
+	formatDoler,
+	formatNumber,
+	getUserFromMsg,
+	parseNumberSuffix,
+	sendEphemeralReply,
+	sendSimpleMessage,
+	showUpgradeCost,
+	showUpgradeStat
+} from "../../utils.js";
 
-export const name = 'bank';
-export const description = '🏦 What gold reserves?';
+export const name = "bank";
+export const description = "🏦 What gold reserves?";
 export const usage = '<"Withdraw" OR "Deposit"> [Amount OR "All"]\n<"Upgrade" OR "Levels" OR "Stats">';
 
-bot.on('interactionCreate', async interaction => {
+bot.on("interactionCreate", async interaction => {
 	if (!interaction.isButton() || !interaction.inGuild()) return;
-	const split = interaction.customId.split('-');
+	const split = interaction.customId.split("-");
 	const id = split[1];
 
-	if (split[0] === 'bank_up_confirm') {
+	if (split[0] === "bank_up_confirm") {
 		if (id !== interaction.user.id)
 			return sendEphemeralReply(interaction, `No, shoo, bad ${interaction.user.displayName}!`);
 
 		const plrdat = await db_plr_get({ _id: id, mon: 1, bank: 1 });
 		const lv = plrdat?.bank?.lv ?? 0;
 		if (lv >= BankMemberships.length - 1)
-			return sendEphemeralReply(interaction, 'Your bank is already at the maximum level!');
+			return sendEphemeralReply(interaction, "Your bank is already at the maximum level!");
 
 		const cost = BankMemberships[lv].cost;
 		const mon = plrdat?.mon ?? 0;
@@ -70,7 +70,7 @@ bot.on('interactionCreate', async interaction => {
 		interaction.update({ components: [] });
 		return;
 	}
-	if (split[0] === 'bank_up_cancel') {
+	if (split[0] === "bank_up_cancel") {
 		if (id !== interaction.user.id)
 			return sendEphemeralReply(interaction, `No, shoo, bad ${interaction.user.displayName}!`);
 
@@ -81,28 +81,28 @@ bot.on('interactionCreate', async interaction => {
 
 //withdraw cooldown is in seconds, will only pay percent fee if withdrawing before the cooldown
 export const BankMemberships = [
-	{ cost: 0, name: 'Free', max: 10000, interest: 0, withdrawFee: 0.05, withdrawCD: 86400 /*24h*/ }, //default (lv.0)
-	{ cost: 2000, name: 'Starter', max: 40000, interest: 0, withdrawFee: 0.04, withdrawCD: 86400 },
-	{ cost: 5000, name: 'Basic', max: 75000, interest: 0.002, withdrawFee: 0.04, withdrawCD: 86400 }, //lv2
-	{ cost: 10000, name: 'Basic+', max: 75000, interest: 0.002, withdrawFee: 0.04, withdrawCD: 79200 /*22h*/ },
-	{ cost: 17500, name: 'Quality', max: 100000, interest: 0.004, withdrawFee: 0.03, withdrawCD: 79200 }, //lv4
-	{ cost: 30000, name: 'Business', max: 150000, interest: 0.005, withdrawFee: 0.03, withdrawCD: 79200 },
+	{ cost: 0, name: "Free", max: 10000, interest: 0, withdrawFee: 0.05, withdrawCD: 86400 /*24h*/ }, //default (lv.0)
+	{ cost: 2000, name: "Starter", max: 40000, interest: 0, withdrawFee: 0.04, withdrawCD: 86400 },
+	{ cost: 5000, name: "Basic", max: 75000, interest: 0.002, withdrawFee: 0.04, withdrawCD: 86400 }, //lv2
+	{ cost: 10000, name: "Basic+", max: 75000, interest: 0.002, withdrawFee: 0.04, withdrawCD: 79200 /*22h*/ },
+	{ cost: 17500, name: "Quality", max: 100000, interest: 0.004, withdrawFee: 0.03, withdrawCD: 79200 }, //lv4
+	{ cost: 30000, name: "Business", max: 150000, interest: 0.005, withdrawFee: 0.03, withdrawCD: 79200 },
 	{
 		cost: 50000,
-		name: 'Professional',
+		name: "Professional",
 		max: 250000,
 		interest: 0.007,
 		withdrawFee: 0.03,
 		withdrawCD: 72000 /*20h*/
 	}, //lv6
-	{ cost: 80000, name: 'Expert', max: 500000, interest: 0.01, withdrawFee: 0.03, withdrawCD: 72000 },
-	{ cost: 87500, name: 'Extra', max: 750000, interest: 0.01, withdrawFee: 0.02, withdrawCD: 72000 },
-	{ cost: 150000, name: 'Exclusive', max: 1000000, interest: 0.01, withdrawFee: 0.02, withdrawCD: 72000 },
-	{ cost: 300000, name: 'Elite', max: 1000000, interest: 0.012, withdrawFee: 0.02, withdrawCD: 72000 }, //lv10
-	{ cost: 500000, name: 'VIP', max: 2000000, interest: 0.014, withdrawFee: 0.02, withdrawCD: 64800 /*18h*/ },
-	{ cost: 800000, name: 'Shark', max: 5000000, interest: 0.016, withdrawFee: 0.02, withdrawCD: 64800 },
-	{ cost: 1500000, name: 'Ultra', max: 10000000, interest: 0.018, withdrawFee: 0.015, withdrawCD: 64800 },
-	{ cost: 2050000, name: 'Ultimate', max: 15000000, interest: 0.018, withdrawFee: 0.01, withdrawCD: 64800 } //lv14
+	{ cost: 80000, name: "Expert", max: 500000, interest: 0.01, withdrawFee: 0.03, withdrawCD: 72000 },
+	{ cost: 87500, name: "Extra", max: 750000, interest: 0.01, withdrawFee: 0.02, withdrawCD: 72000 },
+	{ cost: 150000, name: "Exclusive", max: 1000000, interest: 0.01, withdrawFee: 0.02, withdrawCD: 72000 },
+	{ cost: 300000, name: "Elite", max: 1000000, interest: 0.012, withdrawFee: 0.02, withdrawCD: 72000 }, //lv10
+	{ cost: 500000, name: "VIP", max: 2000000, interest: 0.014, withdrawFee: 0.02, withdrawCD: 64800 /*18h*/ },
+	{ cost: 800000, name: "Shark", max: 5000000, interest: 0.016, withdrawFee: 0.02, withdrawCD: 64800 },
+	{ cost: 1500000, name: "Ultra", max: 10000000, interest: 0.018, withdrawFee: 0.015, withdrawCD: 64800 },
+	{ cost: 2050000, name: "Ultimate", max: 15000000, interest: 0.018, withdrawFee: 0.01, withdrawCD: 64800 } //lv14
 ];
 
 //plr = {bank, monTot, monLv}, pass a message to sendMessage to inform about potential level up
@@ -145,7 +145,7 @@ export async function bankInterest(plr: okbot.User, user: User, now?: number, se
 
 	if (sendMessage) {
 		const msge = createUserMsgEmbed(user, Colors.Green).setDescription(
-			`+ ${formatDoler(interestValue, false)} bank interest\n${interestCount} payment${interestCount == 1 ? '' : 's'} at a ${
+			`+ ${formatDoler(interestValue, false)} bank interest\n${interestCount} payment${interestCount == 1 ? "" : "s"} at a ${
 				Math.round(membership.interest * 10000) / 100
 			}% rate`
 		);
@@ -215,7 +215,7 @@ function showStats(bank: okbot.Bank, user: User) {
 		name: `${user.displayName}'s bank stats`,
 		iconURL: user.displayAvatarURL({ forceStatic: true, size: 32 })
 	});
-	if (!bank.totDeposit) return msge.setDescription('There are no stats to show...');
+	if (!bank.totDeposit) return msge.setDescription("There are no stats to show...");
 
 	const now = Math.floor(new Date().getTime() / 1000);
 	const lastWithdraw = getLastWithdraw(bank, now);
@@ -223,24 +223,24 @@ function showStats(bank: okbot.Bank, user: User) {
 	if (bank.lvTime) msge.setDescription(`Level **${bank.lv}** achieved <t:${bank.lvTime}:R>.`);
 	msge.addFields(
 		{
-			name: 'Last withdrawn',
+			name: "Last withdrawn",
 			value: bank.lastWithdraw
 				? `<t:${bank.lastWithdraw}:R>${
 						lastWithdraw.withdrawFee
 							? `\nCan withdraw again <t:${now + lastWithdraw.untilCanWithdraw}:R>`
-							: ''
+							: ""
 					}`
-				: 'Never'
+				: "Never"
 		},
 		{
-			name: 'Last interest payment',
+			name: "Last interest payment",
 			value:
-				(bank.lastInterest ? `<t:${bank.lastInterest}:R>` : 'Never') +
+				(bank.lastInterest ? `<t:${bank.lastInterest}:R>` : "Never") +
 				(untilNextInterest <= 0
-					? '\nNext payment due now!'
+					? "\nNext payment due now!"
 					: `\nNext payment <t:${now + untilNextInterest}:R>`)
 		},
-		{ name: 'Total deposited', value: formatDoler(bank.totDeposit, false) }
+		{ name: "Total deposited", value: formatDoler(bank.totDeposit, false) }
 	);
 
 	return msge;
@@ -262,11 +262,11 @@ async function withdraw(am: number, msg: okbot.Message, bank: okbot.Bank, id: Sn
 
 	const msge = new EmbedBuilder().setColor(Colors.DarkGreen).setFields(
 		{
-			name: 'Withdrawn',
-			value: formatDoler(am - fee, false) + (fee ? ` (${lastWithdraw.withdrawFee * 100}% fee)` : '')
+			name: "Withdrawn",
+			value: formatDoler(am - fee, false) + (fee ? ` (${lastWithdraw.withdrawFee * 100}% fee)` : "")
 		},
 		{
-			name: 'Remaining balance',
+			name: "Remaining balance",
 			value: formatDoler(bank.balance, false),
 			inline: true
 		}
@@ -281,7 +281,7 @@ async function deposit(am: number, msg: okbot.Message, bank: okbot.Bank, id: Sno
 	const maxDeposit = membership.max - bank.balance;
 	if (am > maxDeposit) am = maxDeposit;
 
-	if (!am) return sendSimpleMessage(msg, 'Your bank account is already full.');
+	if (!am) return sendSimpleMessage(msg, "Your bank account is already full.");
 
 	bank.balance += am;
 	bank.totDeposit = (bank.totDeposit ?? 0) + am;
@@ -291,11 +291,11 @@ async function deposit(am: number, msg: okbot.Message, bank: okbot.Bank, id: Sno
 
 	const msge = new EmbedBuilder().setColor(Colors.DarkGreen).setFields(
 		{
-			name: 'Deposited',
+			name: "Deposited",
 			value: formatDoler(am, false)
 		},
 		{
-			name: 'Current balance',
+			name: "Current balance",
 			value: formatDoler(bank.balance, false),
 			inline: true
 		}
@@ -305,13 +305,13 @@ async function deposit(am: number, msg: okbot.Message, bank: okbot.Bank, id: Sno
 }
 
 function showLevels() {
-	const msge = new EmbedBuilder().setColor(Colors.White).setTitle('Bank membership tiers');
+	const msge = new EmbedBuilder().setColor(Colors.White).setTitle("Bank membership tiers");
 
 	for (const i in BankMemberships) {
 		const stat = BankMemberships[i];
 		msge.addFields({
 			name: `${stat.name} (lv. ${i})`,
-			value: `\`${formatNumber(stat.cost).padStart(9, ' ')}\` 💵 | account limit: ${formatDoler(stat.max)} ● interest: **${
+			value: `\`${formatNumber(stat.cost).padStart(9, " ")}\` 💵 | account limit: ${formatDoler(stat.max)} ● interest: **${
 				Math.round(stat.interest * 10000) / 100
 			}%** ● withdrawal fee: **${stat.withdrawFee * 100}%** ● withdraw cooldown: **${stat.withdrawCD / 3600} h**`
 		});
@@ -326,10 +326,10 @@ function showUpgradeStats(lv: number, money: number) {
 		.setDescription(showUpgradeCost(BankMemberships[lv].cost, money))
 		.setTitle(`Bank level ${lv} upgrade`)
 		.addFields([
-			showUpgradeStat(BankMemberships, lv, 'max', 'Account limit', v => formatDoler(v, false)),
-			showUpgradeStat(BankMemberships, lv, 'interest', 'Interest', v => Math.round(v * 10000) / 100 + '%'),
-			showUpgradeStat(BankMemberships, lv, 'withdrawCD', 'Withdraw cooldown', v => v / 3600 + 'h'),
-			showUpgradeStat(BankMemberships, lv, 'withdrawFee', 'Withdrawal fee', v => v * 100 + '%')
+			showUpgradeStat(BankMemberships, lv, "max", "Account limit", v => formatDoler(v, false)),
+			showUpgradeStat(BankMemberships, lv, "interest", "Interest", v => Math.round(v * 10000) / 100 + "%"),
+			showUpgradeStat(BankMemberships, lv, "withdrawCD", "Withdraw cooldown", v => v / 3600 + "h"),
+			showUpgradeStat(BankMemberships, lv, "withdrawFee", "Withdrawal fee", v => v * 100 + "%")
 		])
 		.setFooter({ text: "Use 'bank levels' to view all upgrades" });
 }
@@ -340,16 +340,16 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	const action = args.shift()!.toLowerCase();
 	switch (action) {
-		case 'withdraw':
-		case 'w': {
+		case "withdraw":
+		case "w": {
 			const arg = args.shift()?.toLowerCase();
-			if (!arg) return sendSimpleMessage(msg, 'Please provide the amount you wish to withdraw.');
+			if (!arg) return sendSimpleMessage(msg, "Please provide the amount you wish to withdraw.");
 
 			const plrdat = await db_plr_get({ _id: msg.author.id, bank: 1, mon: 1 });
 			const bank = await bankInterest(plrdat ?? { bank: { balance: 0 } }, msg.author, undefined, msg);
-			if (!bank?.balance) return sendSimpleMessage(msg, '🕸️ There is no money to withdraw...');
+			if (!bank?.balance) return sendSimpleMessage(msg, "🕸️ There is no money to withdraw...");
 
-			const am = arg == 'all' ? bank.balance : parseNumberSuffix(arg);
+			const am = arg == "all" ? bank.balance : parseNumberSuffix(arg);
 			if (!am || isNaN(am) || am < 0)
 				return sendSimpleMessage(
 					msg,
@@ -360,15 +360,15 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			return;
 		}
 
-		case 'deposit':
-		case 'd': {
+		case "deposit":
+		case "d": {
 			const arg = args.shift()?.toLowerCase();
-			if (!arg) return sendSimpleMessage(msg, 'Please provide the amount you wish to deposit.');
+			if (!arg) return sendSimpleMessage(msg, "Please provide the amount you wish to deposit.");
 
 			const plrdat = await db_plr_get({ _id: msg.author.id, bank: 1, mon: 1, monTot: 1, monLv: 1 });
 			const bank = await bankInterest(plrdat ?? { bank: { balance: 0 } }, msg.author, undefined, msg);
 			const mon = plrdat?.mon ?? 0;
-			const am = arg == 'all' ? mon : parseNumberSuffix(arg);
+			const am = arg == "all" ? mon : parseNumberSuffix(arg);
 
 			if (!am || isNaN(am) || am < 0)
 				return sendSimpleMessage(
@@ -380,19 +380,19 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			return;
 		}
 
-		case 'levels':
-		case 'lv':
-		case 'upgrades': {
+		case "levels":
+		case "lv":
+		case "upgrades": {
 			return msg.reply({ embeds: [showLevels()], allowedMentions: { repliedUser: false } });
 		}
 
-		case 'upgrade':
-		case 'up': {
+		case "upgrade":
+		case "up": {
 			const id = msg.author.id;
 			const plrdat = await db_plr_get({ _id: id, bank: 1, mon: 1, monTot: 1, monLv: 1 });
 			const bank = await bankInterest(plrdat ?? { bank: { balance: 0 } }, msg.author, undefined, msg);
 			const lv = (bank.lv ?? 0) + 1;
-			if (!BankMemberships[lv]) return sendSimpleMessage(msg, 'Your bank is already at the maximum level!');
+			if (!BankMemberships[lv]) return sendSimpleMessage(msg, "Your bank is already at the maximum level!");
 
 			const mon = plrdat?.mon ?? 0;
 			const components =
@@ -402,11 +402,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 								new ButtonBuilder()
 									.setCustomId(`bank_up_confirm-${id}`)
 									.setStyle(ButtonStyle.Success)
-									.setLabel('Upgrade'),
+									.setLabel("Upgrade"),
 								new ButtonBuilder()
 									.setCustomId(`bank_up_cancel-${id}`)
 									.setStyle(ButtonStyle.Danger)
-									.setLabel('Cancel')
+									.setLabel("Cancel")
 							)
 						]
 					: [];
@@ -414,8 +414,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			return msg.reply({ embeds: [showUpgradeStats(lv, mon)], components });
 		}
 
-		case 'stats':
-		case 'stat': {
+		case "stats":
+		case "stat": {
 			const plrdat = await db_plr_get({ _id: user.id, bank: 1, monLv: 1, monTot: 1 });
 			const bank = await bankInterest(plrdat ?? { bank: { balance: 0 } }, user, undefined, msg);
 

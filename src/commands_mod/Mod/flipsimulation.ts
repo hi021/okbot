@@ -1,5 +1,5 @@
-import { Colors } from 'discord.js';
-import { randomInt, sendSimpleMessage } from '../../utils.js';
+import { Colors } from "discord.js";
+import { randomInt, sendSimpleMessage } from "../../utils.js";
 
 function runFlipSimulation(iterations: number, odds: number) {
 	let won = 0,
@@ -15,10 +15,10 @@ function runFlipSimulation(iterations: number, odds: number) {
 	return { won, lost };
 }
 
-export const name = 'flipsimulation';
-export const alias = ['fliptest', 'bettest'];
-export const usage = '[Iteration count] <Odds (0-100)>';
-export const description = 'see how rigged this is';
+export const name = "flipsimulation";
+export const alias = ["fliptest", "bettest"];
+export const usage = "[Iteration count] <Odds (0-100)>";
+export const description = "see how rigged this is";
 
 export function execute(msg: okbot.Message, args: string[]) {
 	if (!args.length) return;

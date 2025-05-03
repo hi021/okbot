@@ -1,13 +1,13 @@
-import { db_plr_set } from '../../db/db.js';
-import { osu_getId } from '../../utilsOsu.js';
+import { db_plr_set } from "../../db/db.js";
+import { osu_getId } from "../../utilsOsu.js";
 
-export const name = 'osuset';
-export const alias = ['setosu'];
-export const description = 'Assign yourself an osu! profile';
-export const usage = '<osu! username (blank to unlink)>';
+export const name = "osuset";
+export const alias = ["setosu"];
+export const description = "Assign yourself an osu! profile";
+export const usage = "<osu! username (blank to unlink)>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	const nam = args.join(' ');
+	const nam = args.join(" ");
 	if (!nam) {
 		await db_plr_set({ _id: msg.author.id, osu: undefined });
 		return msg.reply(`> Reset your osu! username.`);

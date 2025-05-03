@@ -1,47 +1,47 @@
 import {
-    ActionRowBuilder,
-    APIEmbedField,
-    ButtonBuilder,
-    ButtonStyle,
-    Colors,
-    EmbedBuilder,
-    User
-} from 'discord.js';
-import { db_fish_add, db_plr_add, db_plr_get } from '../../db/db.js';
-import { bot } from '../../okbot.js';
-import { SET } from '../../settings.js';
+	ActionRowBuilder,
+	APIEmbedField,
+	ButtonBuilder,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	User
+} from "discord.js";
+import { db_fish_add, db_plr_add, db_plr_get } from "../../db/db.js";
+import { bot } from "../../okbot.js";
+import { SET } from "../../settings.js";
 import {
-    capitalizeFirstLetter,
-    createSimpleMessage,
-    formatDoler,
-    formatNumber,
-    getUserFromMsg,
-    numberToEmoji,
-    sendEphemeralReply,
-    sendSimpleMessage,
-    showItemName
-} from '../../utils.js';
-import { BakeryStaff } from '../Business/bakery.js';
-import { Fish } from './fish.js';
+	capitalizeFirstLetter,
+	createSimpleMessage,
+	formatDoler,
+	formatNumber,
+	getUserFromMsg,
+	numberToEmoji,
+	sendEphemeralReply,
+	sendSimpleMessage,
+	showItemName
+} from "../../utils.js";
+import { BakeryStaff } from "../Business/bakery.js";
+import { Fish } from "./fish.js";
 
-export const name = 'collection';
-export const alias = ['collectors', 'coll'];
-export const description = '👽 View collection of extreme rarities';
-export const usage = '<Username OR Mention>';
+export const name = "collection";
+export const alias = ["collectors", "coll"];
+export const description = "👽 View collection of extreme rarities";
+export const usage = "<Username OR Mention>";
 
 const displayItem = (item: okbot.CollectionItem) => {
-	let itemString = '';
+	let itemString = "";
 
 	// top row colors
 	for (let i = 1; i <= 5; i++) {
-		if (item[i as 1 | 2 | 3 | 4 | 5]) itemString += '🟦';
-		else itemString += '⬛';
+		if (item[i as 1 | 2 | 3 | 4 | 5]) itemString += "🟦";
+		else itemString += "⬛";
 	}
 	if (item.fin) {
-		itemString += '  🌟';
+		itemString += "  🌟";
 		if (item.fin > 1) itemString += `**x${item.fin}**`;
 	}
-	itemString += '\n';
+	itemString += "\n";
 
 	// bottom row numbers
 	for (let i = 1; i <= 5; i++) {
@@ -52,23 +52,23 @@ const displayItem = (item: okbot.CollectionItem) => {
 	return itemString;
 };
 
-bot.on('interactionCreate', async interaction => {
+bot.on("interactionCreate", async interaction => {
 	if (!interaction.isButton()) return;
-	const split = interaction.customId.split('-');
+	const split = interaction.customId.split("-");
 	const id = split[1];
 	const item = split[2];
 
-	if (split[0] === 'collection_forge') {
+	if (split[0] === "collection_forge") {
 		if (id !== interaction.user.id)
-			return sendEphemeralReply(interaction, 'This precious collection does not belong to you!');
+			return sendEphemeralReply(interaction, "This precious collection does not belong to you!");
 
 		const result = await forgeItem(interaction.user, item);
 		return interaction.reply({ embeds: [result.msge], components: result.components ?? [] });
 	}
 
-	if (split[0] === 'collection_forge_confirm') {
+	if (split[0] === "collection_forge_confirm") {
 		if (id !== interaction.user.id)
-			return sendEphemeralReply(interaction, 'This precious collection does not belong to you!');
+			return sendEphemeralReply(interaction, "This precious collection does not belong to you!");
 
 		await confirmForgeItem(interaction.user, item, interaction.message as okbot.Message);
 		try {
@@ -80,9 +80,9 @@ bot.on('interactionCreate', async interaction => {
 		return;
 	}
 
-	if (split[0] === 'collection_forge_cancel') {
+	if (split[0] === "collection_forge_cancel") {
 		if (id !== interaction.user.id)
-			return sendEphemeralReply(interaction, 'This precious collection does not belong to you!');
+			return sendEphemeralReply(interaction, "This precious collection does not belong to you!");
 
 		try {
 			interaction.message.delete();
@@ -96,10 +96,10 @@ bot.on('interactionCreate', async interaction => {
 
 // name should already be formatted to have only the first letter capital (eg. Pure euphoria)
 async function forgeItem(user: User, item: string) {
-	if (Fish.f[item]?.type != 'collectors')
+	if (Fish.f[item]?.type != "collectors")
 		return {
 			msge: createSimpleMessage(
-				'Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling.',
+				"Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling.",
 				Colors.DarkRed
 			)
 		};
@@ -127,51 +127,51 @@ async function forgeItem(user: User, item: string) {
 	const msge = new EmbedBuilder()
 		.setColor(Colors.Blurple)
 		.setAuthor({ name: `Forging ${showItemName({ nam: item, emoji: Fish.f[item].emoji }, false)}` })
-		.addFields({ name: 'Total cost', value: '💵 ' + formatNumber(cost) });
+		.addFields({ name: "Total cost", value: "💵 " + formatNumber(cost) });
 
 	const components: ActionRowBuilder<ButtonBuilder>[] = [
 		new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder()
 				.setCustomId(`collection_forge_confirm-${user.id}-${item}`)
 				.setStyle(ButtonStyle.Success)
-				.setLabel('Confirm'),
+				.setLabel("Confirm"),
 			new ButtonBuilder()
 				.setCustomId(`collection_forge_cancel-${user.id}`)
 				.setStyle(ButtonStyle.Danger)
-				.setLabel('Cancel')
+				.setLabel("Cancel")
 		)
 	];
 
 	switch (item) {
-		case 'Alien artifact': {
+		case "Alien artifact": {
 			msge.setDescription("+ Extremely valuable collector's aquarium display item");
 			break;
 		}
-		case 'Ancient skeleton': {
-			msge.setDescription('+ 11 000 000 💵 (TEMPORARY - full-fledged reward to be implemented)');
+		case "Ancient skeleton": {
+			msge.setDescription("+ 11 000 000 💵 (TEMPORARY - full-fledged reward to be implemented)");
 			break;
 		}
-		case 'Perfect genome': {
+		case "Perfect genome": {
 			// if already has all 5 employees, give 24M instead
 			msge.setDescription(
 				(collItem?.fin ?? 0 >= 5)
-					? '+ 24 000 000 💵 Large one-time payment'
-					: '+ Hyper-effective bakery worker (more rewards to be implemented)'
+					? "+ 24 000 000 💵 Large one-time payment"
+					: "+ Hyper-effective bakery worker (more rewards to be implemented)"
 			);
 			break;
 		}
-		case 'Lost crown': {
-			msge.setDescription('+ 10 000 000 💵 Large one-time payment');
+		case "Lost crown": {
+			msge.setDescription("+ 10 000 000 💵 Large one-time payment");
 			break;
 		}
-		case 'Pure euphoria': {
-			msge.setDescription('+ 11 000 000 💵 (TEMPORARY - full-fledged reward to be implemented)');
+		case "Pure euphoria": {
+			msge.setDescription("+ 11 000 000 💵 (TEMPORARY - full-fledged reward to be implemented)");
 			break;
 		}
 		default: {
 			return {
 				msge: createSimpleMessage(
-					'Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling.',
+					"Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling.",
 					Colors.DarkRed
 				)
 			};
@@ -182,10 +182,10 @@ async function forgeItem(user: User, item: string) {
 }
 
 async function confirmForgeItem(user: User, item: string, msg: okbot.Message) {
-	if (Fish.f[item]?.type != 'collectors')
+	if (Fish.f[item]?.type != "collectors")
 		return sendSimpleMessage(
 			msg,
-			'Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling.'
+			"Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling."
 		);
 
 	const plrdat = await db_plr_get({ _id: user.id, fishCol: 1, mon: 1 });
@@ -199,25 +199,25 @@ async function confirmForgeItem(user: User, item: string, msg: okbot.Message) {
 		return sendSimpleMessage(msg, `You need ${formatDoler(cost - mon)} more to forge this item.`);
 
 	// add rewards and remove parts from inventory
-	let reward = '';
+	let reward = "";
 	switch (item) {
-		case 'Alien artifact': {
+		case "Alien artifact": {
 			await db_plr_add({ _id: user.id, fishCol: { [item]: { fin: 1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1 } } });
-			await db_fish_add(user.id, 'Alien species', 0);
-			reward = '- 1x ' + showItemName({ nam: 'Alien species', emoji: Fish.f['Alien species'].emoji }, false);
+			await db_fish_add(user.id, "Alien species", 0);
+			reward = "- 1x " + showItemName({ nam: "Alien species", emoji: Fish.f["Alien species"].emoji }, false);
 			break;
 		}
-		case 'Ancient skeleton': {
+		case "Ancient skeleton": {
 			await db_plr_add({
 				_id: user.id,
 				mon: 11000000,
 				income: { fish: 11000000 },
 				fishCol: { [item]: { fin: 1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1 } }
 			});
-			reward = '- 11 000 000 💵'; // todo
+			reward = "- 11 000 000 💵"; // todo
 			break;
 		}
-		case 'Perfect genome': {
+		case "Perfect genome": {
 			if (collItem?.fin ?? 0 >= 5) {
 				await db_plr_add({
 					_id: user.id,
@@ -225,41 +225,41 @@ async function confirmForgeItem(user: User, item: string, msg: okbot.Message) {
 					income: { fish: 18000000 },
 					fishCol: { [item]: { fin: 1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1 } }
 				});
-				reward = '- 18 000 000 💵';
+				reward = "- 18 000 000 💵";
 			} else {
 				await db_plr_add({
 					_id: user.id,
 					fishCol: { [item]: { fin: 1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1 } }
 				});
 				reward =
-					'- 1x ' + showItemName({ nam: BakeryStaff['90'].nam, emoji: BakeryStaff['90'].emoji }, false);
+					"- 1x " + showItemName({ nam: BakeryStaff["90"].nam, emoji: BakeryStaff["90"].emoji }, false);
 			}
 			break;
 		}
-		case 'Lost crown': {
+		case "Lost crown": {
 			await db_plr_add({
 				_id: user.id,
 				mon: 10000000,
 				income: { fish: 10000000 },
 				fishCol: { [item]: { fin: 1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1 } }
 			});
-			reward = '- 10 000 000 💵';
+			reward = "- 10 000 000 💵";
 			break;
 		}
-		case 'Pure euphoria': {
+		case "Pure euphoria": {
 			await db_plr_add({
 				_id: user.id,
 				mon: 11000000,
 				income: { fish: 11000000 },
 				fishCol: { [item]: { fin: 1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1 } }
 			});
-			reward = '- 11 000 000 💵'; // todo
+			reward = "- 11 000 000 💵"; // todo
 			break;
 		}
 		default: {
 			return sendSimpleMessage(
 				msg,
-				'Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling.'
+				"Only `collectors` rarity fish parts can be forged into items!\nPlease check your spelling."
 			);
 		}
 	}
@@ -267,7 +267,7 @@ async function confirmForgeItem(user: User, item: string, msg: okbot.Message) {
 	await db_plr_add({ _id: user.id, mon: -cost, expense: { fish: cost } });
 	return sendSimpleMessage(
 		msg,
-		'Congratulations! 🎊\nYour rewards have been delivered:\n' + reward,
+		"Congratulations! 🎊\nYour rewards have been delivered:\n" + reward,
 		Colors.Blue
 	);
 }
@@ -280,23 +280,23 @@ const getCollectionItemPartCount = (item: okbot.CollectionItem) =>
 	(item[1] ?? 0) + (item[2] ?? 0) + (item[3] ?? 0) + (item[4] ?? 0) + (item[5] ?? 0);
 
 function showEmptyCollectionMessage(msge: EmbedBuilder, msg: okbot.Message) {
-	msge.setDescription('🕸️ *nothing to see here...*');
+	msge.setDescription("🕸️ *nothing to see here...*");
 	return msg.reply({ embeds: [msge], allowedMentions: { repliedUser: false } });
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	let user = msg.author;
 	if (args[0]) {
-		if (args[0].toLowerCase() == 'forge') {
+		if (args[0].toLowerCase() == "forge") {
 			args.shift();
-			let forgingItem = capitalizeFirstLetter(args.join(' '));
-			if (!forgingItem) return sendSimpleMessage(msg, 'Please provide the name of item you wish to forge.');
+			let forgingItem = capitalizeFirstLetter(args.join(" "));
+			if (!forgingItem) return sendSimpleMessage(msg, "Please provide the name of item you wish to forge.");
 
 			// try to find collectors item by partial name
 			if (!Fish.f[forgingItem]) {
-				const findRegex = new RegExp(forgingItem, 'gi');
+				const findRegex = new RegExp(forgingItem, "gi");
 				for (const fish in Fish.f) {
-					if (Fish.f[fish].type == 'collectors' && findRegex.test(fish)) {
+					if (Fish.f[fish].type == "collectors" && findRegex.test(fish)) {
 						forgingItem = fish;
 						break;
 					}
@@ -342,9 +342,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	msge.addFields([
 		...fields,
-		{ name: '\u200b', value: '\u200b' },
-		{ name: 'Forged items', value: itemCountTotal.toString(), inline: true },
-		{ name: 'Total parts', value: partCountTotal.toString(), inline: true }
+		{ name: "\u200b", value: "\u200b" },
+		{ name: "Forged items", value: itemCountTotal.toString(), inline: true },
+		{ name: "Total parts", value: partCountTotal.toString(), inline: true }
 	]);
 
 	const components: ActionRowBuilder<ButtonBuilder>[] = [];

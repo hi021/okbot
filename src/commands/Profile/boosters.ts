@@ -1,17 +1,17 @@
-import { EmbedBuilder } from 'discord.js';
-import { db_plr_get } from '../../db/db.js';
-import { SET } from '../../settings.js';
+import { EmbedBuilder } from "discord.js";
+import { db_plr_get } from "../../db/db.js";
+import { SET } from "../../settings.js";
 import {
-    checkBoosterValidity,
-    drawProgressBar,
-    formatMilliseconds,
-    getUserFromMsg,
-    sendSimpleMessage
-} from '../../utils.js';
-export const name = 'boosters';
-export const alias = ['booster'];
-export const description = '💊 Check your active boosters';
-export const usage = '<Username OR Mention>';
+	checkBoosterValidity,
+	drawProgressBar,
+	formatMilliseconds,
+	getUserFromMsg,
+	sendSimpleMessage
+} from "../../utils.js";
+export const name = "boosters";
+export const alias = ["booster"];
+export const description = "💊 Check your active boosters";
+export const usage = "<Username OR Mention>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	const usr = (await getUserFromMsg(msg, args)) || msg.author;
@@ -35,15 +35,15 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		return sendSimpleMessage(msg, `\`${usr.displayName}\` has no active boosters.`);
 
 	const msge = new EmbedBuilder()
-		.setColor('#78b159')
-		.setFooter({ text: `${plrdat.boosterC ?? 0} booster${plrdat.boosterC === 1 ? '' : 's'} used total` });
+		.setColor("#78b159")
+		.setFooter({ text: `${plrdat.boosterC ?? 0} booster${plrdat.boosterC === 1 ? "" : "s"} used total` });
 
 	for (const i in boostersActive) {
 		const timeRatio = Math.round((boostersActive[i].timeRemaining / boostersActive[i].time) * 10);
 		msge.addFields({
 			name: boostersActive[i].name,
 			value:
-				drawProgressBar(timeRatio, 10) + '\n`' + formatMilliseconds(boostersActive[i].timeRemaining) + '` ⏰'
+				drawProgressBar(timeRatio, 10) + "\n`" + formatMilliseconds(boostersActive[i].timeRemaining) + "` ⏰"
 		});
 	}
 	const cooldown = (SET.BOOSTER_COOLDOWN || 57600) - (plrdat.boosterCd ?? 0);
@@ -52,10 +52,10 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		msge.addFields({
 			name: boostersOnCooldown[i].name,
 			value:
-				drawProgressBar(timeRatio, 10, '🟥') +
-				'\n`' +
+				drawProgressBar(timeRatio, 10, "🟥") +
+				"\n`" +
 				formatMilliseconds(boostersOnCooldown[i].cooldownRemaining * 1000) +
-				'` 🚫'
+				"` 🚫"
 		});
 	}
 

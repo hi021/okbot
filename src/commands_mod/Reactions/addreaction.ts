@@ -1,14 +1,14 @@
-import { Colors, EmbedBuilder } from 'discord.js';
-import { db_guild_add_reaction } from '../../db/guild.js';
-import { bot } from '../../okbot.js';
-import { SET } from '../../settings.js';
-import { getGuildPrefix, parseReaction, sendSimpleMessage } from '../../utils.js';
+import { Colors, EmbedBuilder } from "discord.js";
+import { db_guild_add_reaction } from "../../db/guild.js";
+import { bot } from "../../okbot.js";
+import { SET } from "../../settings.js";
+import { getGuildPrefix, parseReaction, sendSimpleMessage } from "../../utils.js";
 
-export const name = 'addreaction';
-export const alias = ['ar'];
-export const description = 'just add it';
-export const usage = '[Reaction message]||<Response message>';
-export const restrict = 'GUILD_ADMIN';
+export const name = "addreaction";
+export const alias = ["ar"];
+export const description = "just add it";
+export const usage = "[Reaction message]||<Response message>";
+export const restrict = "GUILD_ADMIN";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!msg.inGuild() || args.length < 2) return;
@@ -29,8 +29,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 					.setColor(Colors.DarkGreen)
 					.setTitle(`Added guild reaction`)
 					.addFields(
-						{ name: 'Message', value: reaction.length > 1024 ? '`<Too long to display>`' : reaction },
-						{ name: 'Response', value: response.length > 1024 ? '`<Too long to display>`' : response }
+						{ name: "Message", value: reaction.length > 1024 ? "`<Too long to display>`" : reaction },
+						{ name: "Response", value: response.length > 1024 ? "`<Too long to display>`" : response }
 					)
 			],
 

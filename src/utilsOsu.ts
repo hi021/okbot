@@ -1,19 +1,19 @@
-import canvasModule from 'canvas';
-import fetch from 'cross-fetch';
-import * as d3 from 'd3';
-import fs from 'fs';
-import jsdom from 'jsdom';
-import path from 'path';
+import canvasModule from "canvas";
+import fetch from "cross-fetch";
+import * as d3 from "d3";
+import fs from "fs";
+import jsdom from "jsdom";
+import path from "path";
 const { JSDOM } = jsdom;
-const DOM = new JSDOM('<!DOCTYPE html><html><body></body></html>');
-const API_URL = 'https://poggers.ltd/api/';
+const DOM = new JSDOM("<!DOCTYPE html><html><body></body></html>");
+const API_URL = "https://poggers.ltd/api/";
 
 export async function osu_getId(name: string): Promise<number | null> {
 	try {
 		const res = await fetch(`${API_URL}id/${name}`, {
-			method: 'GET',
+			method: "GET",
 			headers: {
-				Accept: 'application/json'
+				Accept: "application/json"
 			}
 		});
 		if (!res.ok) throw new Error(res.statusText);
@@ -21,7 +21,7 @@ export async function osu_getId(name: string): Promise<number | null> {
 		const resJson = await res.json();
 		return resJson.id;
 	} catch (e) {
-		console.error('Failed to get osu id:\n', e);
+		console.error("Failed to get osu id:\n", e);
 		return null;
 	}
 }
@@ -29,9 +29,9 @@ export async function osu_getId(name: string): Promise<number | null> {
 export async function osu_getT50(id: string | number) {
 	try {
 		const res = await fetch(`${API_URL}profile/${id}`, {
-			method: 'GET',
+			method: "GET",
 			headers: {
-				Accept: 'application/json'
+				Accept: "application/json"
 			}
 		});
 		if (!res.ok) throw new Error(res.statusText);
@@ -39,7 +39,7 @@ export async function osu_getT50(id: string | number) {
 		const resJson = await res.json();
 		return resJson;
 	} catch (e) {
-		console.error('Failed to get osu top50:\n', e);
+		console.error("Failed to get osu top50:\n", e);
 		return null;
 	}
 }
@@ -48,13 +48,13 @@ export const getOsuAvatar = (id: string | number) => `https://a.ppy.sh/${id}_0.p
 
 // filename is 'id_date.png' or 'id1_id2_date.png'
 export function top50_chart_get(filename: string) {
-	const filePath = path.join(process.env.T50_IMG_PATH ?? './', filename);
+	const filePath = path.join(process.env.T50_IMG_PATH ?? "./", filename);
 	return fs.existsSync(filePath) ? filePath : null;
 }
 
 // filename is 'id1-id2-date.png'
 export function merged_avatars_get(filename: string) {
-	const filePath = path.join(process.env.T50_AV_PATH ?? './', filename);
+	const filePath = path.join(process.env.T50_AV_PATH ?? "./", filename);
 	return fs.existsSync(filePath) ? filePath : null;
 }
 
@@ -66,7 +66,7 @@ export async function merge_avatars(url1: string, url2: string, saveFilename: st
 		imgw = 96,
 		imgh = 96;
 	const canvas = canvasModule.createCanvas(w, h);
-	const context = canvas.getContext('2d');
+	const context = canvas.getContext("2d");
 	const image1 = new canvasModule.Image();
 	const image2 = new canvasModule.Image();
 
@@ -87,13 +87,13 @@ export async function merge_avatars(url1: string, url2: string, saveFilename: st
 		context.drawImage(image2, w - imgw, h - imgh, imgw, imgh);
 
 		const returnPromise: Promise<string | null> = new Promise((resolve, reject) => {
-			const filePath = path.join(process.env.T50_AV_PATH ?? './', saveFilename);
+			const filePath = path.join(process.env.T50_AV_PATH ?? "./", saveFilename);
 			const writeStream = fs.createWriteStream(filePath);
 			const pngStream = canvas.createPNGStream();
 			pngStream.pipe(writeStream);
 
-			writeStream.on('finish', () => resolve(filePath));
-			writeStream.on('error', e => reject(e));
+			writeStream.on("finish", () => resolve(filePath));
+			writeStream.on("error", e => reject(e));
 		});
 
 		return await returnPromise;
@@ -148,15 +148,15 @@ export async function top50_chart_generate(
 
 	// generate svg in DOM
 	try {
-		const body = d3.select(DOM.window.document).select('body');
+		const body = d3.select(DOM.window.document).select("body");
 		const svg = body
-			.attr('width', `${w}px`)
-			.attr('height', `${h}px`)
-			.append('svg')
-			.attr('width', `${w}px`)
-			.attr('height', `${h}px`)
-			.attr('xmlns', 'http://www.w3.org/2000/svg')
-			.attr('viewBox', `0 0 ${w} ${h}`);
+			.attr("width", `${w}px`)
+			.attr("height", `${h}px`)
+			.append("svg")
+			.attr("width", `${w}px`)
+			.attr("height", `${h}px`)
+			.attr("xmlns", "http://www.w3.org/2000/svg")
+			.attr("viewBox", `0 0 ${w} ${h}`);
 
 		// domain is data, range is size in pixels
 		const xScale = d3
@@ -184,35 +184,35 @@ export async function top50_chart_generate(
 		for (let i = 0; i < data.length; i++) {
 			const clr = colors[i % colors.length];
 			svg
-				.append('g')
-				.append('path')
+				.append("g")
+				.append("path")
 				.datum(data[i])
-				.attr('d', area(data[i] as unknown as any))
-				.attr('fill', clr)
-				.attr('opacity', 0.3);
+				.attr("d", area(data[i] as unknown as any))
+				.attr("fill", clr)
+				.attr("opacity", 0.3);
 			svg
-				.append('path')
+				.append("path")
 				.datum(data[i])
-				.attr('d', line(data[i] as unknown as any))
-				.attr('stroke', clr)
-				.attr('stroke-width', 1)
-				.attr('stroke-linejoin', 'round')
-				.attr('stroke-linecap', 'round')
-				.attr('fill', 'none');
+				.attr("d", line(data[i] as unknown as any))
+				.attr("stroke", clr)
+				.attr("stroke-width", 1)
+				.attr("stroke-linejoin", "round")
+				.attr("stroke-linecap", "round")
+				.attr("fill", "none");
 		}
 
 		if (showAxisY)
 			svg
-				.append('g')
-				.call(d3.axisRight(yScale).ticks(3, ' f').tickSizeInner(3).tickSizeOuter(0))
-				.attr('font-size', '10')
-				.attr('color', '#fff');
+				.append("g")
+				.call(d3.axisRight(yScale).ticks(3, " f").tickSizeInner(3).tickSizeOuter(0))
+				.attr("font-size", "10")
+				.attr("color", "#fff");
 
 		// paint onto canvas and export as png
 		const svgString = body.html();
-		const svgDataUrl = 'data:image/svg+xml,' + Buffer.from(svgString).toString('utf8');
+		const svgDataUrl = "data:image/svg+xml," + Buffer.from(svgString).toString("utf8");
 		const canvas = canvasModule.createCanvas(w, h);
-		const context = canvas.getContext('2d');
+		const context = canvas.getContext("2d");
 		const image = new canvasModule.Image();
 
 		const imagePromise: Promise<string | null> = new Promise((resolve, reject) => {
@@ -224,12 +224,12 @@ export async function top50_chart_generate(
 				}
 
 				try {
-					const filePath = path.join(process.env.T50_IMG_PATH ?? './', pngFilename);
+					const filePath = path.join(process.env.T50_IMG_PATH ?? "./", pngFilename);
 					const writeStream = fs.createWriteStream(filePath);
 					const pngStream = canvas.createPNGStream();
 					pngStream.pipe(writeStream);
 
-					writeStream.on('finish', () => resolve(filePath));
+					writeStream.on("finish", () => resolve(filePath));
 				} catch (e) {
 					reject(e);
 				}
@@ -243,7 +243,7 @@ export async function top50_chart_generate(
 		clearBody(body);
 		return localPath;
 	} catch (e) {
-		console.error('Failed to generate chart image:\n', e);
+		console.error("Failed to generate chart image:\n", e);
 		return null;
 	}
 }

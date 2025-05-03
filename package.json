@@ -9,7 +9,7 @@
 		"canvas": "^3.1.0",
 		"cross-fetch": "^4.1.0",
 		"d3": "^7.9.0",
-		"discord.js": "^14.19.2",
+		"discord.js": "^14.19.3",
 		"dotenv": "^16.5.0",
 		"genius-lyrics-api": "file:..\\genius-lyrics-api",
 		"jsdom": "^26.1.0",

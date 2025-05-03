@@ -1,51 +1,51 @@
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonInteraction,
-    ButtonStyle,
-    Colors,
-    EmbedBuilder,
-    MessageFlags,
-    User
-} from 'discord.js';
-import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
-import { bot } from '../../okbot.js';
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	MessageFlags,
+	User
+} from "discord.js";
+import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
+import { bot } from "../../okbot.js";
 import {
-    calcMoneyLevelsGain,
-    drawProgressBar,
-    formatDoler,
-    formatNumber,
-    getUserFromMsg,
-    sendEphemeralReply,
-    sendSimpleMessage,
-    showUpgradeCost,
-    showUpgradeStat
-} from '../../utils.js';
-import { findFish } from './fish.js';
+	calcMoneyLevelsGain,
+	drawProgressBar,
+	formatDoler,
+	formatNumber,
+	getUserFromMsg,
+	sendEphemeralReply,
+	sendSimpleMessage,
+	showUpgradeCost,
+	showUpgradeStat
+} from "../../utils.js";
+import { findFish } from "./fish.js";
 
-export const name = 'aquarium';
-export const alias = ['aqua'];
-export const description = '🦈 Show off your precious fish to others and get money doing so';
+export const name = "aquarium";
+export const alias = ["aqua"];
+export const description = "🦈 Show off your precious fish to others and get money doing so";
 export const usage = '<Username OR Mention> <"Upgrade" OR "Collect" OR "Edit" OR "Reset">';
 export const usageDetail =
 	"Display fish from your inventory in the aquarium and collect passive income.\nOne tank houses one fish, but larger tanks multiply the income.\nRarer fish generally generate more income.\nUpgrading will come with a one-time fee but give you more fish tanks and increase the income cap.\nUse 'edit' to put your fish in the aquarium, provide no parameters to view help.\nUse 'reset' to take all the fish back to your inventory.";
 const usageEdit =
 	'The usage for this command is:\n`edit [Tank size] [Tank index (1-indexed)] <Fish from your inventory (blank to remove)> OR ["Name"] <New name>`\nE.g. `aquarium edit medium 1 Turtle`';
 
-bot.on('interactionCreate', async interaction => {
+bot.on("interactionCreate", async interaction => {
 	if (!interaction.isButton() || !interaction.guild) return;
 
-	const split = interaction.customId.split('-');
+	const split = interaction.customId.split("-");
 
 	const id = split[1];
-	if (split[0] == 'aq_up_confirm') {
+	if (split[0] == "aq_up_confirm") {
 		if (id !== interaction.user.id)
 			return sendEphemeralReply(interaction, `No, shoo, bad ${interaction.user.displayName}!`);
 
 		const plrdat = await db_plr_get({ _id: id, mon: 1, aqua: 1 });
 		const lv = plrdat?.aqua?.lv ?? 0;
 		if (lv >= AquaLevels.length)
-			return sendEphemeralReply(interaction, 'Your aquarium is already at the maximum level!');
+			return sendEphemeralReply(interaction, "Your aquarium is already at the maximum level!");
 
 		const cost = AquaLevels[lv].upCost;
 		const mon = plrdat?.mon ?? 0;
@@ -75,7 +75,7 @@ bot.on('interactionCreate', async interaction => {
 			await db_plr_add({ _id: id, mon: -cost, expense: { aqua: cost } });
 			sendSimpleMessage(
 				interaction.message as okbot.Message,
-				'Successfully opened your aquarium!',
+				"Successfully opened your aquarium!",
 				Colors.DarkGreen
 			);
 		} else {
@@ -93,20 +93,20 @@ bot.on('interactionCreate', async interaction => {
 			await db_plr_add({ _id: id, mon: -cost, expense: { aqua: cost } });
 			sendSimpleMessage(
 				interaction.message as okbot.Message,
-				'Upgraded your aquarium to level **' + plrdat.aqua.lv + '**!',
+				"Upgraded your aquarium to level **" + plrdat.aqua.lv + "**!",
 				Colors.DarkGreen
 			);
 		}
 
 		interaction.update({ components: [] });
 		return;
-	} else if (split[0] == 'aq_up_cancel') {
+	} else if (split[0] == "aq_up_cancel") {
 		if (id !== interaction.user.id)
 			return sendEphemeralReply(interaction, `No, shoo, bad ${interaction.user.displayName}!`);
 
 		interaction.update({ components: [] });
 		return;
-	} else if (split[0] == 'aq_collect') {
+	} else if (split[0] == "aq_collect") {
 		if (id !== interaction.user.id)
 			return sendEphemeralReply(interaction, "Why don't you get a job instead of robbing aquariums?");
 
@@ -116,30 +116,30 @@ bot.on('interactionCreate', async interaction => {
 
 //they swim :D
 const displayHugeTank = (fish?: okbot.FishAquarium) => {
-	if (!fish) return '=⬛⬛⬛=\n=⬛⬛⬛=\n=⬛⬛⬛=';
+	if (!fish) return "=⬛⬛⬛=\n=⬛⬛⬛=\n=⬛⬛⬛=";
 	const rand = Math.floor(Math.random() * 9);
-	let s = '=';
+	let s = "=";
 	for (let i = 0; i < 9; i++) {
 		if (i == rand) s += fish.emoji;
-		else s += '🟦';
-		if (i == 2 || i == 5) s += '=\n=';
+		else s += "🟦";
+		if (i == 2 || i == 5) s += "=\n=";
 	}
-	return s + '=';
+	return s + "=";
 };
 const displayBigTank = (fish?: okbot.FishAquarium) => {
-	if (!fish) return '|⬛⬛⬛|\n|⬛⬛⬛|';
+	if (!fish) return "|⬛⬛⬛|\n|⬛⬛⬛|";
 	const rand = Math.floor(Math.random() * 6);
-	let s = '|';
+	let s = "|";
 	for (let i = 0; i < 6; i++) {
 		if (i == rand) s += fish.emoji;
-		else s += '🟦';
-		if (i == 2) s += '|\n|';
+		else s += "🟦";
+		if (i == 2) s += "|\n|";
 	}
-	return s + '|';
+	return s + "|";
 };
 const displayMedTank = (fish?: okbot.FishAquarium) =>
-	fish ? (Math.random() < 0.5 ? '🟦' + fish.emoji : fish.emoji + '🟦') : '⬛⬛';
-const displaySmallTank = (fish?: okbot.FishAquarium) => (fish ? fish.emoji : '⬛');
+	fish ? (Math.random() < 0.5 ? "🟦" + fish.emoji : fish.emoji + "🟦") : "⬛⬛";
+const displaySmallTank = (fish?: okbot.FishAquarium) => (fish ? fish.emoji : "⬛");
 
 export function calculateAquaIncome(aq: okbot.Aquarium, now?: number) {
 	if (!aq) return 0;
@@ -155,78 +155,78 @@ function displayAquarium(aq: okbot.Aquarium, user: User, collect?: boolean) {
 		name: aq.nam ?? `${user.displayName}'s aquarium`,
 		iconURL: user.displayAvatarURL({ forceStatic: true, size: 32 })
 	});
-	let footerText = 'Level ' + aq.lv;
+	let footerText = "Level " + aq.lv;
 
 	if (aq.huge?.length) {
-		let s = '';
-		for (const i in aq.huge) s += displayHugeTank(aq.huge[i]) + '\n';
+		let s = "";
+		for (const i in aq.huge) s += displayHugeTank(aq.huge[i]) + "\n";
 		//format so it's all nicely in 3 lines instead of every tank being lower than the previous
-		const splitS = s.split('\n');
-		let formattedS = '';
+		const splitS = s.split("\n");
+		let formattedS = "";
 
 		for (let i = 0; i < splitS.length; i += 3) {
-			formattedS += splitS[i] + ' ';
+			formattedS += splitS[i] + " ";
 		}
-		formattedS += '\n';
+		formattedS += "\n";
 		for (let i = 1; i < splitS.length; i += 3) {
-			formattedS += splitS[i] + ' ';
+			formattedS += splitS[i] + " ";
 		}
-		formattedS += '\n';
+		formattedS += "\n";
 		for (let i = 2; i < splitS.length; i += 3) {
-			formattedS += splitS[i] + ' ';
+			formattedS += splitS[i] + " ";
 		}
 
 		msge.addFields({
-			name: `${aq.huge.length} huge tank${aq.huge.length == 1 ? '' : 's'} (x1.5)`,
+			name: `${aq.huge.length} huge tank${aq.huge.length == 1 ? "" : "s"} (x1.5)`,
 			value: formattedS
 		});
 	}
 	if (aq.big?.length) {
-		let s = '';
-		for (const i in aq.big) s += displayBigTank(aq.big[i]) + '\n';
-		const splitS = s.split('\n');
-		let formattedS = '';
+		let s = "";
+		for (const i in aq.big) s += displayBigTank(aq.big[i]) + "\n";
+		const splitS = s.split("\n");
+		let formattedS = "";
 
 		for (let i = 0; i < splitS.length; i += 2) {
-			formattedS += splitS[i] + ' ';
+			formattedS += splitS[i] + " ";
 		}
-		formattedS += '\n';
+		formattedS += "\n";
 		for (let i = 1; i < splitS.length; i += 2) {
-			formattedS += splitS[i] + ' ';
+			formattedS += splitS[i] + " ";
 		}
 
 		msge.addFields({
-			name: `${aq.big.length} big tank${aq.big.length == 1 ? '' : 's'} (x1.25)`,
+			name: `${aq.big.length} big tank${aq.big.length == 1 ? "" : "s"} (x1.25)`,
 			value: formattedS
 		});
 	}
 	if (aq.med?.length) {
-		let s = '';
+		let s = "";
 		for (let i = 0; i < aq.med.length; i++)
-			s += displayMedTank(aq.med[i]) + `${i != aq.med.length - 1 ? '-' : ''}`;
-		msge.addFields({ name: `${aq.med.length} medium tank${aq.med.length == 1 ? '' : 's'} (x1.1)`, value: s });
+			s += displayMedTank(aq.med[i]) + `${i != aq.med.length - 1 ? "-" : ""}`;
+		msge.addFields({ name: `${aq.med.length} medium tank${aq.med.length == 1 ? "" : "s"} (x1.1)`, value: s });
 	}
-	let s = '';
-	for (const i in aq.small) s += displaySmallTank(aq.small[i]) + ' \u200b';
-	msge.addFields({ name: `${aq.small.length} small tank${aq.small.length == 1 ? '' : 's'}`, value: s });
+	let s = "";
+	for (const i in aq.small) s += displaySmallTank(aq.small[i]) + " \u200b";
+	msge.addFields({ name: `${aq.small.length} small tank${aq.small.length == 1 ? "" : "s"}`, value: s });
 
 	const now = Math.floor(new Date().getTime() / 1000);
 	const income = calculateAquaIncome(aq, now);
-	const incomeText = `${Math.round(aq.coll * 100) / 100}/h base income ${aq.collMul != 1 ? `(${aq.collMul.toFixed(2)}x)` : ''}`;
+	const incomeText = `${Math.round(aq.coll * 100) / 100}/h base income ${aq.collMul != 1 ? `(${aq.collMul.toFixed(2)}x)` : ""}`;
 	if (collect) {
 		if (income) footerText += "\nUse 'aquarium collect' to collect your income";
 		if (aq.lv < AquaLevels.length)
 			footerText += `\nUse 'aquarium upgrade' to upgrade your aquarium for ${formatDoler(AquaLevels[aq.lv].upCost, false)}`;
 
-		msge.addFields({ name: '\u200b', value: '\u200b' });
+		msge.addFields({ name: "\u200b", value: "\u200b" });
 		msge.addFields({
 			name: incomeText,
 			value:
 				`**${formatNumber(income)}**/${formatNumber(aq.maxColl)} 💵\n` +
-				drawProgressBar(Math.round((income / aq.maxColl) * 10), 10, '🟩')
+				drawProgressBar(Math.round((income / aq.maxColl) * 10), 10, "🟩")
 		});
 	} else {
-		footerText += '\n' + incomeText;
+		footerText += "\n" + incomeText;
 	}
 
 	return { aq: msge.setFooter({ text: footerText }), income: collect ? income : 0 };
@@ -244,7 +244,7 @@ async function collect<T>(msg: okbot.MessageOrInteraction<T>) {
 	if (!income)
 		return sendSimpleMessage(
 			msg,
-			'There is no income to collect.\nThe minimum interval between collecting income is **10 minutes**.',
+			"There is no income to collect.\nThe minimum interval between collecting income is **10 minutes**.",
 			undefined,
 			true,
 			[MessageFlags.Ephemeral]
@@ -257,12 +257,12 @@ async function collect<T>(msg: okbot.MessageOrInteraction<T>) {
 	const content = `Collected ${formatDoler(income)} of ticket revenue.`;
 	if (msg instanceof ButtonInteraction) {
 		const invText = `**0**/${formatNumber(aq.maxColl)} 💵`;
-		const invBar = drawProgressBar(0, 10, '🟩');
+		const invBar = drawProgressBar(0, 10, "🟩");
 
 		const msge = EmbedBuilder.from(msg.message.embeds[0]);
 		msge.spliceFields(-1, 1, {
-			name: `${Math.round(aq.coll * 100) / 100}/h base income ${aq.collMul != 1 ? `(${aq.collMul.toFixed(2)}x)` : ''}`,
-			value: invText + '\n' + invBar
+			name: `${Math.round(aq.coll * 100) / 100}/h base income ${aq.collMul != 1 ? `(${aq.collMul.toFixed(2)}x)` : ""}`,
+			value: invText + "\n" + invBar
 		});
 
 		msg.message.edit({ embeds: [msge], components: [] });
@@ -311,16 +311,16 @@ function sendNoAquariumMessage<T>(msg: okbot.MessageOrInteraction<T>, user?: Use
 }
 
 function displayLevels() {
-	const msge = new EmbedBuilder().setColor(Colors.White).setTitle('Aquarium upgrades');
+	const msge = new EmbedBuilder().setColor(Colors.White).setTitle("Aquarium upgrades");
 
 	for (const i in AquaLevels) {
 		const stat = AquaLevels[i];
 		msge.addFields({
 			name: `Level ${Number(i) + 1}`,
-			value: `\`${formatNumber(stat.upCost).padStart(7, ' ')}\` 💵 | Tanks: ${stat.small ? `**${stat.small}** small` : ''} ${
-				stat.med ? `● **${stat.med}** medium` : ''
-			} ${stat.big ? `● **${stat.big}** big` : ''} ${stat.huge ? `● **${stat.huge}** huge` : ''} ${
-				stat.collMul > 1 ? `● **${stat.collMul}**x income multiplier` : ''
+			value: `\`${formatNumber(stat.upCost).padStart(7, " ")}\` 💵 | Tanks: ${stat.small ? `**${stat.small}** small` : ""} ${
+				stat.med ? `● **${stat.med}** medium` : ""
+			} ${stat.big ? `● **${stat.big}** big` : ""} ${stat.huge ? `● **${stat.huge}** huge` : ""} ${
+				stat.collMul > 1 ? `● **${stat.collMul}**x income multiplier` : ""
 			}`
 		});
 	}
@@ -340,24 +340,24 @@ function displayUpgradeStats(lv: number, money: number) {
 
 	if (lv === 0)
 		return msge
-			.setTitle('Aquarium construction')
-			.addFields({ name: '\u200b', value: 'Allows you to display your rarest fish for income!' });
+			.setTitle("Aquarium construction")
+			.addFields({ name: "\u200b", value: "Allows you to display your rarest fish for income!" });
 
-	let tanks = `${statOld.small != statNew.small ? `${formatNumber(statOld.small)} → ${formatNumber(statNew.small)} small ● ` : ''}${
-		statOld.med != statNew.med ? `${formatNumber(statOld.med)} → ${formatNumber(statNew.med)} medium ● ` : ''
-	}${statOld.big != statNew.big ? `${formatNumber(statOld.big)} → ${formatNumber(statNew.big)} big ● ` : ''}${
+	let tanks = `${statOld.small != statNew.small ? `${formatNumber(statOld.small)} → ${formatNumber(statNew.small)} small ● ` : ""}${
+		statOld.med != statNew.med ? `${formatNumber(statOld.med)} → ${formatNumber(statNew.med)} medium ● ` : ""
+	}${statOld.big != statNew.big ? `${formatNumber(statOld.big)} → ${formatNumber(statNew.big)} big ● ` : ""}${
 		statOld.huge != statNew.huge
 			? `${formatNumber(statOld.huge)} → ${formatNumber(statNew.huge)} huge ● `
-			: ''
+			: ""
 	}`;
 	if (tanks.length) tanks = tanks.slice(0, -3);
-	else tanks = '';
+	else tanks = "";
 
-	if (tanks) msge.addFields({ name: 'Tanks', value: tanks });
+	if (tanks) msge.addFields({ name: "Tanks", value: tanks });
 	msge
 		.addFields([
-			showUpgradeStat(AquaLevels, lv, 'collMul', 'Income multiplier', v => v + 'x'),
-			showUpgradeStat(AquaLevels, lv, 'maxColl', 'Income storage', v => formatNumber(v) + ' 💵')
+			showUpgradeStat(AquaLevels, lv, "collMul", "Income multiplier", v => v + "x"),
+			showUpgradeStat(AquaLevels, lv, "maxColl", "Income storage", v => formatNumber(v) + " 💵")
 		])
 		.setFooter({ text: "Use 'aqua levels' to view all upgrades" });
 
@@ -368,13 +368,13 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const action = args[0]?.toLowerCase();
 
 	switch (action) {
-		case 'open':
-		case 'upgrade':
-		case 'up': {
+		case "open":
+		case "upgrade":
+		case "up": {
 			const id = msg.author.id;
 			const plrdat = await db_plr_get({ _id: id, aqua: 1, mon: 1 });
 			const lv = plrdat?.aqua?.lv ?? 0;
-			if (!AquaLevels[lv]) return sendSimpleMessage(msg, 'Your aquarium is already at the maximum level!');
+			if (!AquaLevels[lv]) return sendSimpleMessage(msg, "Your aquarium is already at the maximum level!");
 
 			const mon = plrdat?.mon ?? 0;
 			const components =
@@ -384,11 +384,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 								new ButtonBuilder()
 									.setCustomId(`aq_up_confirm-${id}`)
 									.setStyle(ButtonStyle.Success)
-									.setLabel('Upgrade'),
+									.setLabel("Upgrade"),
 								new ButtonBuilder()
 									.setCustomId(`aq_up_cancel-${id}`)
 									.setStyle(ButtonStyle.Danger)
-									.setLabel('Cancel')
+									.setLabel("Cancel")
 							)
 						]
 					: [];
@@ -396,41 +396,41 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			return msg.reply({ embeds: [displayUpgradeStats(lv, mon)], components });
 		}
 
-		case 'collect':
-		case 'pay': {
+		case "collect":
+		case "pay": {
 			return await collect<okbot.Message>(msg);
 		}
 
-		case 'edit':
-		case 'set': {
+		case "edit":
+		case "set": {
 			args.shift();
 			if (!args.length) return sendSimpleMessage(msg, usageEdit, Colors.White);
 			const plrdat = await db_plr_get({ _id: msg.author.id, aqua: 1, fish: 1 });
 			if (!plrdat?.aqua) return sendNoAquariumMessage(msg);
 
 			let tankSize = args.shift()!.toLowerCase();
-			if (tankSize == 'name') {
+			if (tankSize == "name") {
 				//reset name
 				if (!args.length) {
-					await db_plr_set({ _id: msg.author.id, 'aqua.nam': undefined } as any);
+					await db_plr_set({ _id: msg.author.id, "aqua.nam": undefined } as any);
 					return sendSimpleMessage(msg, "Reset your aquarium's name.", Colors.DarkGreen);
 				}
 				//set name
-				const nam = args.join(' ').slice(0, 128);
-				await db_plr_set({ _id: msg.author.id, 'aqua.nam': nam } as any);
-				return sendSimpleMessage(msg, "Set your aquarium's name to `" + nam + '`', Colors.DarkGreen);
+				const nam = args.join(" ").slice(0, 128);
+				await db_plr_set({ _id: msg.author.id, "aqua.nam": nam } as any);
+				return sendSimpleMessage(msg, "Set your aquarium's name to `" + nam + "`", Colors.DarkGreen);
 			}
 
 			if (
-				tankSize != 'huge' &&
-				tankSize != 'big' &&
-				tankSize != 'medium' &&
-				tankSize != 'med' &&
-				tankSize != 'small'
+				tankSize != "huge" &&
+				tankSize != "big" &&
+				tankSize != "medium" &&
+				tankSize != "med" &&
+				tankSize != "small"
 			)
-				return sendSimpleMessage(msg, 'Invalid tank size. Must be `small`, `medium`, `big`, or `huge`.');
+				return sendSimpleMessage(msg, "Invalid tank size. Must be `small`, `medium`, `big`, or `huge`.");
 			if (!args.length) return sendSimpleMessage(msg, usageEdit, Colors.White);
-			if (tankSize == 'medium') tankSize = 'med';
+			if (tankSize == "medium") tankSize = "med";
 
 			const curTank = plrdat.aqua[tankSize as okbot.AquariumTankSize];
 			const maxTankId = curTank?.length;
@@ -444,12 +444,12 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 			let fisNam, fis;
 			if (args.length) {
-				const fishNameRaw = args.join(' ');
+				const fishNameRaw = args.join(" ");
 				const fisRes = findFish(fishNameRaw);
 				fis = fisRes.fis;
 				fisNam = fisRes.fisNam;
 
-				if (!fis) return sendSimpleMessage(msg, 'No fish with the given name was found.');
+				if (!fis) return sendSimpleMessage(msg, "No fish with the given name was found.");
 				if (!plrdat.fish?.[fisNam])
 					return sendSimpleMessage(msg, `You don't have any **${fis.emoji} ${fisNam}** in your inventory`);
 				if (fis.aq == null)
@@ -457,7 +457,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			}
 
 			const curFish = curTank![tankId - 1];
-			let msgeDesc = '';
+			let msgeDesc = "";
 			let newColl = plrdat.aqua.coll ?? 0;
 			if (curFish) {
 				//fish already in tank
@@ -475,9 +475,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				if (!fisIncome) {
 					msgeDesc += "\n*However, this fish won't generate any profit...*";
 				} else {
-					if (tankSize == 'med') fisIncome *= 1.1;
-					else if (tankSize == 'big') fisIncome *= 1.25;
-					else if (tankSize == 'huge') fisIncome *= 1.5;
+					if (tankSize == "med") fisIncome *= 1.1;
+					else if (tankSize == "big") fisIncome *= 1.25;
+					else if (tankSize == "huge") fisIncome *= 1.5;
 					newColl += fisIncome;
 				}
 			}
@@ -509,8 +509,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			return sendSimpleMessage(msg, msgeDesc, Colors.DarkGreen);
 		}
 
-		case 'reset':
-		case 'empty': {
+		case "reset":
+		case "empty": {
 			const plrdat = await db_plr_get({ _id: msg.author.id, aqua: 1 });
 			if (!plrdat?.aqua) return sendNoAquariumMessage(msg);
 
@@ -549,7 +549,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				}
 			}
 
-			if (!fishToAddCount) return sendSimpleMessage(msg, 'Your aquarium is already empty.');
+			if (!fishToAddCount) return sendSimpleMessage(msg, "Your aquarium is already empty.");
 
 			const now = Math.floor(new Date().getTime() / 1000);
 			const income = calculateAquaIncome(plrdat.aqua, now);
@@ -566,9 +566,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			);
 		}
 
-		case 'levels':
-		case 'upgrades':
-		case 'lv': {
+		case "levels":
+		case "upgrades":
+		case "lv": {
 			return msg.reply({ embeds: [displayLevels()], allowedMentions: { repliedUser: false } });
 		}
 
@@ -583,8 +583,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			if (income) {
 				row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 					new ButtonBuilder()
-						.setCustomId('aq_collect-' + msg.author.id)
-						.setLabel('Collect revenue')
+						.setCustomId("aq_collect-" + msg.author.id)
+						.setLabel("Collect revenue")
 						.setStyle(ButtonStyle.Success)
 				);
 			}

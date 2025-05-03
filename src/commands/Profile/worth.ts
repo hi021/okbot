@@ -1,24 +1,24 @@
-import { EmbedBuilder } from 'discord.js';
-import { db_plr_get, db_plr_set } from '../../db/db.js';
-import { db_store_get_item } from '../../db/store.js';
-import { formatDoler, formatNumber, getUserFromMsg, sendSimpleMessage } from '../../utils.js';
+import { EmbedBuilder } from "discord.js";
+import { db_plr_get, db_plr_set } from "../../db/db.js";
+import { db_store_get_item } from "../../db/store.js";
+import { formatDoler, formatNumber, getUserFromMsg, sendSimpleMessage } from "../../utils.js";
 import {
-    bake,
-    BakeryCookies,
-    BakeryLevels,
-    BakeryOvens,
-    BakeryStaff,
-    getBakeryToCollect
-} from '../Business/bakery.js';
-import { bankInterest, BankMemberships } from '../Economy/bank.js';
-import { AquaLevels, calculateAquaIncome } from '../Fish/aquarium.js';
-import { Fish } from '../Fish/fish.js';
-import { getFishToCollect, PondLevels, pondUpdateFish } from '../Fish/pond.js';
+	bake,
+	BakeryCookies,
+	BakeryLevels,
+	BakeryOvens,
+	BakeryStaff,
+	getBakeryToCollect
+} from "../Business/bakery.js";
+import { bankInterest, BankMemberships } from "../Economy/bank.js";
+import { AquaLevels, calculateAquaIncome } from "../Fish/aquarium.js";
+import { Fish } from "../Fish/fish.js";
+import { getFishToCollect, PondLevels, pondUpdateFish } from "../Fish/pond.js";
 
-export const name = 'worth';
-export const alias = ['networth', 'estate'];
-export const description = '💹 Visualize the grind';
-export const usage = '<Username OR Mention>';
+export const name = "worth";
+export const alias = ["networth", "estate"];
+export const description = "💹 Visualize the grind";
+export const usage = "<Username OR Mention>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	const usr = (await getUserFromMsg(msg, args)) || msg.author;
@@ -37,11 +37,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		color: 1,
 		badge: 1
 	});
-	if (plrdat?.mon == null) return sendSimpleMessage(msg, 'There are no stats for `' + usr.displayName + '`.');
+	if (plrdat?.mon == null) return sendSimpleMessage(msg, "There are no stats for `" + usr.displayName + "`.");
 
 	const msge = new EmbedBuilder()
-		.setFooter({ text: 'ok worth' })
-		.addFields({ name: 'doler', value: formatNumber(plrdat.mon) + ' 💵' });
+		.setFooter({ text: "ok worth" })
+		.addFields({ name: "doler", value: formatNumber(plrdat.mon) + " 💵" });
 	if (plrdat.color) msge.setColor(plrdat.color);
 	if (plrdat.badge) msge.setTitle(plrdat.badge);
 
@@ -142,7 +142,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		}
 
 		total += fish;
-		msge.addFields({ name: 'fish', value: formatNumber(fish) + ' 💵', inline: true });
+		msge.addFields({ name: "fish", value: formatNumber(fish) + " 💵", inline: true });
 	}
 
 	let fishCol = 0;
@@ -159,7 +159,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		}
 
 		total += fishCol;
-		msge.addFields({ name: 'collection', value: '~' + formatNumber(fishCol) + ' 💵', inline: true });
+		msge.addFields({ name: "collection", value: "~" + formatNumber(fishCol) + " 💵", inline: true });
 	}
 
 	let items = 0;
@@ -183,23 +183,23 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 		await Promise.allSettled(promises);
 		total += items;
-		msge.addFields({ name: 'items', value: formatNumber(items) + ' 💵', inline: true });
+		msge.addFields({ name: "items", value: formatNumber(items) + " 💵", inline: true });
 	}
 
-	let title = 'The Hobo';
-	if (total > 500000000) title = 'The Overlord';
-	else if (total > 250000000) title = 'The Biggest Fish';
-	else if (total > 100000000) title = 'The Real Estate Shork';
-	else if (total > 30000000) title = 'The Lottery Winner';
-	else if (total > 1000000) title = 'The Ladder-climber';
-	else if (total > 4000000) title = 'The Money Hoarder';
-	else if (total > 1000000) title = 'The Baby Millionaire';
-	else if (total > 300000) title = 'The Middle Class';
-	else if (total > 50000) title = 'The Blue-collar';
-	else if (total > 7500) title = 'The Scraper-by';
+	let title = "The Hobo";
+	if (total > 500000000) title = "The Overlord";
+	else if (total > 250000000) title = "The Biggest Fish";
+	else if (total > 100000000) title = "The Real Estate Shork";
+	else if (total > 30000000) title = "The Lottery Winner";
+	else if (total > 1000000) title = "The Ladder-climber";
+	else if (total > 4000000) title = "The Money Hoarder";
+	else if (total > 1000000) title = "The Baby Millionaire";
+	else if (total > 300000) title = "The Middle Class";
+	else if (total > 50000) title = "The Blue-collar";
+	else if (total > 7500) title = "The Scraper-by";
 
 	msge
-		.addFields({ name: '\u200b', value: '\u200b' }, { name: 'total', value: formatNumber(total) + ' 💵' })
+		.addFields({ name: "\u200b", value: "\u200b" }, { name: "total", value: formatNumber(total) + " 💵" })
 		.setAuthor({
 			name: `${usr.displayName} - ${title}`,
 			iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })

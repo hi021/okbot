@@ -1,21 +1,21 @@
-import { Colors, EmbedBuilder } from 'discord.js';
-import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
-import { SET } from '../../settings.js';
+import { Colors, EmbedBuilder } from "discord.js";
+import { db_add_casino_top, db_plr_add, db_plr_get } from "../../db/db.js";
+import { SET } from "../../settings.js";
 import {
-    addCasinoStat,
-    calcMoneyLevelsGain,
-    createSimpleMessage,
-    formatDoler,
-    formatNumber,
-    objLength,
-    parseNumberSuffix,
-    sendSimpleMessage,
-    showCasinoTopWins
-} from '../../utils.js';
-import { Jackpot_games } from '../../volatile.js';
+	addCasinoStat,
+	calcMoneyLevelsGain,
+	createSimpleMessage,
+	formatDoler,
+	formatNumber,
+	objLength,
+	parseNumberSuffix,
+	sendSimpleMessage,
+	showCasinoTopWins
+} from "../../utils.js";
+import { Jackpot_games } from "../../volatile.js";
 
-export const name = 'jackpot';
-export const description = '⚜️ Scam the rich in this family game';
+export const name = "jackpot";
+export const description = "⚜️ Scam the rich in this family game";
 export const usage = '["Start" OR "Join" OR "Top"] [Bet amount (5-20M 💵)]';
 
 // TODO?: maybe switch to high roller table if every person has high roller card and stakes are higher than default max
@@ -29,7 +29,7 @@ async function endGame(guildId: string) {
 
 	const plrLen = objLength(game.plr);
 	if (plrLen < 2) {
-		sendSimpleMessage(game.msg, 'Not enough players joined the jackpot.', Colors.DarkRed, false);
+		sendSimpleMessage(game.msg, "Not enough players joined the jackpot.", Colors.DarkRed, false);
 		db_plr_add({ _id: game.host, mon: game.pool, expense: { jackpot: -game.pool } }); // return bet to host
 		delete Jackpot_games[guildId];
 		return;
@@ -47,7 +47,7 @@ async function endGame(guildId: string) {
 			winnerId = i;
 			winnerOdds = odds;
 		} else {
-			addCasinoStat(i, 'jackpot', 'lose', game.plr[i], 0); // add loser stats
+			addCasinoStat(i, "jackpot", "lose", game.plr[i], 0); // add loser stats
 		}
 		cur += odds;
 	}
@@ -65,9 +65,9 @@ async function endGame(guildId: string) {
 	const monLv = calcMoneyLevelsGain(plrdat?.monLv ?? 0, (plrdat?.monTot ?? 0) + winnings, game.msg);
 
 	db_plr_add({ _id: winnerId, mon: game.pool, monTot: winnings, monLv, income: { jackpot: game.pool } });
-	addCasinoStat(winnerId as string, 'jackpot', 'win', bet, winnings); //add winner stats
+	addCasinoStat(winnerId as string, "jackpot", "win", bet, winnings); //add winner stats
 	const winnerUsr = await game.msg.guild!.members.fetch(winnerId as string);
-	db_add_casino_top('jackpot', winnerId as string, winnerUsr.user.tag, bet, game.pool);
+	db_add_casino_top("jackpot", winnerId as string, winnerUsr.user.tag, bet, game.pool);
 
 	delete Jackpot_games[guildId];
 	return winnerId;
@@ -78,11 +78,11 @@ async function updateParticipants(game: okbot.JackpotGame) {
 	if (!msge) return;
 	const msgeEdit = EmbedBuilder.from(msge);
 
-	let s = '';
+	let s = "";
 	for (const i in game.plr) s += `<@${i}>: ${formatDoler(game.plr[i], false)}\n`;
 
-	msgeEdit.spliceFields(0, 1, { name: 'Participants', value: s });
-	msgeEdit.setTitle(formatNumber(game.pool) + ' 💵');
+	msgeEdit.spliceFields(0, 1, { name: "Participants", value: s });
+	msgeEdit.setTitle(formatNumber(game.pool) + " 💵");
 	await game.msg.edit({ embeds: [msgeEdit] });
 }
 
@@ -94,11 +94,11 @@ function countdownJackpot(guildId: string) {
 	const msgeEdit = EmbedBuilder.from(msge);
 
 	if (game.t > 10500 && game.t < 11500)
-		sendSimpleMessage(game.msg, '10 seconds left until the jackpot!', Colors.Orange);
+		sendSimpleMessage(game.msg, "10 seconds left until the jackpot!", Colors.Orange);
 
 	game.t -= 1000;
 	if (game.t < 400) {
-		msgeEdit.spliceFields(1, 1, { name: '\u200b', value: '-# This game has ended.' });
+		msgeEdit.spliceFields(1, 1, { name: "\u200b", value: "-# This game has ended." });
 		endGame(guildId);
 		game.msg.edit({ embeds: [msgeEdit] });
 	}
@@ -124,11 +124,11 @@ async function createGame(msg: okbot.Message, bet: number, mon: number) {
 			name: `Jackpot game started by ${msg.author.displayName}`,
 			iconURL: msg.author.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
-		.setTitle(formatNumber(bet) + ' 💵')
+		.setTitle(formatNumber(bet) + " 💵")
 		.addFields(
-			{ name: 'Participants', value: `<@${msg.author.id}>: ${formatDoler(bet, false)}` },
+			{ name: "Participants", value: `<@${msg.author.id}>: ${formatDoler(bet, false)}` },
 			{
-				name: '\u200b',
+				name: "\u200b",
 				value: `-# Ends <t:${now + Math.floor(gameLength / 1000)}:R> ● winner takes all\n-# Use '${name} join <amount>' to add your bet!`
 			}
 		);
@@ -194,12 +194,12 @@ async function joinGame(msg: okbot.Message, bet: number, mon: number) {
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!msg.guild) return;
 	if (!args.length)
-		return sendSimpleMessage(msg, 'The usage for this command is\n`' + usage + '`', Colors.White);
+		return sendSimpleMessage(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
 
 	const action = args[0].toLowerCase();
-	if (action === 'top')
+	if (action === "top")
 		return msg.reply({
-			embeds: [await showCasinoTopWins('jackpot', true)],
+			embeds: [await showCasinoTopWins("jackpot", true)],
 			allowedMentions: { repliedUser: false }
 		});
 
@@ -207,22 +207,22 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const plrdat = await db_plr_get({ _id: msg.author.id, mon: 1 });
 	const mon = plrdat?.mon ?? 0;
 
-	const bet = betRaw == 'all' ? Math.min(MAX_BET, mon) : parseNumberSuffix(betRaw);
+	const bet = betRaw == "all" ? Math.min(MAX_BET, mon) : parseNumberSuffix(betRaw);
 	if (bet == null || isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
 		return sendSimpleMessage(
 			msg,
 			`Your bet must be between **${formatNumber(MIN_BET)}** and **${formatNumber(MAX_BET)}** 💵!`
 		);
 
-	if (action == 'start' || action == 'new') {
+	if (action == "start" || action == "new") {
 		createGame(msg, bet, mon);
-	} else if (action == 'join' || action == 'bet' || action == 'add') {
+	} else if (action == "join" || action == "bet" || action == "add") {
 		joinGame(msg, bet, mon);
-	} else if (!isNaN(parseInt(action)) || action.toLowerCase() == 'all') {
+	} else if (!isNaN(parseInt(action)) || action.toLowerCase() == "all") {
 		// auto action if only bet provided
 		if (Jackpot_games[msg.guild.id]) joinGame(msg, bet, mon);
 		else createGame(msg, bet, mon);
 	} else {
-		return sendSimpleMessage(msg, 'The usage for this command is\n`' + usage + '`', Colors.White);
+		return sendSimpleMessage(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
 	}
 }

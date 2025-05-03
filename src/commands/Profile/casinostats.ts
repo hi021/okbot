@@ -1,23 +1,23 @@
-import { EmbedBuilder } from 'discord.js';
-import { db_plr_get, db_plr_set } from '../../db/db.js';
-import { e_blank, formatDoler, formatNumber, getUserFromMsg } from '../../utils.js';
+import { EmbedBuilder } from "discord.js";
+import { db_plr_get, db_plr_set } from "../../db/db.js";
+import { e_blank, formatDoler, formatNumber, getUserFromMsg } from "../../utils.js";
 
-export const name = 'casinostats';
-export const alias = ['cs', 'cstat'];
-export const description = ':face_holding_back_tears: casino states';
-export const usage = '<Username OR Mention> <Casino game>';
+export const name = "casinostats";
+export const alias = ["cs", "cstat"];
+export const description = ":face_holding_back_tears: casino states";
+export const usage = "<Username OR Mention> <Casino game>";
 export const usageDetail =
-	'Stats tracked since v1.7.0 (Jan 15, 2023)\nList of available casino games:\n- bingo\n- blackjack\n- dice\n- flip\n- jackpot\n- roulette\n- slot';
+	"Stats tracked since v1.7.0 (Jan 15, 2023)\nList of available casino games:\n- bingo\n- blackjack\n- dice\n- flip\n- jackpot\n- roulette\n- slot";
 
 const gameDetails: { [game in okbot.CasinoGame]: { emoji: string; name: string } } = {
-	bingo: { emoji: '🔢', name: 'Bingo' },
-	bj: { emoji: '♦️', name: 'Blackjack' },
-	dice: { emoji: '🎲', name: 'Dice duel' },
-	flip: { emoji: ':coin:', name: 'Flip' },
-	jackpot: { emoji: '⚜️', name: 'Jackpot' },
-	rl: { emoji: '🟥', name: 'Roulette' },
-	slot: { emoji: '🎰', name: 'Slots' },
-	poker: { emoji: '🃏', name: 'Poker' }
+	bingo: { emoji: "🔢", name: "Bingo" },
+	bj: { emoji: "♦️", name: "Blackjack" },
+	dice: { emoji: "🎲", name: "Dice duel" },
+	flip: { emoji: ":coin:", name: "Flip" },
+	jackpot: { emoji: "⚜️", name: "Jackpot" },
+	rl: { emoji: "🟥", name: "Roulette" },
+	slot: { emoji: "🎰", name: "Slots" },
+	poker: { emoji: "🃏", name: "Poker" }
 };
 
 function showGeneral(
@@ -59,15 +59,15 @@ function showGeneral(
 
 		msge.addFields({
 			name: `${curD.emoji} ${curD.name}`,
-			value: `⚪ \`${formatNumber(played).padStart(4, ' ')}\` played${e_blank}${e_blank}🟢 \`${formatNumber(
+			value: `⚪ \`${formatNumber(played).padStart(4, " ")}\` played${e_blank}${e_blank}🟢 \`${formatNumber(
 				won
-			).padStart(4, ' ')}\` won (${rate}%)`
+			).padStart(4, " ")}\` won (${rate}%)`
 		});
 
 		totalPlayed += played;
 	}
 
-	return msge.addFields({ name: '\u200b', value: `⚪ **${formatNumber(totalPlayed)}** played in total` });
+	return msge.addFields({ name: "\u200b", value: `⚪ **${formatNumber(totalPlayed)}** played in total` });
 }
 
 function showDefaultStat(
@@ -77,7 +77,7 @@ function showDefaultStat(
 	income: number,
 	expense: number
 ) {
-	if (!stat[game]?.am) return msge.setDescription('There are no stats for this game.');
+	if (!stat[game]?.am) return msge.setDescription("There are no stats for this game.");
 
 	const played = stat[game]!.am;
 	const won = stat[game]?.win ?? 0;
@@ -86,21 +86,21 @@ function showDefaultStat(
 	const rate = Math.round((won / played) * 10000) / 100;
 	const highestWin = stat[game]?.highestWin?.v ?? 0;
 
-	const blank = { name: '\u200b', value: '\u200b', inline: true };
+	const blank = { name: "\u200b", value: "\u200b", inline: true };
 
 	msge.addFields(
 		{
-			name: `${formatNumber(played)} Game${played === 1 ? '' : 's'} played`,
-			value: `**${formatNumber(won)}** wins/${draw ? '**' + formatNumber(draw) + '** draws/' : ''}**${formatNumber(
+			name: `${formatNumber(played)} Game${played === 1 ? "" : "s"} played`,
+			value: `**${formatNumber(won)}** wins/${draw ? "**" + formatNumber(draw) + "** draws/" : ""}**${formatNumber(
 				lost
 			)}** loses (${rate}% win rate)`,
 			inline: false
 		},
-		{ name: 'Highest bet', value: formatNumber(stat[game]!.highestBet) + ' 💵', inline: true }
+		{ name: "Highest bet", value: formatNumber(stat[game]!.highestBet) + " 💵", inline: true }
 	);
 	if (highestWin)
 		msge.addFields({
-			name: 'Highest win',
+			name: "Highest win",
 			value: formatNumber(highestWin) + ` 💵 <t:${stat[game]!.highestWin!.date}:R>`,
 			inline: true
 		});
@@ -108,8 +108,8 @@ function showDefaultStat(
 
 	msge.addFields(
 		blank,
-		{ name: 'Spent', value: `${formatNumber(expense)} 💵`, inline: true },
-		{ name: 'Gained', value: `${formatNumber(income)} 💵`, inline: true },
+		{ name: "Spent", value: `${formatNumber(expense)} 💵`, inline: true },
+		{ name: "Gained", value: `${formatNumber(income)} 💵`, inline: true },
 		blank
 	);
 
@@ -117,12 +117,12 @@ function showDefaultStat(
 }
 
 function showBingo(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expense: number) {
-	const msgeDef = showDefaultStat('bingo', stat, msge, income, expense);
+	const msgeDef = showDefaultStat("bingo", stat, msge, income, expense);
 	return msgeDef;
 }
 
 function showBj(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expense: number) {
-	const msgeDef = showDefaultStat('bj', stat, msge, income, expense);
+	const msgeDef = showDefaultStat("bj", stat, msge, income, expense);
 	if (msgeDef.data.description) return msgeDef; //means there are no stats
 
 	const played = stat.bj!.am;
@@ -132,13 +132,13 @@ function showBj(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expe
 
 	if (double)
 		msgeDef.addFields({
-			name: 'Times doubled',
+			name: "Times doubled",
 			value: `${formatNumber(double)} (${formatNumber(doubleWin)} won)`,
 			inline: true
 		});
 	if (bj)
 		msgeDef.addFields({
-			name: 'Times hit blackjack',
+			name: "Times hit blackjack",
 			value: `${formatNumber(bj)} (${Math.round((bj / played) * 10000) / 100}%)`,
 			inline: true
 		});
@@ -147,13 +147,13 @@ function showBj(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expe
 }
 
 function showDice(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expense: number) {
-	const msgeDef = showDefaultStat('dice', stat, msge, income, expense);
+	const msgeDef = showDefaultStat("dice", stat, msge, income, expense);
 	if (msgeDef.data.description) return msgeDef; //means there are no stats
 
 	const totalScore = stat.dice?.totalScore ?? 0;
 	const am = stat.dice?.am ?? 1;
 	msgeDef.addFields({
-		name: 'Total score',
+		name: "Total score",
 		value: `${formatNumber(totalScore)} (${Math.round((totalScore / am) * 100) / 100} average)`
 	});
 
@@ -161,17 +161,17 @@ function showDice(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, ex
 }
 
 function showFlip(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expense: number) {
-	const msgeDef = showDefaultStat('flip', stat, msge, income, expense);
+	const msgeDef = showDefaultStat("flip", stat, msge, income, expense);
 	return msgeDef;
 }
 
 function showJackpot(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expense: number) {
-	const msgeDef = showDefaultStat('jackpot', stat, msge, income, expense);
+	const msgeDef = showDefaultStat("jackpot", stat, msge, income, expense);
 	return msgeDef;
 }
 
 function showRl(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expense: number) {
-	const msgeDef = showDefaultStat('rl', stat, msge, income, expense);
+	const msgeDef = showDefaultStat("rl", stat, msge, income, expense);
 	if (msgeDef.data.description) return msgeDef; //means there are no stats
 
 	const red = stat.rl?.red ?? 0;
@@ -183,19 +183,19 @@ function showRl(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expe
 
 	if (red)
 		msgeDef.addFields({
-			name: '🟥 Red',
+			name: "🟥 Red",
 			value: `${formatNumber(red)} (${Math.round((redWin / red) * 10000) / 100}% won)`,
 			inline: true
 		});
 	if (black)
 		msgeDef.addFields({
-			name: '⬛ Black',
+			name: "⬛ Black",
 			value: `${formatNumber(black)} (${Math.round((blackWin / black) * 10000) / 100}% won)`,
 			inline: true
 		});
 	if (green)
 		msgeDef.addFields({
-			name: '🟩 Green',
+			name: "🟩 Green",
 			value: `${formatNumber(green)} (${Math.round((greenWin / green) * 10000) / 100}% won)`,
 			inline: true
 		});
@@ -204,14 +204,14 @@ function showRl(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expe
 }
 
 function showSlot(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, expense: number) {
-	const msgeDef = showDefaultStat('slot', stat, msge, income, expense);
+	const msgeDef = showDefaultStat("slot", stat, msge, income, expense);
 	if (msgeDef.data.description) return msgeDef; //means there are no stats
 
 	const bigWin = stat.slot?.bigWin ?? 0;
 	const win = stat.slot?.win ?? 0;
 	if (win)
 		msgeDef.addFields({
-			name: 'Big wins (10x+)',
+			name: "Big wins (10x+)",
 			value: `${formatNumber(bigWin)} (${Math.round((bigWin / win) * 10000) / 100}% of wins)`
 		});
 
@@ -226,18 +226,18 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		const gameTmp = args[args.length - 1].toLowerCase();
 		if (
 			[
-				'bingo',
-				'bj',
-				'21',
-				'blackjack',
-				'dice',
-				'diceduel',
-				'flip',
-				'bet',
-				'jackpot',
-				'rl',
-				'roulette',
-				'slot'
+				"bingo",
+				"bj",
+				"21",
+				"blackjack",
+				"dice",
+				"diceduel",
+				"flip",
+				"bet",
+				"jackpot",
+				"rl",
+				"roulette",
+				"slot"
 			].includes(gameTmp)
 		) {
 			game = gameTmp;
@@ -264,7 +264,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	if (plrdat === null) db_plr_set({ _id: user.id, mon: 0 });
 	if (!plrdat?.casinoStat) {
-		statMsg.setDescription('There are no stats for this user.');
+		statMsg.setDescription("There are no stats for this user.");
 		return msg.reply({ embeds: [statMsg] });
 	}
 
@@ -272,26 +272,26 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (plrdat.badge) statMsg.setTitle(plrdat.badge);
 
 	switch (game) {
-		case 'bingo':
+		case "bingo":
 			statMsg = showBingo(plrdat.casinoStat, statMsg, plrdat.income?.bingo ?? 0, plrdat.expense?.bingo ?? 0);
 			break;
-		case 'bj':
-		case '21':
-		case 'blackjack':
+		case "bj":
+		case "21":
+		case "blackjack":
 			statMsg = showBj(plrdat.casinoStat, statMsg, plrdat.income?.bj ?? 0, plrdat.expense?.bj ?? 0);
-			game = 'bj';
+			game = "bj";
 			break;
-		case 'dice':
-		case 'diceduel':
+		case "dice":
+		case "diceduel":
 			statMsg = showDice(plrdat.casinoStat, statMsg, plrdat.income?.dice ?? 0, plrdat.expense?.dice ?? 0);
-			game = 'dice';
+			game = "dice";
 			break;
-		case 'flip':
-		case 'bet':
-			game = 'flip';
+		case "flip":
+		case "bet":
+			game = "flip";
 			statMsg = showFlip(plrdat.casinoStat, statMsg, plrdat.income?.flip ?? 0, plrdat.expense?.flip ?? 0);
 			break;
-		case 'jackpot':
+		case "jackpot":
 			statMsg = showJackpot(
 				plrdat.casinoStat,
 				statMsg,
@@ -299,12 +299,12 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				plrdat.expense?.jackpot ?? 0
 			);
 			break;
-		case 'rl':
-		case 'roulette':
-			game = 'rl';
+		case "rl":
+		case "roulette":
+			game = "rl";
 			statMsg = showRl(plrdat.casinoStat, statMsg, plrdat.income?.rl ?? 0, plrdat.expense?.rl ?? 0);
 			break;
-		case 'slot':
+		case "slot":
 			statMsg = showSlot(plrdat.casinoStat, statMsg, plrdat.income?.slot ?? 0, plrdat.expense?.slot ?? 0);
 			break;
 		default:

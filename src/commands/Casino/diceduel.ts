@@ -1,46 +1,46 @@
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonInteraction,
-    ButtonStyle,
-    Colors,
-    EmbedBuilder,
-    Interaction
-} from 'discord.js';
-import { db_add_casino_top, db_plr_add, db_plr_get } from '../../db/db.js';
-import { bot } from '../../okbot.js';
-import { SET } from '../../settings.js';
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	Interaction
+} from "discord.js";
+import { db_add_casino_top, db_plr_add, db_plr_get } from "../../db/db.js";
+import { bot } from "../../okbot.js";
+import { SET } from "../../settings.js";
 import {
-    addCasinoStat,
-    calcMoneyLevelsGain,
-    formatDoler,
-    formatNumber,
-    getUserFromMsg,
-    numberToEmoji,
-    parseNumberSuffix,
-    sendEphemeralReply,
-    sendSimpleMessage,
-    showCasinoTopWins
-} from '../../utils.js';
-import { Dice_games } from '../../volatile.js';
+	addCasinoStat,
+	calcMoneyLevelsGain,
+	formatDoler,
+	formatNumber,
+	getUserFromMsg,
+	numberToEmoji,
+	parseNumberSuffix,
+	sendEphemeralReply,
+	sendSimpleMessage,
+	showCasinoTopWins
+} from "../../utils.js";
+import { Dice_games } from "../../volatile.js";
 
-export const name = 'diceduel';
-export const alias = ['dice', 'duel'];
-export const description = '🎲 Duel somebody in dice';
+export const name = "diceduel";
+export const alias = ["dice", "duel"];
+export const description = "🎲 Duel somebody in dice";
 export const usage = '[Username OR Mention OR "Top"] [Bet amount (1-10M/50M 💵) OR "All"]';
 
 const BET_RANGES = { def: { min: 1, max: 10000000 }, vip: { min: 1, max: 50000000 } };
 
-bot.on('interactionCreate', interaction => {
+bot.on("interactionCreate", interaction => {
 	if (!interaction.isButton() || !interaction.guild) return;
 
-	const split = interaction.customId.split('-');
-	if (split[0] !== 'dice_accept' && split[0] !== 'dice_cancel') return;
+	const split = interaction.customId.split("-");
+	if (split[0] !== "dice_accept" && split[0] !== "dice_cancel") return;
 	const id = split[1];
 	const game = Dice_games[id];
-	if (!game) return sendEphemeralReply(interaction, 'This game has ended.');
+	if (!game) return sendEphemeralReply(interaction, "This game has ended.");
 
-	if (split[0] === 'dice_accept') return acceptDice(game, id, interaction);
+	if (split[0] === "dice_accept") return acceptDice(game, id, interaction);
 	return rejectDice(game, id, interaction);
 });
 
@@ -83,7 +83,7 @@ function rejectDice(game: okbot.DiceGame, gameId: string, interaction: ButtonInt
 		sendSimpleMessage(game.msg, `<@${game.to}> rejected the duel...`);
 	} else return sendEphemeralReply(interaction, "This invitation wasn't meant for you, jackass.");
 
-	endGame(gameId, 'This game was canceled.');
+	endGame(gameId, "This game was canceled.");
 	interaction.update({});
 }
 
@@ -111,13 +111,13 @@ function updateGame(game: okbot.DiceGame) {
 	msgeEdit.addFields([
 		{
 			name: `${game.nameFrom} (${game.sumFrom})`,
-			value: `${game.diceFrom.join(' ')}${'🎲'.repeat(3 - game.diceFrom.length)}\u200b`,
+			value: `${game.diceFrom.join(" ")}${"🎲".repeat(3 - game.diceFrom.length)}\u200b`,
 			inline: true
 		},
-		{ name: '\u200b', value: '\u200b', inline: true },
+		{ name: "\u200b", value: "\u200b", inline: true },
 		{
 			name: `${game.nameTo} (${game.sumTo})`,
-			value: `${game.diceTo.join(' ')}${'🎲'.repeat(3 - game.diceTo.length)}\u200b`,
+			value: `${game.diceTo.join(" ")}${"🎲".repeat(3 - game.diceTo.length)}\u200b`,
 			inline: true
 		}
 	]);
@@ -139,12 +139,12 @@ async function handleGameEnd(game: okbot.DiceGame, gameId: string, interaction: 
 			mon: 2 * game.bet,
 			income: { dice: 2 * game.bet }
 		});
-		addCasinoStat(game.from, 'dice', 'win', game.bet, game.bet, {
+		addCasinoStat(game.from, "dice", "win", game.bet, game.bet, {
 			countDraws: true,
 			diceScore: game.sumFrom
 		});
-		addCasinoStat(game.to, 'dice', 'lose', game.bet, -game.bet, { countDraws: true, diceScore: game.sumTo });
-		db_add_casino_top('dice', game.from, game.nameFrom, game.bet, game.bet * 2);
+		addCasinoStat(game.to, "dice", "lose", game.bet, -game.bet, { countDraws: true, diceScore: game.sumTo });
+		db_add_casino_top("dice", game.from, game.nameFrom, game.bet, game.bet * 2);
 
 		endGame(gameId, `${game.nameFrom} wins!`);
 	} else if (game.sumFrom < game.sumTo) {
@@ -160,26 +160,26 @@ async function handleGameEnd(game: okbot.DiceGame, gameId: string, interaction: 
 			mon: 2 * game.bet,
 			income: { dice: 2 * game.bet }
 		});
-		addCasinoStat(game.from, 'dice', 'lose', game.bet, -game.bet, {
+		addCasinoStat(game.from, "dice", "lose", game.bet, -game.bet, {
 			countDraws: true,
 			diceScore: game.sumFrom
 		});
-		addCasinoStat(game.to, 'dice', 'win', game.bet, game.bet, { countDraws: true, diceScore: game.sumTo });
-		db_add_casino_top('dice', game.to, game.nameTo, game.bet, game.bet * 2);
+		addCasinoStat(game.to, "dice", "win", game.bet, game.bet, { countDraws: true, diceScore: game.sumTo });
+		db_add_casino_top("dice", game.to, game.nameTo, game.bet, game.bet * 2);
 
 		endGame(gameId, `${game.nameTo} wins!`);
 	} else {
 		// draw
 		await db_plr_add({ _id: game.from, mon: game.bet, income: { dice: game.bet } });
 		await db_plr_add({ _id: game.to, mon: game.bet, income: { dice: game.bet } });
-		addCasinoStat(game.from, 'dice', 'draw', game.bet, 0, { countDraws: true, diceScore: game.sumFrom });
-		addCasinoStat(game.to, 'dice', 'draw', game.bet, 0, { countDraws: true, diceScore: game.sumTo });
+		addCasinoStat(game.from, "dice", "draw", game.bet, 0, { countDraws: true, diceScore: game.sumFrom });
+		addCasinoStat(game.to, "dice", "draw", game.bet, 0, { countDraws: true, diceScore: game.sumTo });
 
 		endGame(gameId, "It's a draw!");
 	}
 }
 
-function endGame(id: string, reason = 'This game has ended.') {
+function endGame(id: string, reason = "This game has ended.") {
 	const game = Dice_games[id];
 	if (!game) return;
 
@@ -192,40 +192,40 @@ function endGame(id: string, reason = 'This game has ended.') {
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	if (args[0]?.toLowerCase() === 'top')
+	if (args[0]?.toLowerCase() === "top")
 		return msg.reply({
-			embeds: [await showCasinoTopWins('dice', false)],
+			embeds: [await showCasinoTopWins("dice", false)],
 			allowedMentions: { repliedUser: false }
 		});
 
 	const gameAuthor = msg.author;
 	if (Dice_games[gameAuthor.id]) return sendSimpleMessage(msg, "You're already hosting a dice duel!");
 	if (args.length < 2)
-		return sendSimpleMessage(msg, 'The usage for this command is:\n`' + usage + '`', Colors.White);
+		return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
 	const betArg = args.pop();
 	const gameRecipient = await getUserFromMsg(msg, args);
 
-	if (!gameRecipient) return sendSimpleMessage(msg, 'User not found.');
+	if (!gameRecipient) return sendSimpleMessage(msg, "User not found.");
 	if (gameRecipient.id === gameAuthor.id)
-		return sendSimpleMessage(msg, 'By definition, you need two people for a duel to take place...');
+		return sendSimpleMessage(msg, "By definition, you need two people for a duel to take place...");
 
 	const plrdat = await db_plr_get({ _id: gameAuthor.id, mon: 1, itms: 1 });
 	const mon = plrdat?.mon ?? 0;
 
 	const plrdatRecipient = await db_plr_get({ _id: gameRecipient.id, mon: 1, itms: 1 });
 	const monRecipient = plrdatRecipient?.mon ?? 0;
-	const MIN_BET = BET_RANGES[plrdat?.itms?.BOS0010 && plrdatRecipient?.itms?.BOS0010 ? 'vip' : 'def'].min;
-	const MAX_BET = BET_RANGES[plrdat?.itms?.BOS0010 && plrdatRecipient?.itms?.BOS0010 ? 'vip' : 'def'].max;
+	const MIN_BET = BET_RANGES[plrdat?.itms?.BOS0010 && plrdatRecipient?.itms?.BOS0010 ? "vip" : "def"].min;
+	const MAX_BET = BET_RANGES[plrdat?.itms?.BOS0010 && plrdatRecipient?.itms?.BOS0010 ? "vip" : "def"].max;
 
 	let bet = mon;
-	if (betArg!.toLowerCase() !== 'all') bet = parseNumberSuffix(betArg as string) ?? 0;
+	if (betArg!.toLowerCase() !== "all") bet = parseNumberSuffix(betArg as string) ?? 0;
 	if (isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
 		return sendSimpleMessage(
 			msg,
 			`Bet amount must be between **${formatNumber(MIN_BET)}** and **${formatNumber(MAX_BET)}** 💵.${
 				plrdat?.itms?.BOS0010 != plrdatRecipient?.itms?.BOS0010
-					? '\nBoth players must have the High Roller card for it to count.'
-					: ''
+					? "\nBoth players must have the High Roller card for it to count."
+					: ""
 			}`
 		);
 
@@ -244,11 +244,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		new ButtonBuilder()
 			.setCustomId(`dice_accept-${gameAuthor.id}`)
-			.setLabel('Accept')
+			.setLabel("Accept")
 			.setStyle(ButtonStyle.Success),
 		new ButtonBuilder()
 			.setCustomId(`dice_cancel-${gameAuthor.id}`)
-			.setLabel('Cancel/Reject')
+			.setLabel("Cancel/Reject")
 			.setStyle(ButtonStyle.Danger)
 	);
 	const msgSent = (await msg.channel.send({ embeds: [msge], components: [row] })) as okbot.Message;
@@ -265,8 +265,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		bet,
 		msg: msgSent,
 		time: setTimeout(() => {
-			sendSimpleMessage(msgSent, 'This game has timed out.', Colors.DarkOrange);
-			endGame(gameAuthor.id, 'This game has timed out.');
+			sendSimpleMessage(msgSent, "This game has timed out.", Colors.DarkOrange);
+			endGame(gameAuthor.id, "This game has timed out.");
 		}, 180000)
 	};
 

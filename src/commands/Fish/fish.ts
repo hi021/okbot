@@ -1,60 +1,60 @@
-import { Colors, EmbedBuilder, User } from 'discord.js';
-import fs from 'fs';
-import { db_fish_add, db_fish_get, db_plr_add, db_plr_get } from '../../db/db.js';
-import { SET } from '../../settings.js';
+import { Colors, EmbedBuilder, User } from "discord.js";
+import fs from "fs";
+import { db_fish_add, db_fish_get, db_plr_add, db_plr_get } from "../../db/db.js";
+import { SET } from "../../settings.js";
 import {
-    calcMoneyLevelsGain,
-    checkBoosterValidity,
-    createSimpleMessage,
-    formatDoler,
-    formatNumber,
-    getUserFromMsg,
-    isOnCooldown,
-    randomInt,
-    sendSimpleMessage
-} from '../../utils.js';
+	calcMoneyLevelsGain,
+	checkBoosterValidity,
+	createSimpleMessage,
+	formatDoler,
+	formatNumber,
+	getUserFromMsg,
+	isOnCooldown,
+	randomInt,
+	sendSimpleMessage
+} from "../../utils.js";
 
 export const Fish: { tot: number; f: { [nam: string]: okbot.Fish } } = { tot: 0, f: {} };
 
-export const name = 'fish';
-export const description = '🐟 Catch them all (or get caught)';
-export const usage = '<Action> <Username OR Mention> <Fish type OR Fish name>';
+export const name = "fish";
+export const description = "🐟 Catch them all (or get caught)";
+export const usage = "<Action> <Username OR Mention> <Fish type OR Fish name>";
 export const usageDetail =
-	'Actions (empty to cast for fish):\n- inventory\n- stats\n- info\n- sell\n- list\n- globalstats\nTypes:\n- stinky\n- ok\n- cool\n- rare\n- collectors';
+	"Actions (empty to cast for fish):\n- inventory\n- stats\n- info\n- sell\n- list\n- globalstats\nTypes:\n- stinky\n- ok\n- cool\n- rare\n- collectors";
 
 export const getRarityEmoji = (type: okbot.FishRarity) => {
 	switch (type) {
-		case 'stinky':
-			return '⚫';
-		case 'ok':
-			return '⚪';
-		case 'cool':
-			return '🟡';
-		case 'rare':
-			return '🔴';
-		case 'collectors':
-		case 'collectors+':
-			return '🟣';
+		case "stinky":
+			return "⚫";
+		case "ok":
+			return "⚪";
+		case "cool":
+			return "🟡";
+		case "rare":
+			return "🔴";
+		case "collectors":
+		case "collectors+":
+			return "🟣";
 	}
 };
 
 const getRarityColor = (type: okbot.FishRarity) => {
 	switch (type) {
-		case 'stinky':
-			return '#31373D';
-		case 'ok':
-			return '#E6E7E8';
-		case 'cool':
-			return '#FDCB58';
-		case 'rare':
-			return '#DD2E44';
-		case 'collectors':
-		case 'collectors+':
-			return '#AA8ED6';
+		case "stinky":
+			return "#31373D";
+		case "ok":
+			return "#E6E7E8";
+		case "cool":
+			return "#FDCB58";
+		case "rare":
+			return "#DD2E44";
+		case "collectors":
+		case "collectors+":
+			return "#AA8ED6";
 	}
 };
 
-const sellableRarities = ['cool', 'ok', 'stinky', 'rare']; // prevent sale of collectors+
+const sellableRarities = ["cool", "ok", "stinky", "rare"]; // prevent sale of collectors+
 
 /*Pants [ 0, 55000 ]
 Water [ 55000, 115000 ]
@@ -90,14 +90,14 @@ Lost crown [ 489912, 489914 ]
 Pure euphoria [ 489914, 489916 ]*/
 
 async function fish(msg: okbot.Message) {
-	if (isOnCooldown('fish', msg.author.id, msg, 'before casting again.')) return;
+	if (isOnCooldown("fish", msg.author.id, msg, "before casting again.")) return;
 
 	const plrdat = await db_plr_get({ _id: msg.author.id, mon: 1, fishPower: 1, boosters: 1 });
 	let numFish = 1 + (plrdat?.fishPower ?? 0);
 	if (plrdat?.boosters) {
 		// technically not TimedBoosters, this is just to avoid type errors
-		const bos_time10 = checkBoosterValidity(plrdat, 'FIS0003') as okbot.TimedBooster;
-		const bos_time60 = checkBoosterValidity(plrdat, 'FIS0004') as okbot.TimedBooster;
+		const bos_time10 = checkBoosterValidity(plrdat, "FIS0003") as okbot.TimedBooster;
+		const bos_time60 = checkBoosterValidity(plrdat, "FIS0004") as okbot.TimedBooster;
 
 		if (bos_time10?.v) numFish += bos_time10.v[0];
 		if (bos_time60?.v) numFish += bos_time60.v[0];
@@ -121,7 +121,7 @@ async function fish(msg: okbot.Message) {
 				// WARNING: will set the same collectorsPart instead of rolling multiple times (very very very low odds to ever matter)
 				if (fishCaught[nam]) ++fishCaught[nam].am;
 				else {
-					if (caught.type === 'collectors')
+					if (caught.type === "collectors")
 						collectorsPartGlobal = collectorsPart = randomInt(1, 5) as 1 | 2 | 3 | 4 | 5;
 					fishCaught[nam] = { am: 1, collectorsPart };
 				}
@@ -130,7 +130,7 @@ async function fish(msg: okbot.Message) {
 		}
 	}
 
-	let desc = '';
+	let desc = "";
 	let rarestSort = 10; // fish's sort field (0-4, 0 rarest), used to determine the color of the embed
 	let rarestType;
 	let raresCaught = 0;
@@ -165,7 +165,7 @@ async function fish(msg: okbot.Message) {
 				? `${fishCaught[i].am}x ${Fish.f[i].emoji} **${i}**, `
 				: `${Fish.f[i].emoji} **${i}**, `;
 
-		if (Fish.f[i].type === 'rare') raresCaught += fishCaught[i].am;
+		if (Fish.f[i].type === "rare") raresCaught += fishCaught[i].am;
 		if (fishCaught[i].am >= 3 && sameFishCaught < fishCaught[i].am) sameFishCaught = fishCaught[i].am;
 	}
 
@@ -180,8 +180,8 @@ async function fish(msg: okbot.Message) {
 		description = `> **Extremely rare collection piece - part ${collectorsPartGlobal}/5!**`;
 	else if (raresCaught >= 2) description = `> Caught **${raresCaught}** rare fish at once!`;
 	if (sameFishCaught) {
-		if (description) description += '\n> ';
-		else description = '> ';
+		if (description) description += "\n> ";
+		else description = "> ";
 		description += `**${sameFishCaught}** of a kind!`;
 	}
 
@@ -218,9 +218,9 @@ async function inv(msg: okbot.Message, usr?: User | null) {
 
 	// sort by type
 	fishArr.sort((a, b) => (a.sort < b.sort ? -1 : 1));
-	let countfield = '';
-	let namefield = '';
-	let pricefield = '';
+	let countfield = "";
+	let namefield = "";
+	let pricefield = "";
 	for (const i of fishArr) {
 		countfield += i.count;
 		namefield += i.nam;
@@ -231,10 +231,10 @@ async function inv(msg: okbot.Message, usr?: User | null) {
 	const msge = new EmbedBuilder()
 		.setAuthor({ name: `${usr.displayName}'s fishy	`, iconURL: av })
 		.addFields(
-			{ name: '\u200b', value: countfield, inline: true },
-			{ name: '\u200b', value: namefield, inline: true },
-			{ name: '\u200b', value: pricefield, inline: true },
-			{ name: 'Total value', value: `${formatDoler(totalPrice, false)}` }
+			{ name: "\u200b", value: countfield, inline: true },
+			{ name: "\u200b", value: namefield, inline: true },
+			{ name: "\u200b", value: pricefield, inline: true },
+			{ name: "Total value", value: `${formatDoler(totalPrice, false)}` }
 		);
 
 	msg.reply({
@@ -247,16 +247,16 @@ async function inv(msg: okbot.Message, usr?: User | null) {
 
 async function stats(msg: okbot.Message, usr?: User | null) {
 	const fishGlobal = (await db_fish_get()) as okbot.FishGlobal[];
-	if (!fishGlobal) return sendSimpleMessage(msg, '🕸️ *ummm the fish have died...*');
+	if (!fishGlobal) return sendSimpleMessage(msg, "🕸️ *ummm the fish have died...*");
 	fishGlobal.sort((a, b) => (a.v < b.v ? -1 : 1));
 
 	if (!usr) usr = msg.author;
 	const plrdat = await db_plr_get({ _id: usr.id, fishTot: 1, fishTotC: 1 });
 
-	let namefield = '';
-	let countfieldGlobal = '';
+	let namefield = "";
+	let countfieldGlobal = "";
 	let totGlobal = 0;
-	let countfieldUsr = '';
+	let countfieldUsr = "";
 	for (const nam in fishGlobal) {
 		const id = fishGlobal[nam]._id;
 
@@ -270,12 +270,12 @@ async function stats(msg: okbot.Message, usr?: User | null) {
 	const msge = new EmbedBuilder()
 		.setThumbnail(usr.displayAvatarURL())
 		.addFields(
-			{ name: '\u200b', value: namefield, inline: true },
-			{ name: 'Global', value: countfieldGlobal, inline: true },
+			{ name: "\u200b", value: namefield, inline: true },
+			{ name: "Global", value: countfieldGlobal, inline: true },
 			{ name: `${usr.displayName}`, value: countfieldUsr, inline: true },
-			{ name: '\u200b', value: '\u200b', inline: true },
-			{ name: 'Total', value: formatNumber(totGlobal), inline: true },
-			{ name: 'Total', value: formatNumber(plrdat?.fishTotC ?? 0), inline: true }
+			{ name: "\u200b", value: "\u200b", inline: true },
+			{ name: "Total", value: formatNumber(totGlobal), inline: true },
+			{ name: "Total", value: formatNumber(plrdat?.fishTotC ?? 0), inline: true }
 		);
 	msg.reply({
 		embeds: [msge],
@@ -287,11 +287,11 @@ async function stats(msg: okbot.Message, usr?: User | null) {
 
 export function findFish(nam: string) {
 	// WARNING: hardcoded, might break if something else starts with bla :)
-	if (nam.toLowerCase().startsWith('bla')) nam = 'BLÅHAJ';
+	if (nam.toLowerCase().startsWith("bla")) nam = "BLÅHAJ";
 
 	let fis: okbot.Fish | undefined = Fish.f[nam];
 	if (!fis) {
-		const reg = new RegExp(nam, 'i');
+		const reg = new RegExp(nam, "i");
 		for (const i in Fish.f) {
 			if (i.match(reg)) {
 				fis = Fish.f[i];
@@ -310,16 +310,16 @@ async function info(msg: okbot.Message, nam: string) {
 
 	const globalfish = (await db_fish_get(fisNam)) as okbot.FishGlobal;
 	const msge = new EmbedBuilder().setTitle(`${fis.emoji} ${fisNam}`).addFields(
-		{ name: 'Sell price', value: fis.price ? `${fis.price} 💵` : '-', inline: true },
-		{ name: 'Aquarium income', value: fis.aq ? `${fis.aq} 💵/h` : '-', inline: true },
-		{ name: '\u200b', value: '\u200b', inline: true },
-		{ name: 'Type', value: getRarityEmoji(fis.type) + ' ' + fis.type, inline: true },
+		{ name: "Sell price", value: fis.price ? `${fis.price} 💵` : "-", inline: true },
+		{ name: "Aquarium income", value: fis.aq ? `${fis.aq} 💵/h` : "-", inline: true },
+		{ name: "\u200b", value: "\u200b", inline: true },
+		{ name: "Type", value: getRarityEmoji(fis.type) + " " + fis.type, inline: true },
 		{
-			name: 'Catch chance',
-			value: (Math.round(((fis.rare || 0) / Fish.tot) * 1000000) / 10000).toString() + '%',
+			name: "Catch chance",
+			value: (Math.round(((fis.rare || 0) / Fish.tot) * 1000000) / 10000).toString() + "%",
 			inline: true
 		},
-		{ name: 'Caught', value: formatNumber(globalfish?.v ?? 0), inline: true }
+		{ name: "Caught", value: formatNumber(globalfish?.v ?? 0), inline: true }
 	);
 
 	msg.reply({
@@ -363,7 +363,7 @@ async function sell(msg: okbot.Message, nam: string[], qty = 0) {
 
 		if (!num) return sendSimpleMessage(msg, `You do not have any ${type} fish.`);
 		/////////////////////SELL ALL
-	} else if (type == 'all') {
+	} else if (type == "all") {
 		for (const i in plr.fish) {
 			if (!plr.fish[i] || !sellableRarities.includes(Fish.f[i].type)) continue; //if no fish in inventory or illegible for sale
 			if (plr.fish[i] >= qty) {
@@ -381,7 +381,7 @@ async function sell(msg: okbot.Message, nam: string[], qty = 0) {
 			}
 		}
 
-		if (!num) return sendSimpleMessage(msg, 'You do not have any fish.');
+		if (!num) return sendSimpleMessage(msg, "You do not have any fish.");
 		/////////////////////SELL GIVEN NAMES
 	} else {
 		//sell by name
@@ -413,7 +413,7 @@ async function sell(msg: okbot.Message, nam: string[], qty = 0) {
 			}
 		}
 
-		if (!num) return sendSimpleMessage(msg, 'You do not have any of the given fish.');
+		if (!num) return sendSimpleMessage(msg, "You do not have any of the given fish.");
 	}
 
 	await db_plr_add({
@@ -434,10 +434,10 @@ async function sell(msg: okbot.Message, nam: string[], qty = 0) {
 }
 
 function fishlist(msg: okbot.Message, type?: okbot.FishRarity) {
-	let namstring = '';
-	let coststring = '';
+	let namstring = "";
+	let coststring = "";
 	for (const i in Fish.f) {
-		if ((!type || Fish.f[i].type === type) && Fish.f[i].type != 'collectors+') {
+		if ((!type || Fish.f[i].type === type) && Fish.f[i].type != "collectors+") {
 			namstring += `${getRarityEmoji(Fish.f[i].type)} ${Fish.f[i].emoji} \`${i}\`\n`;
 			const chanceRaw = (Fish.f[i].rare ?? 0) / Fish.tot;
 			const chance = (chanceRaw * 100).toFixed(chanceRaw >= 0.1 ? 3 : 4); // small alignment
@@ -445,9 +445,9 @@ function fishlist(msg: okbot.Message, type?: okbot.FishRarity) {
 			if (!sellableRarities.includes(Fish.f[i].type)) {
 				coststring += `\`???  \`💵 | \`${chance}\`%\n`;
 			} else {
-				const price = Fish.f[i].price!.toString().padEnd(5, ' ');
+				const price = Fish.f[i].price!.toString().padEnd(5, " ");
 				if (Fish.f[i].aq) {
-					const aqua = Fish.f[i].aq!.toString().padEnd(4, ' ');
+					const aqua = Fish.f[i].aq!.toString().padEnd(4, " ");
 					coststring += `\`${price}\`💵 | \`${chance}\`% | \`${aqua}\`💵/h\n`;
 				} else {
 					coststring += `\`${price}\`💵 | \`${chance}\`%\n`;
@@ -457,10 +457,10 @@ function fishlist(msg: okbot.Message, type?: okbot.FishRarity) {
 	}
 
 	const msge = new EmbedBuilder()
-		.setAuthor({ name: `${type ? type + ' f' : 'F'}ish details` })
+		.setAuthor({ name: `${type ? type + " f" : "F"}ish details` })
 		.addFields(
-			{ name: '\u200b', value: namstring, inline: true },
-			{ name: '\u200b', value: coststring, inline: true }
+			{ name: "\u200b", value: namstring, inline: true },
+			{ name: "\u200b", value: coststring, inline: true }
 		)
 		.setColor(Colors.White);
 
@@ -470,10 +470,10 @@ function fishlist(msg: okbot.Message, type?: okbot.FishRarity) {
 export function fishInit() {
 	try {
 		Fish.tot = 0;
-		Fish.f = JSON.parse(fs.readFileSync('../assets/fish.json', { encoding: 'utf-8' }));
+		Fish.f = JSON.parse(fs.readFileSync("../assets/fish.json", { encoding: "utf-8" }));
 		for (const i in Fish.f) Fish.f[i].odds = [Fish.tot, (Fish.tot += Fish.f[i].rare || 0)];
 	} catch (e) {
-		console.warn('Failed to initialize fish:', e);
+		console.warn("Failed to initialize fish:", e);
 		return null;
 	}
 	return Fish;
@@ -481,38 +481,38 @@ export function fishInit() {
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	switch (args[0]?.toLowerCase()) {
-		case 'inv':
-		case 'inventory':
+		case "inv":
+		case "inventory":
 			args.shift();
 			return inv(msg, await getUserFromMsg(msg, args));
-		case 'global':
-		case 'globalstats':
-		case 'stats':
+		case "global":
+		case "globalstats":
+		case "stats":
 			args.shift();
 			return stats(msg, await getUserFromMsg(msg, args));
-		case 'info':
+		case "info":
 			args.shift();
-			return info(msg, args.join(' '));
-		case 'sell':
+			return info(msg, args.join(" "));
+		case "sell":
 			args.shift();
 			const qty = Number(args.slice(-1));
 			if (!isNaN(qty)) {
 				if (qty < 0) return;
 				args = args.slice(0, -1);
 			}
-			const list = args.join(' ');
-			return sell(msg, list.split(','), qty || 0);
-		case 'list':
-		case 'details':
+			const list = args.join(" ");
+			return sell(msg, list.split(","), qty || 0);
+		case "list":
+		case "details":
 			args.shift();
 			let type: string | undefined = args[0]?.toLowerCase();
 			if (
 				type &&
-				type != 'stinky' &&
-				type != 'ok' &&
-				type != 'cool' &&
-				type != 'rare' &&
-				type != 'collectors'
+				type != "stinky" &&
+				type != "ok" &&
+				type != "cool" &&
+				type != "rare" &&
+				type != "collectors"
 			)
 				type = undefined;
 

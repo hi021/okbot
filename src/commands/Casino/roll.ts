@@ -1,8 +1,8 @@
-import { randomInt } from '../../utils.js';
+import { randomInt } from "../../utils.js";
 
-export const name = 'roll';
-export const description = '🎲 Roll a numbe (this is a very old command shush)';
-export const usage = '<Min> <Max> <Repetitions>';
+export const name = "roll";
+export const description = "🎲 Roll a numbe (this is a very old command shush)";
+export const usage = "<Min> <Max> <Repetitions>";
 
 export function execute(msg: okbot.Message, args: string[]) {
 	let min = 1,
@@ -18,7 +18,7 @@ export function execute(msg: okbot.Message, args: string[]) {
 		max = parseInt(args[1]);
 		reps = parseInt(args[2]);
 		if (reps > 150) {
-			msg.reply('> o nono that is too many reps e');
+			msg.reply("> o nono that is too many reps e");
 			return;
 		}
 	}
@@ -36,21 +36,21 @@ export function execute(msg: okbot.Message, args: string[]) {
 		n = randomInt(min, max);
 
 	if (reps <= 1) {
-		let msgsend = '🎲 Rolled a **' + n + '**';
-		if (n < 1) msgsend += ' how did you do thajt';
+		let msgsend = "🎲 Rolled a **" + n + "**";
+		if (n < 1) msgsend += " how did you do thajt";
 		return msg.channel.send(msgsend);
 	}
 
 	let msgsend = `🎲 ${reps} rolls [${min}-${max}]\`\`\``;
 	for (let i = 0; i < reps; i++) {
-		if (!(i % 10)) msgsend += '\n';
-		msgsend += n + ' ';
+		if (!(i % 10)) msgsend += "\n";
+		msgsend += n + " ";
 		sum += n;
 		n = randomInt(min, max);
 	}
 
-	msgsend += '```';
-	if (reps >= 5) msgsend += '\nAverage of ' + Math.round((sum / reps) * 100) / 100;
+	msgsend += "```";
+	if (reps >= 5) msgsend += "\nAverage of " + Math.round((sum / reps) * 100) / 100;
 
 	msg.channel.send(msgsend);
 }

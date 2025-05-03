@@ -1,4 +1,4 @@
-import { Snowflake } from 'discord.js';
+import { Snowflake } from "discord.js";
 
 export const Cooldowns: { [activity in okbot.CooldownActivity]: { [id: Snowflake]: number } } = {
 	fish: {},
@@ -8,7 +8,7 @@ export const Cooldowns: { [activity in okbot.CooldownActivity]: { [id: Snowflake
 
 export const Players_in_collector: { [id: Snowflake]: boolean } = {};
 
-export const Guilds: { [guildId: string]: Omit<okbot.Guild, '_id'> } = {};
+export const Guilds: { [guildId: string]: Omit<okbot.Guild, "_id"> } = {};
 
 export const Casino_tops: { [game in okbot.CasinoGame]?: okbot.CasinoTopStat[] } = {};
 

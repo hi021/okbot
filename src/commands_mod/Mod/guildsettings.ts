@@ -1,16 +1,16 @@
-import { EmbedBuilder } from 'discord.js';
-import { SET } from '../../settings.js';
-import { Guilds } from '../../volatile.js';
+import { EmbedBuilder } from "discord.js";
+import { SET } from "../../settings.js";
+import { Guilds } from "../../volatile.js";
 
-export const name = 'guildsettings';
-export const alias = ['server', 'guild', 'serversettings'];
-export const description = 'View bot settings for this guild';
-export const restrict = 'GUILD_ADMIN';
+export const name = "guildsettings";
+export const alias = ["server", "guild", "serversettings"];
+export const description = "View bot settings for this guild";
+export const restrict = "GUILD_ADMIN";
 
 export async function execute(msg: okbot.Message, _: string[]) {
 	const settings = Guilds[msg.guild!.id];
 
-	let disabledChannels = '';
+	let disabledChannels = "";
 	if (settings?.blacklist) {
 		for (const i of settings.blacklist) {
 			disabledChannels += `<#${i}> `;
@@ -20,15 +20,15 @@ export async function execute(msg: okbot.Message, _: string[]) {
 	const msge = new EmbedBuilder()
 		.setTitle(`Preferences for ${msg.guild!.name}`)
 		.addFields(
-			{ name: 'Prefix', value: `\`${settings?.pre ?? SET.PREFIX}\``, inline: true },
+			{ name: "Prefix", value: `\`${settings?.pre ?? SET.PREFIX}\``, inline: true },
 			{
-				name: 'Level up messages',
-				value: settings?.lvl === false ? '`Disabled`' : '`Enabled`',
+				name: "Level up messages",
+				value: settings?.lvl === false ? "`Disabled`" : "`Enabled`",
 				inline: true
 			},
 			{
 				name: `Disabled channels (${settings?.blacklist?.length ?? 0})`,
-				value: disabledChannels || 'None',
+				value: disabledChannels || "None",
 				inline: false
 			}
 		)

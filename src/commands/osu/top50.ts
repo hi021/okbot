@@ -1,32 +1,32 @@
-import { AttachmentBuilder, EmbedBuilder, User } from 'discord.js';
-import { db_plr_get } from '../../db/db.js';
-import { db_osu_find_players } from '../../db/osu.js';
-import { SET } from '../../settings.js';
-import { formatDate, formatNumber, getUsersFromMsg, sendSimpleMessage } from '../../utils.js';
+import { AttachmentBuilder, EmbedBuilder, User } from "discord.js";
+import { db_plr_get } from "../../db/db.js";
+import { db_osu_find_players } from "../../db/osu.js";
+import { SET } from "../../settings.js";
+import { formatDate, formatNumber, getUsersFromMsg, sendSimpleMessage } from "../../utils.js";
 import {
-    getOsuAvatar,
-    merge_avatars,
-    merged_avatars_get,
-    osu_getId,
-    osu_getT50,
-    top50_chart_generate,
-    top50_chart_get
-} from '../../utilsOsu.js';
+	getOsuAvatar,
+	merge_avatars,
+	merged_avatars_get,
+	osu_getId,
+	osu_getT50,
+	top50_chart_generate,
+	top50_chart_get
+} from "../../utilsOsu.js";
 
-export const name = 'top50';
-export const alias = ['t50', 'osu'];
-export const description = '🟣 View osu! top 50 stats from poggers.ltd';
+export const name = "top50";
+export const alias = ["t50", "osu"];
+export const description = "🟣 View osu! top 50 stats from poggers.ltd";
 export const usage =
-	'<osu! username OR Discord nickname OR Mention> <, Second player for comparison> (-id, -pos, -noDiscord)';
+	"<osu! username OR Discord nickname OR Mention> <, Second player for comparison> (-id, -pos, -noDiscord)";
 export const usageDetail =
 	"E.g.\n 'Rafis, WubWoofWolf' or '2558286, 39828 -id' to show comparison between those two players\n '150 -pos' to show stats for the person with rank #150\n '1, 2 -pos' to show a comparison between two highest ranked players\n 'DE 4, US 4 -pos' to show a comparison between DE#4 and US#4 players";
 
 const msgNoUsr =
-	'**Please provide a user** (osu! username, or osu! id appending `-id` flag, or top 50 position appending `-pos` flag)\nYou can use the `osuset` command to have this command default to the given username.';
+	"**Please provide a user** (osu! username, or osu! id appending `-id` flag, or top 50 position appending `-pos` flag)\nYou can use the `osuset` command to have this command default to the given username.";
 const msgNotEnoughUsr =
-	'No players match your query.\nOnly people with at least **1000** top 50s in osu!standard are tracked.';
-const clr1 = '#AD1457';
-const clr2 = '#283593';
+	"No players match your query.\nOnly people with at least **1000** top 50s in osu!standard are tracked.";
+const clr1 = "#AD1457";
+const clr2 = "#283593";
 
 /* parser unit test :)
 ["",
@@ -64,20 +64,20 @@ const clr2 = '#283593';
 function parseArgs(args: string[]) {
 	if (!args) return null;
 
-	let argsString = args.join(' ');
-	let splitByFlag = argsString.split('-');
+	let argsString = args.join(" ");
+	let splitByFlag = argsString.split("-");
 
 	const nicks = [];
 	const flags = [];
-	let nicksRaw = splitByFlag.shift()!.split(',');
+	let nicksRaw = splitByFlag.shift()!.split(",");
 
 	for (const j of splitByFlag) flags.push(j.trim().toLowerCase());
 	let flagsParsed: { id?: boolean; pos?: boolean; nodiscord?: boolean } = {
-		nodiscord: flags.includes('nodiscord')
+		nodiscord: flags.includes("nodiscord")
 	};
 
 	//-id takes precedence, then -pos, then -noDiscord
-	if (flags.includes('id')) {
+	if (flags.includes("id")) {
 		flagsParsed = { id: true };
 		//convert ids to numbers
 		for (const j of nicksRaw) {
@@ -85,11 +85,11 @@ function parseArgs(args: string[]) {
 			if (isNaN(k)) return null;
 			nicks.push(k);
 		}
-	} else if (flags.includes('pos')) {
+	} else if (flags.includes("pos")) {
 		//split to {cntr?, pos}
 		flagsParsed = { pos: true };
 		for (const j of nicksRaw) {
-			let k = j.trim().split(' ');
+			let k = j.trim().split(" ");
 
 			if (k.length == 1) {
 				let pos = Number(j);
@@ -165,42 +165,42 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	else return await sendT50Compare(msg, ids as number[]);
 }
 
-function formatPlayerData(stats: any, nlDelimiter = '\n', spaceDelimiter = ' ', pOpen = '', pClose = '') {
+function formatPlayerData(stats: any, nlDelimiter = "\n", spaceDelimiter = " ", pOpen = "", pClose = "") {
 	if (!stats?.stats?.[1]?.nam) return null;
-	const dateToday = formatDate(new Date(), 'user');
+	const dateToday = formatDate(new Date(), "user");
 
 	const gained = stats.stats[1].last - stats.stats[1].first;
-	const gainedBeginning = `${formatNumber(gained, '\u00A0')}${nlDelimiter}(${
+	const gainedBeginning = `${formatNumber(gained, "\u00A0")}${nlDelimiter}(${
 		Math.round((gained / stats.stats[1].days) * 100) / 100
 	}/day)`;
 	const gained3Weeks =
 		stats.last?.gainedAvg == null
-			? '-'
-			: `${formatNumber(stats.last.gained, '\u00A0')}${nlDelimiter}(${stats.last.gainedAvg.toFixed(2)}/day)`;
+			? "-"
+			: `${formatNumber(stats.last.gained, "\u00A0")}${nlDelimiter}(${stats.last.gainedAvg.toFixed(2)}/day)`;
 	const t503Weeks = stats.last?.t50;
 
 	const date = stats.info?.date || stats.date;
 	const isUpToDate = stats.info.cur;
 	const mainInfo = stats.info
-		? `${stats.info.nam} - ${formatNumber(stats.info.t50, '\u00A0')} top 50s (#${stats.info.pos} | ${stats.info.cntr}#${
+		? `${stats.info.nam} - ${formatNumber(stats.info.t50, "\u00A0")} top 50s (#${stats.info.pos} | ${stats.info.cntr}#${
 				stats.info.cntrPos
 			})`
-		: `${stats.stats[1].nam} - ${formatNumber(stats.stats[1].last, '\u00A0')} top 50s`;
-	const countryFlag = stats.info.cntr && 'https://assets.ppy.sh/old-flags/' + stats.info.cntr + '.png';
+		: `${stats.stats[1].nam} - ${formatNumber(stats.stats[1].last, "\u00A0")} top 50s`;
+	const countryFlag = stats.info.cntr && "https://assets.ppy.sh/old-flags/" + stats.info.cntr + ".png";
 
-	const peak = `${formatNumber(stats.stats[1].max.val, '\u00A0')}${nlDelimiter}${pOpen}${formatDate(
+	const peak = `${formatNumber(stats.stats[1].max.val, "\u00A0")}${nlDelimiter}${pOpen}${formatDate(
 		new Date(stats.stats[1].max.d),
-		'user',
+		"user",
 		dateToday
 	)}${pClose}`;
-	const lowest = `${formatNumber(stats.stats[1].min.val, '\u00A0')}${nlDelimiter}${pOpen}${formatDate(
+	const lowest = `${formatNumber(stats.stats[1].min.val, "\u00A0")}${nlDelimiter}${pOpen}${formatDate(
 		new Date(stats.stats[1].min.d),
-		'user',
+		"user",
 		dateToday
 	)}${pClose}`;
 	const gained1Day = stats.topGain?.g50
-		? `${stats.topGain.g50}${nlDelimiter}${pOpen}${stats.topGain.d.join(',' + spaceDelimiter)}${pClose}`
-		: '-';
+		? `${stats.topGain.g50}${nlDelimiter}${pOpen}${stats.topGain.d.join("," + spaceDelimiter)}${pClose}`
+		: "-";
 
 	return {
 		date,
@@ -238,40 +238,40 @@ async function sendT50(msg: okbot.Message, id: string | number) {
 				.setAuthor({
 					name: stats.mainInfo,
 					iconURL: stats.countryFlag || av,
-					url: 'https://poggers.ltd/player/' + id
+					url: "https://poggers.ltd/player/" + id
 				})
 				.setColor(clr1)
 				.setThumbnail(av)
 				.addFields([
 					{
-						name: 'Peak',
+						name: "Peak",
 						value: stats.peak,
 						inline: true
 					},
 					{
-						name: 'Lowest',
+						name: "Lowest",
 						value: stats.lowest,
 						inline: true
 					},
 					{
-						name: 'Gained last 3 weeks',
+						name: "Gained last 3 weeks",
 						value: stats.gained3Weeks,
 						inline: true
 					},
 					{
-						name: 'Gained since first appearance',
+						name: "Gained since first appearance",
 						value: stats.gainedBeginning,
 						inline: true
 					},
 					{
-						name: 'Most gained in a day',
+						name: "Most gained in a day",
 						value: stats.gained1Day,
 						inline: true
 					}
 				])
 				.setFooter({
-					text: `poggers.ltd ● ${stats.date}${stats.isUpToDate ? '' : ' ● OUTDATED'}`,
-					iconURL: 'https://poggers.ltd/senkoicon.png'
+					text: `poggers.ltd ● ${stats.date}${stats.isUpToDate ? "" : " ● OUTDATED"}`,
+					iconURL: "https://poggers.ltd/senkoicon.png"
 				})
 				.setImage(`attachment://${filename}`)
 		],
@@ -284,15 +284,15 @@ async function sendT50(msg: okbot.Message, id: string | number) {
 
 async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 	if (!msg.channel.isSendable()) return;
-	if (id[0] == id[1]) return sendSimpleMessage(msg, 'Cannot compare a player to themselves...');
+	if (id[0] == id[1]) return sendSimpleMessage(msg, "Cannot compare a player to themselves...");
 	msg.channel.sendTyping();
 
 	const stats1 = await osu_getT50(id[0]);
-	const stats1Formatted = formatPlayerData(stats1, ' ', '\n', '(', ')');
+	const stats1Formatted = formatPlayerData(stats1, " ", "\n", "(", ")");
 	if (!stats1Formatted)
 		return sendSimpleMessage(msg, `> No stats for player with id \`${id[0]}\` (or the database went bobo).`);
 	const stats2 = await osu_getT50(id[1]);
-	const stats2Formatted = formatPlayerData(stats2, ' ', '\n', '(', ')');
+	const stats2Formatted = formatPlayerData(stats2, " ", "\n", "(", ")");
 	if (!stats2Formatted)
 		return sendSimpleMessage(msg, `> No stats for player with id \`${id[1]}\` (or the database went bobo).`);
 
@@ -321,7 +321,7 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 
 	for (const i in differences) {
 		//@ts-ignore
-		differences[i] = `${differences[i] > 0 ? '+' : ''}${formatNumber(differences[i])}`;
+		differences[i] = `${differences[i] > 0 ? "+" : ""}${formatNumber(differences[i])}`;
 		//@ts-ignore
 		if (differences[i].length > longestDifference) longestDifference = differences[i].length;
 	}
@@ -329,10 +329,10 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 	const differenceSpaces = 0;
 	for (const i in differences) {
 		//@ts-ignore
-		differences[i] += ' '.repeat(differenceSpaces + (longestDifference - differences[i].length));
+		differences[i] += " ".repeat(differenceSpaces + (longestDifference - differences[i].length));
 	}
 
-	const emptyField = { name: '\u200b', value: '\u200b', inline: true };
+	const emptyField = { name: "\u200b", value: "\u200b", inline: true };
 
 	const filenameAv = `${id[0]}-${id[1]}-${stats1Formatted.date}.png`;
 	const av1 = getOsuAvatar(id[0]);
@@ -354,7 +354,7 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 	if (chart) files.push(new AttachmentBuilder(chart));
 
 	let footerText = `poggers.ltd ● ${stats1.info?.date}`;
-	if (!stats1Formatted.isUpToDate || !stats2Formatted.isUpToDate) footerText += ' ● OUTDATED';
+	if (!stats1Formatted.isUpToDate || !stats2Formatted.isUpToDate) footerText += " ● OUTDATED";
 	if (daysUntilOvertake)
 		footerText += `\n${daysUntilOvertake} days until ${
 			(gainedRelativeDaily as number) < 0 ? stats1.info.nam : stats2.info.nam
@@ -368,88 +368,88 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 						? `${stats1.info.nam} vs ${stats2.info.nam}`
 						: `${stats1.stats[1].nam} vs ${stats2.stats[1].nam}`
 				)
-				.setURL('https://poggers.ltd/player/' + id[0])
+				.setURL("https://poggers.ltd/player/" + id[0])
 				.setColor(clr1)
-				.setThumbnail(avMerged ? `attachment://${filenameAv}` : '')
+				.setThumbnail(avMerged ? `attachment://${filenameAv}` : "")
 				.addFields([
 					{
-						name: `🔴 ${stats1.info.nam} - ${formatNumber(stats1.info.t50)}`.replace(/ /g, '\u00A0'),
+						name: `🔴 ${stats1.info.nam} - ${formatNumber(stats1.info.t50)}`.replace(/ /g, "\u00A0"),
 						value: `🌍 #${stats1.info.pos}, :flag_${stats1.info.cntr.toLowerCase()}: #${stats1.info.cntrPos}`,
 						inline: true
 					},
 					{
-						name: '\u200b',
+						name: "\u200b",
 						value: `\`${differences.t50}\``,
 						inline: true
 					},
 					{
-						name: `🔵 ${stats2.info.nam} - ${formatNumber(stats2.info.t50)}`.replace(/ /g, '\u00A0'),
+						name: `🔵 ${stats2.info.nam} - ${formatNumber(stats2.info.t50)}`.replace(/ /g, "\u00A0"),
 						value: `🌍 #${stats2.info.pos}, :flag_${stats2.info.cntr.toLowerCase()}: #${stats2.info.cntrPos}`,
 						inline: true
 					},
 					{
-						name: 'Peak',
+						name: "Peak",
 						value: stats1Formatted.peak,
 						inline: true
 					},
 					{
-						name: '\u200b',
+						name: "\u200b",
 						value: `\`${differences.peak}\``,
 						inline: true
 					},
 					{
-						name: '\u200b',
+						name: "\u200b",
 						value: stats2Formatted.peak,
 						inline: true
 					},
 					{
-						name: 'Lowest',
+						name: "Lowest",
 						value: stats1Formatted.lowest,
 						inline: true
 					},
-					{ name: '\u200b', value: `\`${differences.lowest}\``, inline: true },
+					{ name: "\u200b", value: `\`${differences.lowest}\``, inline: true },
 					{
-						name: '\u200b',
+						name: "\u200b",
 						value: stats2Formatted.lowest,
 						inline: true
 					},
 					{
-						name: 'Gained last 3 weeks',
+						name: "Gained last 3 weeks",
 						value: stats1Formatted.gained3Weeks,
 						inline: true
 					},
 					emptyField,
 					{
-						name: '\u200b',
+						name: "\u200b",
 						value: stats2Formatted.gained3Weeks,
 						inline: true
 					},
 					{
-						name: 'Gained since start',
+						name: "Gained since start",
 						value: stats1Formatted.gainedBeginning,
 						inline: true
 					},
 					emptyField,
 					{
-						name: '\u200b',
+						name: "\u200b",
 						value: stats2Formatted.gainedBeginning,
 						inline: true
 					},
 					{
-						name: 'Most gained day',
+						name: "Most gained day",
 						value: stats1Formatted.gained1Day,
 						inline: true
 					},
 					emptyField,
 					{
-						name: '\u200b',
+						name: "\u200b",
 						value: stats2Formatted.gained1Day,
 						inline: true
 					}
 				])
 				.setFooter({
 					text: footerText,
-					iconURL: 'https://poggers.ltd/senkoicon.png'
+					iconURL: "https://poggers.ltd/senkoicon.png"
 				})
 				.setImage(`attachment://${filenameChart}`)
 		],
@@ -483,7 +483,7 @@ async function idsFromOsu(nicks: string[]) {
 
 		return await Promise.all(promises);
 	} catch (e) {
-		console.error('Failed to get id from osu! username:\n', e);
+		console.error("Failed to get id from osu! username:\n", e);
 		return null;
 	}
 }
@@ -512,7 +512,7 @@ async function idsFromDiscord(users: Array<User>) {
 
 		return await Promise.all(promises);
 	} catch (e) {
-		console.error('Failed to get id from osu! username:\n', e);
+		console.error("Failed to get id from osu! username:\n", e);
 		return null;
 	}
 }

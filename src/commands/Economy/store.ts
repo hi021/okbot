@@ -1,47 +1,47 @@
 import {
-    ActionRow,
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonComponent,
-    ButtonStyle,
-    Colors,
-    EmbedBuilder,
-    MessageCollector,
-    SelectMenuComponentOptionData,
-    SendableChannels,
-    StringSelectMenuBuilder,
-    User
-} from 'discord.js';
-import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
+	ActionRow,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonComponent,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	MessageCollector,
+	SelectMenuComponentOptionData,
+	SendableChannels,
+	StringSelectMenuBuilder,
+	User
+} from "discord.js";
+import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
 import {
-    db_store_get_all,
-    db_store_get_categories,
-    db_store_get_category,
-    db_store_get_item
-} from '../../db/store.js';
-import { bot } from '../../okbot.js';
+	db_store_get_all,
+	db_store_get_categories,
+	db_store_get_category,
+	db_store_get_item
+} from "../../db/store.js";
+import { bot } from "../../okbot.js";
 import {
-    checkBoosterValidity,
-    createCollector,
-    formatDoler,
-    formatMilliseconds,
-    formatNumber,
-    getGuildPrefix,
-    sendEphemeralReply,
-    sendSimpleMessage,
-    showItemName
-} from '../../utils.js';
-import { Players_in_collector } from '../../volatile.js';
-import { calculateAquaIncome } from '../Fish/aquarium.js';
+	checkBoosterValidity,
+	createCollector,
+	formatDoler,
+	formatMilliseconds,
+	formatNumber,
+	getGuildPrefix,
+	sendEphemeralReply,
+	sendSimpleMessage,
+	showItemName
+} from "../../utils.js";
+import { Players_in_collector } from "../../volatile.js";
+import { calculateAquaIncome } from "../Fish/aquarium.js";
 
 // TODO?: map of items instead of array (to reduce db queries)
 export const Store_Items: okbot.Item[] = [];
 export const Store_Categories: string[] = [];
 const SelectMenu_CategoryDetails: { [category: string]: { emoji: string } } = {
-	Booster: { emoji: '💸' },
-	'Fishing accessory': { emoji: '🎣' },
-	'Profile badge': { emoji: '⭐' },
-	'Profile color': { emoji: '🔵' }
+	Booster: { emoji: "💸" },
+	"Fishing accessory": { emoji: "🎣" },
+	"Profile badge": { emoji: "⭐" },
+	"Profile color": { emoji: "🔵" }
 };
 const SelectMenu_Categories: Array<SelectMenuComponentOptionData> = [];
 
@@ -49,17 +49,17 @@ const playerCollectors: { [plrId: string]: MessageCollector } = {};
 
 function clearPlayerCollector(plrId: string) {
 	if (!playerCollectors[plrId]) return;
-	playerCollectors[plrId].stop('clear');
+	playerCollectors[plrId].stop("clear");
 	delete playerCollectors[plrId];
 }
 
-const itmPriceDesc = (price: number) => (price ? formatDoler(price) : '**FREE**');
+const itmPriceDesc = (price: number) => (price ? formatDoler(price) : "**FREE**");
 
 export async function loadStoreItems() {
 	const items = await db_store_get_all();
 	const categories = await db_store_get_categories();
 	if (!items?.length || !categories) {
-		console.warn('Failed to initialize store items!');
+		console.warn("Failed to initialize store items!");
 		return null;
 	}
 
@@ -91,7 +91,7 @@ async function purchase(
 
 	const mon = plrdat.mon ?? 0;
 	let totalSpent = 0;
-	let itemsBought = '';
+	let itemsBought = "";
 	for (const ord of purchaseOrders) {
 		const quantity = ord.am <= 0 ? 1 : ord.am;
 		const price = ord.itm.price * quantity;
@@ -128,7 +128,7 @@ async function purchase(
 }
 
 async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.Item; am: number }>) {
-	let itemsBought = '';
+	let itemsBought = "";
 	let spentTotal = 0;
 	const itms: { [_id: string]: number } = {};
 
@@ -136,33 +136,33 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 		const itm = ord.itm;
 		let quantity = ord.am;
 
-		if (itm.nam.startsWith('Base daily payout')) {
+		if (itm.nam.startsWith("Base daily payout")) {
 			db_plr_add({
 				_id: usr.id,
 				day: { v: itm.v * quantity }
 			});
-		} else if (itm.nam.startsWith('Fishing rod upgrade')) {
+		} else if (itm.nam.startsWith("Fishing rod upgrade")) {
 			db_plr_add({
 				_id: usr.id,
 				fishPower: itm.v * quantity
 			});
-		} else if (itm.nam.startsWith('Aquarium income multiplier')) {
+		} else if (itm.nam.startsWith("Aquarium income multiplier")) {
 			const plrdatAqua = await db_plr_get({ _id: usr.id, aqua: 1 });
 			if (!plrdatAqua?.aqua)
 				return {
 					success: false,
-					msg: 'Sorry, you first need an aquarium to purchase this booster.\nYou can open one using `aqua open`.'
+					msg: "Sorry, you first need an aquarium to purchase this booster.\nYou can open one using `aqua open`."
 				};
 
 			plrdatAqua.aqua.collMul += itm.v * quantity;
 			plrdatAqua.aqua.collTot = plrdatAqua.aqua.coll * plrdatAqua.aqua.collMul;
 			db_plr_set({ _id: usr.id, aqua: plrdatAqua.aqua });
-		} else if (itm.nam.startsWith('Aquarium income storage')) {
+		} else if (itm.nam.startsWith("Aquarium income storage")) {
 			const plrdatAqua = await db_plr_get({ _id: usr.id, aqua: 1 });
 			if (!plrdatAqua?.aqua)
 				return {
 					success: false,
-					msg: 'Sorry, you first need an aquarium to purchase this booster.\nYou can open one using `aqua open`.'
+					msg: "Sorry, you first need an aquarium to purchase this booster.\nYou can open one using `aqua open`."
 				};
 
 			const now = Math.floor(new Date().getTime() / 1000);
@@ -170,7 +170,7 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 			plrdatAqua.aqua.maxColl += itm.v * quantity;
 			plrdatAqua.aqua.lastColl = now;
 			db_plr_set({ _id: usr.id, aqua: plrdatAqua.aqua });
-		} else if (itm.nam.startsWith('Booster cooldown')) {
+		} else if (itm.nam.startsWith("Booster cooldown")) {
 			db_plr_add({
 				_id: usr.id,
 				boosterCd: itm.v * quantity
@@ -184,7 +184,7 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 					success: false,
 					msg:
 						`**${booster?.name}**` +
-						' is still active! It will expire in `' +
+						" is still active! It will expire in `" +
 						formatMilliseconds(
 							(
 								booster as okbot.TimedBooster & {
@@ -192,7 +192,7 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 								}
 							).timeRemaining
 						) +
-						'`.'
+						"`."
 				};
 
 			const now = Math.round(new Date().getTime() / 1000);
@@ -203,7 +203,7 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 					msg:
 						`**${booster!.name}** is on a cooldown for \`` +
 						formatMilliseconds((booster as okbot.ExpiredBooster).cooldownRemaining * 1000) +
-						'`.'
+						"`."
 				};
 
 			const boosterObj: { [boosterId: string]: okbot.TimedBooster } = {
@@ -237,18 +237,18 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 	return { success: true, msg: itemsBought, spentTotal };
 }
 
-export const name = 'store';
-export const alias = ['shop'];
-export const description = '🛒 Browse the store, a category, or a specific item';
+export const name = "store";
+export const alias = ["shop"];
+export const description = "🛒 Browse the store, a category, or a specific item";
 export const usage = '<Category OR Item name OR "All">';
 const perPage = 20;
 
 //pagination, purchasing, and category selection
-bot.on('interactionCreate', async interaction => {
+bot.on("interactionCreate", async interaction => {
 	//pagination and purchasing
 	if (interaction.isButton()) {
-		const split = interaction.customId.split('-');
-		if (split[0] !== 'store_prev' && split[0] !== 'store_next' && split[0] !== 'store_buy') return;
+		const split = interaction.customId.split("-");
+		if (split[0] !== "store_prev" && split[0] !== "store_next" && split[0] !== "store_buy") return;
 
 		const msge = interaction.message.embeds[0];
 		const msgeEdit = EmbedBuilder.from(msge);
@@ -256,7 +256,7 @@ bot.on('interactionCreate', async interaction => {
 		const page = Number(split[2]);
 		const plrId = split[3];
 
-		if (split[0] === 'store_prev') {
+		if (split[0] === "store_prev") {
 			if (page <= 0) {
 				interaction.update({});
 				return;
@@ -264,7 +264,7 @@ bot.on('interactionCreate', async interaction => {
 
 			const plr = await db_plr_get({ _id: plrId, itms: 1 });
 			const playerItems = plr?.itms ?? {};
-			if (category === 'All') {
+			if (category === "All") {
 				addItemsToMsgEmbed(msgeEdit.spliceFields(0, perPage), Store_Items, playerItems, page);
 			} else {
 				const items = await db_store_get_category(category);
@@ -277,23 +277,23 @@ bot.on('interactionCreate', async interaction => {
 			rowNew.setComponents(
 				new ButtonBuilder()
 					.setCustomId(`store_prev-${category}-${page - 1}-${plrId}`)
-					.setEmoji('⬅️')
+					.setEmoji("⬅️")
 					.setStyle(ButtonStyle.Secondary)
 					.setDisabled(page <= 1),
 				new ButtonBuilder()
 					.setCustomId(`store_next-${category}-${page + 1}-${plrId}`)
-					.setEmoji('➡️')
+					.setEmoji("➡️")
 					.setStyle(ButtonStyle.Primary)
 			);
 
 			interaction.update({ embeds: [msgeEdit], components: [rowNew, ...interaction.message.components] });
 			return;
-		} else if (split[0] === 'store_next') {
+		} else if (split[0] === "store_next") {
 			let maxPage;
 			const plr = await db_plr_get({ _id: plrId, itms: 1 });
 			const playerItems = plr?.itms ?? {};
 
-			if (category === 'All') {
+			if (category === "All") {
 				maxPage = Math.ceil(Store_Items.length / perPage);
 				addItemsToMsgEmbed(msgeEdit.spliceFields(0, perPage), Store_Items, playerItems, page);
 			} else {
@@ -314,18 +314,18 @@ bot.on('interactionCreate', async interaction => {
 			rowNew.setComponents(
 				new ButtonBuilder()
 					.setCustomId(`store_prev-${category}-${page - 1}-${plrId}`)
-					.setEmoji('⬅️')
+					.setEmoji("⬅️")
 					.setStyle(ButtonStyle.Secondary),
 				new ButtonBuilder()
 					.setCustomId(`store_next-${category}-${page + 1}-${plrId}`)
-					.setEmoji('➡️')
+					.setEmoji("➡️")
 					.setStyle(ButtonStyle.Primary)
 					.setDisabled(page >= maxPage)
 			);
 
 			interaction.update({ embeds: [msgeEdit], components: [rowNew, ...interaction.message.components] });
 			return;
-		} else if (split[0] === 'store_buy') {
+		} else if (split[0] === "store_buy") {
 			const itmId = split[1];
 			const plrId = split[2];
 
@@ -350,8 +350,8 @@ bot.on('interactionCreate', async interaction => {
 	}
 	//  select categories (k!store no arguments)
 	else if (interaction.isStringSelectMenu()) {
-		const split = interaction.customId.split('-');
-		if (split[0] !== 'store_category') return;
+		const split = interaction.customId.split("-");
+		if (split[0] !== "store_category") return;
 
 		const plrId = split[1];
 		if (interaction.user.id !== plrId) {
@@ -364,7 +364,7 @@ bot.on('interactionCreate', async interaction => {
 		if (!categoryItems) {
 			sendSimpleMessage(
 				interaction.message as okbot.Message,
-				'Something went wrong... chosen category seems not to exist...'
+				"Something went wrong... chosen category seems not to exist..."
 			);
 			return;
 		}
@@ -395,19 +395,19 @@ bot.on('interactionCreate', async interaction => {
 function addSingleItemToMsgEmbed(msge: EmbedBuilder, item: okbot.Item, owned: number, maxOwned: number) {
 	msge.setTitle(`Item - ${showItemName(item, false)}`);
 	msge.addFields(
-		{ name: 'Category', value: item.cat, inline: true },
-		{ name: 'Price', value: `💵 ${formatNumber(item.price)}`, inline: true }
+		{ name: "Category", value: item.cat, inline: true },
+		{ name: "Price", value: `💵 ${formatNumber(item.price)}`, inline: true }
 	);
 
-	if (item.desc) msge.addFields({ name: 'Description', value: item.desc, inline: false });
+	if (item.desc) msge.addFields({ name: "Description", value: item.desc, inline: false });
 	msge.addFields({
-		name: 'Owned',
-		value: `${owned}${maxOwned == Infinity ? '' : '/' + maxOwned}`,
+		name: "Owned",
+		value: `${owned}${maxOwned == Infinity ? "" : "/" + maxOwned}`,
 		inline: true
 	});
 
-	if (!item.timed && item.v) msge.addFields({ name: 'Value', value: item.v.toString(), inline: true });
-	if (item.timed) msge.addFields({ name: 'Timed', value: 'Yes', inline: true });
+	if (!item.timed && item.v) msge.addFields({ name: "Value", value: item.v.toString(), inline: true });
+	if (item.timed) msge.addFields({ name: "Timed", value: "Yes", inline: true });
 
 	return msge;
 }
@@ -427,8 +427,8 @@ function addItemsToMsgEmbed(
 
 		const owned = playerItems[item._id] || 0;
 		const maxOwned = item.maxQ == Infinity || item.timed ? Infinity : item.maxQ ? item.maxQ : 1;
-		const ownedString = owned >= maxOwned ? '✅ ' : '';
-		const desc = item.desc || '\u200b';
+		const ownedString = owned >= maxOwned ? "✅ " : "";
+		const desc = item.desc || "\u200b";
 		msge.addFields({
 			name: `${showItemName(item, false)} (${item.cat})`,
 			value: ownedString ? `${ownedString} ~~${desc}~~` : desc
@@ -455,10 +455,10 @@ function addCategoryItemsToMsgEmbed(
 
 		const owned = playerItems[item._id] || 0;
 		const maxOwned = item.maxQ == Infinity || item.timed ? Infinity : item.maxQ ? item.maxQ : 1;
-		const ownedString = owned >= maxOwned ? '✅ ' : '';
-		const itemNumber = `\`${(i + 1).toString().padStart(2, ' ')}\``;
+		const ownedString = owned >= maxOwned ? "✅ " : "";
+		const itemNumber = `\`${(i + 1).toString().padStart(2, " ")}\``;
 		const desc =
-			itmPriceDesc(item.price) + ' ' + (item.desc || '') + `${item.showV ? '\n' + '`' + item.v + '`' : ''}`;
+			itmPriceDesc(item.price) + " " + (item.desc || "") + `${item.showV ? "\n" + "`" + item.v + "`" : ""}`;
 		msge.addFields({
 			name: `${itemNumber} ${showItemName(item, false)}`,
 			value: ownedString ? `${ownedString} ~~${desc}~~` : desc
@@ -484,12 +484,12 @@ function showCategory(
 					new ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>().addComponents(
 						new ButtonBuilder()
 							.setCustomId(`store_prev-${categoryItems[0].cat}-0`)
-							.setEmoji('⬅️')
+							.setEmoji("⬅️")
 							.setStyle(ButtonStyle.Secondary)
 							.setDisabled(true),
 						new ButtonBuilder()
 							.setCustomId(`store_next-${categoryItems[0].cat}-2-${plrId}`)
-							.setEmoji('➡️')
+							.setEmoji("➡️")
 							.setStyle(ButtonStyle.Primary)
 					)
 				]
@@ -501,7 +501,7 @@ function showCategory(
 //shown after purchase() (before confirmation)
 function createPurchaseEmbedFromOrders(purchaseOrders: okbot.StorePurchaseOrders, plrMon: number) {
 	let total = 0;
-	let desc = '';
+	let desc = "";
 
 	for (const o of purchaseOrders) {
 		total += o.itm.price * o.am;
@@ -509,19 +509,19 @@ function createPurchaseEmbedFromOrders(purchaseOrders: okbot.StorePurchaseOrders
 	}
 
 	return new EmbedBuilder()
-		.setTitle('Confirm your purchase')
+		.setTitle("Confirm your purchase")
 		.setDescription(desc)
-		.addFields({ name: 'Balance after purchase', value: formatDoler(plrMon - total, false) })
+		.addFields({ name: "Balance after purchase", value: formatDoler(plrMon - total, false) })
 		.setColor(Colors.DarkGreen)
-		.setFooter({ text: 'Confirm with (y)es or abort with (n)o' });
+		.setFooter({ text: "Confirm with (y)es or abort with (n)o" });
 }
 
 //shown after purchase is finalized
 function createPurchaseEmbed(boughtItems: string, total: number) {
 	return new EmbedBuilder()
-		.setTitle('You bought')
+		.setTitle("You bought")
 		.setDescription(boughtItems)
-		.addFields({ name: 'Total', value: formatDoler(total, false) })
+		.addFields({ name: "Total", value: formatDoler(total, false) })
 		.setColor(Colors.DarkGreen)
 		.setFooter({ text: "Use the 'inventory' command to view your items" });
 }
@@ -539,26 +539,26 @@ function createPurchaseCollector(
 
 	const purchaseOrders: okbot.StorePurchaseOrders = [];
 	//Collect messages from the user
-	itemCollector.on('collect', async m => {
+	itemCollector.on("collect", async m => {
 		if (!m.guild) return;
 		const prefix = getGuildPrefix(m.guild.id);
 		if (m.content.startsWith(prefix)) return; //ignore message if a command
-		const query = m.content.split(' '); //item IDs in items[], amounts (or 'ok'), 'ok' (if amounts provided)
+		const query = m.content.split(" "); //item IDs in items[], amounts (or 'ok'), 'ok' (if amounts provided)
 
 		//parse args
 		const splitLower = query[0].toLowerCase();
-		if (splitLower === 'cancel' || splitLower === 'abort' || splitLower === 'stop' || splitLower === 'no')
-			return itemCollector.stop('cancel');
+		if (splitLower === "cancel" || splitLower === "abort" || splitLower === "stop" || splitLower === "no")
+			return itemCollector.stop("cancel");
 
-		const itemIds = query[0].split(',');
+		const itemIds = query[0].split(",");
 		let amounts: string[] = [];
 		let confirmed; //preconfirmed if 'ok' provided (skips calling purchase())
 
 		if (query.length >= 2) {
-			if (query[1].toLowerCase() === 'ok') confirmed = true;
+			if (query[1].toLowerCase() === "ok") confirmed = true;
 			else {
-				amounts = query[1].split(',');
-				confirmed = query[2]?.toLowerCase() === 'ok';
+				amounts = query[1].split(",");
+				confirmed = query[2]?.toLowerCase() === "ok";
 			}
 		}
 
@@ -572,12 +572,12 @@ function createPurchaseCollector(
 			const amount = parseInt(amounts[i]) || 1;
 			purchaseOrders.push({ itm, am: amount <= 0 ? 1 : amount });
 			if (process.env.VERBOSE)
-				console.log(`buying ${amount}x ${itm.nam};${confirmed ? ' preconfirmed' : ''}`);
+				console.log(`buying ${amount}x ${itm.nam};${confirmed ? " preconfirmed" : ""}`);
 		}
 
 		itemCollector.resetTimer();
 		if (!purchaseOrders.length) {
-			sendSimpleMessage(msg, 'Invalid items provided!\nUse the numbers next to the item names.');
+			sendSimpleMessage(msg, "Invalid items provided!\nUse the numbers next to the item names.");
 			return;
 		}
 
@@ -589,22 +589,22 @@ function createPurchaseCollector(
 		}
 
 		//items valid and can be purchased, await user confirmation
-		itemCollector.stop(response.needConfirmation ? 'toConfirm' : 'confirmed');
+		itemCollector.stop(response.needConfirmation ? "toConfirm" : "confirmed");
 	});
 
-	itemCollector.on('end', async (_, reason) => {
+	itemCollector.on("end", async (_, reason) => {
 		delete Players_in_collector[user.id];
 		if (process.env.VERBOSE) console.log(`Ended purchase collector: ${reason}`);
 
-		if (reason === 'clear') return; //user changed category
-		if (reason === 'time' || reason === 'cancel') {
-			sendSimpleMessage(msg, 'Canceled your purchase.', Colors.DarkOrange, false);
+		if (reason === "clear") return; //user changed category
+		if (reason === "time" || reason === "cancel") {
+			sendSimpleMessage(msg, "Canceled your purchase.", Colors.DarkOrange, false);
 			return;
 		}
 
 		//purchase can go through, but now needs confirmation
 		//purchase preconfirmed with 'ok'
-		if (reason === 'confirmed') {
+		if (reason === "confirmed") {
 			const response = await purchase_finalize(user, purchaseOrders);
 			if (!response.success) {
 				sendSimpleMessage(msg, response.msg);
@@ -622,22 +622,22 @@ function createPurchaseCollector(
 
 		const finCollector = createCollector(user.id, channel);
 		if (!finCollector) {
-			sendSimpleMessage(msg, 'Another activity requires your attention first!');
+			sendSimpleMessage(msg, "Another activity requires your attention first!");
 			return;
 		}
 		playerCollectors[user.id] = finCollector;
 
-		finCollector.on('collect', m => {
+		finCollector.on("collect", m => {
 			const mc = m.content.toLowerCase();
-			if (mc === 'n' || mc === 'no' || mc === 'cancel') finCollector.stop();
-			else if (mc === 'y' || mc === 'yes' || mc === 'ok') finCollector.stop('confirm');
+			if (mc === "n" || mc === "no" || mc === "cancel") finCollector.stop();
+			else if (mc === "y" || mc === "yes" || mc === "ok") finCollector.stop("confirm");
 		});
 
-		finCollector.on('end', async (_, reason) => {
+		finCollector.on("end", async (_, reason) => {
 			delete Players_in_collector[user.id];
 			if (process.env.VERBOSE) console.log(`Ended purchase finalizer collector: ${reason}`);
 
-			if (reason === 'confirm') {
+			if (reason === "confirm") {
 				const response = await purchase_finalize(user, purchaseOrders);
 				if (!response.success) {
 					sendSimpleMessage(msg, response.msg);
@@ -649,35 +649,35 @@ function createPurchaseCollector(
 				return;
 			}
 
-			sendSimpleMessage(msg, 'Canceled your purchase.', Colors.DarkOrange, false);
+			sendSimpleMessage(msg, "Canceled your purchase.", Colors.DarkOrange, false);
 			return;
 		});
 	});
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	const query = args.join(' ');
+	const query = args.join(" ");
 	const msge = new EmbedBuilder()
 		.setColor(Colors.Blue)
-		.setAuthor({ name: '🛒 ok store, congratulations you caught a shopping cart' });
+		.setAuthor({ name: "🛒 ok store, congratulations you caught a shopping cart" });
 
 	//  Show all categories
 	if (!args.length) {
 		msge
 			.setTitle(`Showing all ${Store_Categories.length} categories`)
-			.setDescription('Pick a category using the select menu to browse its items.');
+			.setDescription("Pick a category using the select menu to browse its items.");
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
 			new StringSelectMenuBuilder()
 				.setCustomId(`store_category-${msg.author.id}`)
 				.setOptions(SelectMenu_Categories)
-				.setPlaceholder('Choose a category')
+				.setPlaceholder("Choose a category")
 		);
 
 		msg.reply({ embeds: [msge], components: [row] });
 	}
 	//  Show all items
-	else if (query.toLowerCase() === 'all') {
-		if (!Store_Items?.length) return sendSimpleMessage(msg, 'Sorry, the store is closed idk :woozy_face:');
+	else if (query.toLowerCase() === "all") {
+		if (!Store_Items?.length) return sendSimpleMessage(msg, "Sorry, the store is closed idk :woozy_face:");
 
 		const plrdat = await db_plr_get({ _id: msg.author.id, itms: 1 });
 		addItemsToMsgEmbed(msge, Store_Items, plrdat?.itms ?? {});
@@ -688,13 +688,13 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				? [
 						new ActionRowBuilder<ButtonBuilder>().addComponents(
 							new ButtonBuilder()
-								.setCustomId('store_prev-All-0')
-								.setEmoji('⬅️')
+								.setCustomId("store_prev-All-0")
+								.setEmoji("⬅️")
 								.setStyle(ButtonStyle.Secondary)
 								.setDisabled(true),
 							new ButtonBuilder()
 								.setCustomId(`store_next-All-2-${msg.author.id}`)
-								.setEmoji('➡️')
+								.setEmoji("➡️")
 								.setStyle(ButtonStyle.Primary)
 						)
 					]
@@ -704,7 +704,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	}
 	//  Show category or item
 	else {
-		const queryReg = new RegExp(query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), 'i');
+		const queryReg = new RegExp(query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
 		const categoryItems = await db_store_get_category(queryReg);
 		if (!categoryItems?.length) {
 			const item = await db_store_get_item({ nam: queryReg });
@@ -731,7 +731,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 						new ButtonBuilder()
 							.setCustomId(`store_buy-${item._id}-${msg.author.id}`)
 							.setStyle(ButtonStyle.Success)
-							.setLabel('Purchase')
+							.setLabel("Purchase")
 					)
 				);
 

@@ -1,11 +1,11 @@
-import { EmbedBuilder } from 'discord.js';
-import { db_plr_get, db_plr_set } from '../../db/db.js';
-import { formatDoler, formatNumber, getUserFromMsg } from '../../utils.js';
+import { EmbedBuilder } from "discord.js";
+import { db_plr_get, db_plr_set } from "../../db/db.js";
+import { formatDoler, formatNumber, getUserFromMsg } from "../../utils.js";
 
-export const name = 'income';
-export const alias = ['expenses', 'money'];
-export const description = '📉 money states';
-export const usage = '<Username OR Mention>';
+export const name = "income";
+export const alias = ["expenses", "money"];
+export const description = "📉 money states";
+export const usage = "<Username OR Mention>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	const user = (await getUserFromMsg(msg, args)) || msg.author;
@@ -25,7 +25,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			name: user.displayName,
 			iconURL: user.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
-		.setFooter({ text: 'ok money stats' });
+		.setFooter({ text: "ok money stats" });
 
 	if (!plrdat?.expense) {
 		db_plr_set({
@@ -33,18 +33,18 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			expense: {}
 		});
 
-		msge.setDescription('🕸️ *There are no stats for this user...*');
+		msge.setDescription("🕸️ *There are no stats for this user...*");
 		return msg.reply({ embeds: [msge] });
 	}
 
 	msge.addFields([
 		{
-			name: 'doler',
+			name: "doler",
 			value: `${formatNumber(plrdat.mon ?? 0)} 💵
       ${formatDoler(plrdat.monTot ?? 0, false)} total`
 		},
 		{
-			name: 'income',
+			name: "income",
 			value: `\`fish     \`: ${formatDoler(plrdat.income?.fish ?? 0, false)}
       \`flip     \`: ${formatDoler(plrdat.income?.flip ?? 0, false)}
       \`slots    \`: ${formatDoler(plrdat.income?.slot ?? 0, false)}
@@ -60,7 +60,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			inline: true
 		},
 		{
-			name: 'expenses',
+			name: "expenses",
 			value: `\`fish     \`: ${formatDoler(plrdat.expense.fish ?? 0, false)}
       \`flip     \`: ${formatDoler(plrdat.expense.flip ?? 0, false)}
       \`slots    \`: ${formatDoler(plrdat.expense.slot ?? 0, false)}

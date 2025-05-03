@@ -1,19 +1,19 @@
-import { Colors } from 'discord.js';
-import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
-import { bot } from '../../okbot.js';
-import { SET } from '../../settings.js';
+import { Colors } from "discord.js";
+import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
+import { bot } from "../../okbot.js";
+import { SET } from "../../settings.js";
 import {
-    createSimpleMessage,
-    e_blank,
-    formatMilliseconds,
-    getUserFromMsg,
-    sendSimpleMessage
-} from '../../utils.js';
+	createSimpleMessage,
+	e_blank,
+	formatMilliseconds,
+	getUserFromMsg,
+	sendSimpleMessage
+} from "../../utils.js";
 
-export const name = 'rep';
-export const alias = ['rape'];
-export const description = '♂️ give raper';
-export const usage = '<Username OR Mention>';
+export const name = "rep";
+export const alias = ["rape"];
+export const description = "♂️ give raper";
+export const usage = "<Username OR Mention>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	const cooldown = Number(SET.RAPE_COOLDOWN);
@@ -28,7 +28,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			);
 		return sendSimpleMessage(
 			msg,
-			'You can rape someone right now, just mention them!',
+			"You can rape someone right now, just mention them!",
 			Colors.DarkGreen,
 			false
 		);
@@ -45,8 +45,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	}
 
 	const usr = await getUserFromMsg(msg, args);
-	if (usr == null) return sendSimpleMessage(msg, 'User not found.');
-	if (usr == msg.author) return sendSimpleMessage(msg, 'Self-rape is strictly prohibited.');
+	if (usr == null) return sendSimpleMessage(msg, "User not found.");
+	if (usr == msg.author) return sendSimpleMessage(msg, "Self-rape is strictly prohibited.");
 
 	if (plrdat?.rep) {
 		if (sinceLast < cooldown)
@@ -67,7 +67,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		usr.id === bot.user?.id
 			? `♂️${e_blank}Oh! Uh... thank you...`
 			: `♂️${e_blank}You've raped <@${usr.id}> why would you do that...`;
-	const msge = createSimpleMessage(desc, '#226699');
+	const msge = createSimpleMessage(desc, "#226699");
 	msge.setFooter({ text: `You have raped ${am} times in total` });
 	return msg.reply({ embeds: [msge] });
 }

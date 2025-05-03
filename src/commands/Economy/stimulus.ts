@@ -1,11 +1,11 @@
-import { Colors } from 'discord.js';
-import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
-import { SET } from '../../settings.js';
-import { calcMoneyLevelsGain, formatDoler, formatMilliseconds, sendSimpleMessage } from '../../utils.js';
+import { Colors } from "discord.js";
+import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
+import { SET } from "../../settings.js";
+import { calcMoneyLevelsGain, formatDoler, formatMilliseconds, sendSimpleMessage } from "../../utils.js";
 
-export const name = 'stimulus';
-export const alias = ['social', 'stim'];
-export const description = '💸 Get money fukc boys (only if you are very broke)';
+export const name = "stimulus";
+export const alias = ["social", "stim"];
+export const description = "💸 Get money fukc boys (only if you are very broke)";
 
 export async function execute(msg: okbot.Message) {
 	const plrdat = await db_plr_get({

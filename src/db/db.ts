@@ -1,68 +1,68 @@
-import { Snowflake } from 'discord.js';
-import dotenv from 'dotenv';
-import { Collection, Db, MongoClient } from 'mongodb';
-import { bot } from '../okbot.js';
-import { SET } from '../settings.js';
-import { Casino_tops } from '../volatile.js';
-import { db_store_init } from './store.js';
+import { Snowflake } from "discord.js";
+import dotenv from "dotenv";
+import { Collection, Db, MongoClient } from "mongodb";
+import { bot } from "../okbot.js";
+import { SET } from "../settings.js";
+import { Casino_tops } from "../volatile.js";
+import { db_store_init } from "./store.js";
 dotenv.config();
 
 let _db: MongoClient;
 
 export async function db_init(initStore = true) {
 	if (_db) {
-		console.warn('Trying to init a previously initialized DB!');
+		console.warn("Trying to init a previously initialized DB!");
 		return _db;
 	}
 
 	try {
-		if (!process.env.DB_URL) throw new Error('No DB URI provided.');
+		if (!process.env.DB_URL) throw new Error("No DB URI provided.");
 
 		const db = await MongoClient.connect(process.env.DB_URL);
 		_db = db;
 		if (initStore) await db_store_init();
-		console.log('DB initialized.');
+		console.log("DB initialized.");
 
 		return db;
 	} catch (e) {
-		console.error('Failed to initialize database:\n', e);
+		console.error("Failed to initialize database:\n", e);
 		return null;
 	}
 }
 
 export function db_get_client() {
-	if (!_db) throw new Error('Attempting to get an uninitalized database!');
+	if (!_db) throw new Error("Attempting to get an uninitalized database!");
 	return _db;
 }
 
 type DbOrCollection<T> = T extends string ? Collection : Db;
 export function db_get<T>(collection?: T): DbOrCollection<T> {
 	const db =
-		typeof collection == 'string'
+		typeof collection == "string"
 			? (_db?.db(process.env.DB_NAME)?.collection(collection) as DbOrCollection<T>)
 			: (_db?.db(process.env.DB_NAME) as DbOrCollection<T>);
-	if (!db) throw new Error('Attempting to get an uninitalized database or nonexistent collection!');
+	if (!db) throw new Error("Attempting to get an uninitalized database or nonexistent collection!");
 
 	return db;
 }
 
 //// OK
-export async function db_ok_add(ok: string, server = '0') {
+export async function db_ok_add(ok: string, server = "0") {
 	const toIncrement = {
 		all: 1,
 		[ok]: 1
 	};
 
-	db_get('ok').updateMany(
-		{ _id: { $in: [server, '_GLOBAL'] as any } },
+	db_get("ok").updateMany(
+		{ _id: { $in: [server, "_GLOBAL"] as any } },
 		{ $inc: toIncrement },
 		{ upsert: true }
 	);
 }
 
-export async function db_ok_get(server = '_GLOBAL', sort = true) {
+export async function db_ok_get(server = "_GLOBAL", sort = true) {
 	try {
-		const okObj = await db_get('ok').findOne({ _id: server as any });
+		const okObj = await db_get("ok").findOne({ _id: server as any });
 		if (!okObj?.all) return null;
 
 		const total: number = okObj.all;
@@ -81,8 +81,8 @@ export async function db_ok_get(server = '_GLOBAL', sort = true) {
 	}
 }
 
-export async function db_ok_prune(server = '_GLOBAL') {
-	await db_get('ok').deleteOne({ _id: server as any });
+export async function db_ok_prune(server = "_GLOBAL") {
+	await db_get("ok").deleteOne({ _id: server as any });
 }
 
 ////PLAYER
@@ -92,7 +92,7 @@ export async function db_plr_set(plr: okbot.User) {
 	delete plr._id;
 
 	try {
-		return await db_get('plr').updateOne({ _id: _id as any }, { $set: plr }, { upsert: true });
+		return await db_get("plr").updateOne({ _id: _id as any }, { $set: plr }, { upsert: true });
 	} catch (err) {
 		console.error(err);
 		return null;
@@ -148,12 +148,12 @@ export async function db_plr_add(plr: okbot.User) {
 		delete plrf.casinoStat;
 	}
 
-	await db_get('plr').updateOne({ _id: _id as any }, { $inc: plrf }, { upsert: true });
+	await db_get("plr").updateOne({ _id: _id as any }, { $inc: plrf }, { upsert: true });
 }
 
 export async function db_plr_get(plr: okbot.User | any) {
 	try {
-		return (await db_get('plr').findOne({ _id: plr._id }, { projection: plr })) as unknown as okbot.User;
+		return (await db_get("plr").findOne({ _id: plr._id }, { projection: plr })) as unknown as okbot.User;
 	} catch (err) {
 		console.error(err);
 		return null;
@@ -171,7 +171,7 @@ export async function db_ranking_get(
 ) {
 	try {
 		let ranking: Array<okbot.RankingUser>;
-		const cursor = db_get('plr')
+		const cursor = db_get("plr")
 			.find({ [field]: { $exists: true } }, { projection: { _id: 1, [field]: 1 } })
 			.sort({ [field]: -1, _id: 1 });
 
@@ -219,8 +219,8 @@ export async function db_ranking_get(
 
 export async function db_ranking_get_guild_ok(min = 0, max = 0, setName = true) {
 	try {
-		const ranking = (await db_get('ok')
-			.find({ _id: { $ne: '_GLOBAL' as any } }, { projection: { _id: 1, all: 1 } })
+		const ranking = (await db_get("ok")
+			.find({ _id: { $ne: "_GLOBAL" as any } }, { projection: { _id: 1, all: 1 } })
 			.sort({ all: -1, _id: 1 })
 			.skip(min)
 			.limit(max)
@@ -284,14 +284,14 @@ export async function db_fish_add(
 	}
 
 	//global fish stats
-	db_get('fish').updateOne({ _id: nam as any }, { $inc: { v: numFish } }, { upsert: true });
+	db_get("fish").updateOne({ _id: nam as any }, { $inc: { v: numFish } }, { upsert: true });
 }
 
 export async function db_fish_get(nam?: string) {
 	try {
 		return nam
-			? ((await db_get('fish').findOne({ _id: nam as any })) as unknown as okbot.FishGlobal)
-			: ((await db_get('fish').find().toArray()) as unknown as okbot.FishGlobal[]);
+			? ((await db_get("fish").findOne({ _id: nam as any })) as unknown as okbot.FishGlobal)
+			: ((await db_get("fish").find().toArray()) as unknown as okbot.FishGlobal[]);
 	} catch (err) {
 		console.error(err);
 		return null;
@@ -301,7 +301,7 @@ export async function db_fish_get(nam?: string) {
 //// CASINO
 // populates the casino_top array in plr_arrays
 export async function db_get_casino_top(game: okbot.CasinoGame) {
-	const top = (await db_get('rankings').findOne({ _id: game as any })) || { v: [] };
+	const top = (await db_get("rankings").findOne({ _id: game as any })) || { v: [] };
 	Casino_tops[game] = [];
 	for (const i in top.v) Casino_tops[game]![Number(i)] = top.v[i];
 }
@@ -345,7 +345,7 @@ export async function db_add_casino_top(
 		}
 
 		Casino_tops[game] = lb;
-		await db_get('rankings').updateOne({ _id: game as any }, { $set: { v: lb } }, { upsert: true });
+		await db_get("rankings").updateOne({ _id: game as any }, { $set: { v: lb } }, { upsert: true });
 	} catch (err) {
 		console.error(err);
 		return null;
@@ -355,7 +355,7 @@ export async function db_add_casino_top(
 //
 export async function db_bakery_get_stats() {
 	try {
-		const plrdat = await db_get('plr')
+		const plrdat = await db_get("plr")
 			.find({ bakery: { $exists: 1 } }, { projection: { bakery: 1 } })
 			.toArray();
 		if (!plrdat) return null;
@@ -368,7 +368,7 @@ export async function db_bakery_get_stats() {
 
 		return stats;
 	} catch (e) {
-		console.error('Failed to get bakery stats:\n', e);
+		console.error("Failed to get bakery stats:\n", e);
 		return null;
 	}
 }
@@ -409,7 +409,7 @@ export async function db_update(
  * Converts pond fish and stats from `{[fishName]: {emoji, am}}` to `{[fishName]: am}`
  */
 export async function db_fix_pond() {
-	const allPlr = await db_get('plr')
+	const allPlr = await db_get("plr")
 		.find({ pond: { $exists: true } })
 		.toArray();
 
@@ -432,9 +432,9 @@ export async function db_fix_pond() {
 			}
 		}
 
-		await db_get('plr').updateOne(
+		await db_get("plr").updateOne(
 			{ _id: allPlr[i]._id },
-			{ $set: { 'pond.fish': fish, 'pond.stats': stats } }
+			{ $set: { "pond.fish": fish, "pond.stats": stats } }
 		);
 	}
 }
@@ -450,14 +450,14 @@ export async function db_fix_pond_levels(
 		cost?: number;
 	}>
 ) {
-	const allPlr = await db_get('plr')
+	const allPlr = await db_get("plr")
 		.find({ pond: { $exists: true } })
 		.toArray();
 
 	for (const i of allPlr) {
 		const level = pondLevels[i.pond.lv - 1];
 		if (!level) {
-			console.error('No level for ' + i._id);
+			console.error("No level for " + i._id);
 			continue;
 		}
 
@@ -471,14 +471,14 @@ export async function db_fix_pond_levels(
 			);
 		}
 
-		await db_get('plr').updateOne(
+		await db_get("plr").updateOne(
 			{ _id: i._id },
 			{
 				$set: {
-					'pond.budgetMax': level.budgetMax,
-					'pond.fishMax': level.fishMax,
-					'pond.interval': level.interval,
-					'pond.budget': overBudget ? level.budgetMax : i.pond.budget
+					"pond.budgetMax": level.budgetMax,
+					"pond.fishMax": level.fishMax,
+					"pond.interval": level.interval,
+					"pond.budget": overBudget ? level.budgetMax : i.pond.budget
 				}
 			}
 		);

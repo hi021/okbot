@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from "fs";
 type T_SET = {
 	PREFIX: string;
 	PREFIX_MOD: string;
@@ -39,12 +39,12 @@ type T_SET = {
 export let SET: T_SET;
 export function SET_INIT() {
 	try {
-		SET = JSON.parse(fs.readFileSync('../settings.json', { encoding: 'utf-8' }));
+		SET = JSON.parse(fs.readFileSync("../settings.json", { encoding: "utf-8" }));
 		if (process.env.PREFIX) SET.PREFIX = process.env.PREFIX;
 		if (process.env.PREFIX_MOD) SET.PREFIX_MOD = process.env.PREFIX_MOD;
 		return SET;
 	} catch (e) {
-		console.error('Failed to initialize settings:', e);
+		console.error("Failed to initialize settings:", e);
 		return null;
 	}
 }

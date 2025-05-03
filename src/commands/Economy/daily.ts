@@ -1,17 +1,17 @@
-import { Colors, EmbedBuilder } from 'discord.js';
-import { db_plr_add, db_plr_get, db_plr_set } from '../../db/db.js';
-import { SET } from '../../settings.js';
+import { Colors, EmbedBuilder } from "discord.js";
+import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
+import { SET } from "../../settings.js";
 import {
-    calcMoneyLevelsGain,
-    drawProgressBar,
-    formatDoler,
-    formatMilliseconds,
-    sendSimpleMessage
-} from '../../utils.js';
+	calcMoneyLevelsGain,
+	drawProgressBar,
+	formatDoler,
+	formatMilliseconds,
+	sendSimpleMessage
+} from "../../utils.js";
 
-export const name = 'daily';
-export const alias = ['pay'];
-export const description = '💵 Get money fukc boys';
+export const name = "daily";
+export const alias = ["pay"];
+export const description = "💵 Get money fukc boys";
 
 function buildDailyMsg(
 	value: number,
@@ -23,7 +23,7 @@ function buildDailyMsg(
 	streakWasReset?: number
 ) {
 	const msge = new EmbedBuilder().setColor(Colors.DarkGreen);
-	const bar = drawProgressBar(streak, needStreak, '🟦', '⬛');
+	const bar = drawProgressBar(streak, needStreak, "🟦", "⬛");
 	let description = `+${formatDoler(value, false)} yummy\n\n${bar}`;
 
 	if (streak >= needStreak) {

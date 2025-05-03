@@ -1,16 +1,16 @@
-import { Colors, EmbedBuilder, User } from 'discord.js';
-import { db_plr_get, db_plr_set } from '../../db/db.js';
-import { db_store_get_item } from '../../db/store.js';
-import { SET } from '../../settings.js';
-import { sendSimpleMessage } from '../../utils.js';
+import { Colors, EmbedBuilder, User } from "discord.js";
+import { db_plr_get, db_plr_set } from "../../db/db.js";
+import { db_store_get_item } from "../../db/store.js";
+import { SET } from "../../settings.js";
+import { sendSimpleMessage } from "../../utils.js";
 
 function listEditable() {
 	const msge = new EmbedBuilder()
 		.setColor(Colors.White)
-		.setTitle('Editable fields')
+		.setTitle("Editable fields")
 		.setFooter({ text: "Use 'edit [Field Name] [Field Value]' to edit your profile." });
 
-	let d = '';
+	let d = "";
 	for (const a in editable) d += `${editable[a].emoji} ${a}\n`;
 	if (d) msge.setDescription(d);
 
@@ -54,7 +54,7 @@ const defaultEditFunction = async (
 	});
 	return {
 		success: true,
-		msg: `Set your **${fieldName}** to ${item.emoji ? item.emoji + ' ' : ''}\`${fieldValue}\`.`
+		msg: `Set your **${fieldName}** to ${item.emoji ? item.emoji + " " : ""}\`${fieldValue}\`.`
 	};
 };
 
@@ -65,42 +65,42 @@ const editable: Record<
 	string,
 	{ emoji: string; func: (...args: any[]) => Promise<{ success: boolean; msg?: string }> }
 > = {};
-editable['title'] = {
-	emoji: '✏️',
+editable["title"] = {
+	emoji: "✏️",
 	func: async (usr: User, title: string) => {
 		const maxlen = Number(SET.LEN_MAX_TITLE) || 64;
 		if (title.length > maxlen)
-			return { success: false, msg: 'Sorry, the maximum title length is `' + maxlen + '` characters.' };
+			return { success: false, msg: "Sorry, the maximum title length is `" + maxlen + "` characters." };
 
 		await db_plr_set({
 			_id: usr.id,
-			title: title || ''
+			title: title || ""
 		});
 
-		return !title ? { success: true, msg: 'Reset your title.' } : { success: true };
+		return !title ? { success: true, msg: "Reset your title." } : { success: true };
 	}
 };
 
-editable['color'] = {
-	emoji: '🖌️',
-	func: (usr: User, fieldValue: string) => defaultEditFunction(usr, fieldValue, 'color', 'CLR')
+editable["color"] = {
+	emoji: "🖌️",
+	func: (usr: User, fieldValue: string) => defaultEditFunction(usr, fieldValue, "color", "CLR")
 };
 
-editable['badge'] = {
-	emoji: '⭐',
-	func: (usr: User, fieldValue: string) => defaultEditFunction(usr, fieldValue, 'badge', 'BDG')
+editable["badge"] = {
+	emoji: "⭐",
+	func: (usr: User, fieldValue: string) => defaultEditFunction(usr, fieldValue, "badge", "BDG")
 };
 
-export const name = 'edit';
-export const description = '✏️ Make your profile look less bad';
-export const usage = '[Profile Field] [New Value (Leave blank to reset)]';
+export const name = "edit";
+export const description = "✏️ Make your profile look less bad";
+export const usage = "[Profile Field] [New Value (Leave blank to reset)]";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!args.length) return msg.reply({ embeds: [listEditable()] });
 
 	const fieldName = args[0];
-	if (!editable[fieldName]) return msg.reply({ content: '> **Invalid field**.', embeds: [listEditable()] });
-	const fieldValue = args.slice(1).join(' ');
+	if (!editable[fieldName]) return msg.reply({ content: "> **Invalid field**.", embeds: [listEditable()] });
+	const fieldValue = args.slice(1).join(" ");
 
 	//set fieldValue case (e.g. Blue)
 	const ret = await editable[fieldName].func(
@@ -110,8 +110,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (ret.success)
 		return sendSimpleMessage(
 			msg,
-			ret.msg || 'Set your **' + fieldName + '** to `' + fieldValue + '`',
+			ret.msg || "Set your **" + fieldName + "** to `" + fieldValue + "`",
 			Colors.DarkGreen
 		);
-	return sendSimpleMessage(msg, ret.msg || 'Something exploded... 🤕');
+	return sendSimpleMessage(msg, ret.msg || "Something exploded... 🤕");
 }
