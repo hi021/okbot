@@ -1,4 +1,4 @@
-import { Colors } from "discord.js";
+import { Colors, userMention } from "discord.js";
 import { db_plr_set } from "../../db/db.js";
 import {
 	createSimpleMessage,
@@ -24,7 +24,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	await db_plr_set({ _id: usr.id, mon });
 	const msge = createSimpleMessage(
-		`Set \`${usr.displayName}\`'s money to ${formatDoler(mon)}.`,
+		`Set ${userMention(usr.id)}'s money to ${formatDoler(mon)}.`,
 		Colors.DarkGreen
 	);
 	msg.reply({ embeds: [msge] });

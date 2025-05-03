@@ -96,7 +96,7 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 });
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
-	"1.11.0": [""],
+	"1.11.0": ["Major refactor"],
 	"1.10.4": ["Fixed 'top50' charts not rendering", "Aded new 'bakery' levels up to 23"],
 	"1.10.3": ["Updated genius API fetcher to bring lyrics back", "Updated dependencies"],
 	"1.10.2": ["Fixed 'song' auto spotify queries"],
@@ -246,42 +246,46 @@ const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
 		"Tweaks"
 	],
 	"1.2.1": ["Merged fish stats and fish global stats", "Added purchasable aquarium income multipliers"],
-	"1.2.0": ["Fishing rod upgrades", "Shop visual adjustments + colors preview"],
+	"1.2.0": ["Added fishing rod upgrades", "Shop visual adjustments + colors preview"],
 	"1.1.2": ["Added 'id'", "Added 'addmoney'"],
 	"1.1.1": ["Emergency pond schema fix"],
 	"1.1.0": [
-		"More pond and aquarium levels",
-		"k!pond budget max",
-		"k!aqua levels",
+		"Added more 'pond' and 'aquarium' levels",
+		"Added 'pond budget max'",
+		"Added 'aqua levels'",
 		"Various tweaks and refactoring"
 	],
-	"1.0.2": ["Pond ranking", "Pinkify hex color validation", "More gay"],
-	"1.0.1": ["Minor tweaks and fixes to fish, aquarium, and pond", "Pond level 15"],
+	"1.0.2": ["Added pond ranking", "Added 'pinkify' hex color validation", "More gay"],
+	"1.0.1": ["Minor tweaks and fixes to 'fish', 'aquarium', and 'pond'", "Added 'pond' levels up to 15"],
 	"1.0.0": [
 		"Added guild preferences (custom prefix, blacklisted channels, level up message visibility)",
-		"k!pond name",
+		"Added 'pond name'",
 		"Added GUILD_ADMIN restricted commands",
 		"Small overall tweaks"
 	],
-	"0.20.1": ["k!pond sell", "Small k!pond tweaks"],
-	"0.20.0": ["k!pond", "More gay", "Small refactoring"],
+	"0.20.1": ["Added 'pond sell'", "Small 'pond' tweaks"],
+	"0.20.0": ["Added 'pond'", "More gay", "Small refactoring"],
 	"0.19.0": [
-		"k!inventory",
-		"Aquarium income ranking",
+		"Added 'inventory'",
+		"Added aquarium income ranking",
 		"More gay",
 		"Slightly improved edit and store commands",
 		"Small tweaks and improvements"
 	],
 	"0.18.0": ["Added 'roulette'"],
-	"0.17.4": ["Tweaks and refactoring in k!osu compare"],
-	"0.17.3": ["Chart in k!osu compare", "Better fish selling"],
-	"0.17.2": ["Change blackjack button colors", "Aquarium income multipliers"],
-	"0.17.1": ["Blackjack double", "Fix some interaction replies", "Ability to go all in in slots"],
+	"0.17.4": ["Tweaks and refactoring in 'top50 compare'"],
+	"0.17.3": ["Added chart to 'top50 compare'", "Improved 'fish sell'"],
+	"0.17.2": ["Changed 'blackjack' button colors", "Added 'aquarium' income multipliers"],
+	"0.17.1": [
+		"Added ability to double the bet in 'blackjack'",
+		"Fixed some interaction replies",
+		"Added the ability to go all in in 'slots'"
+	],
 	"0.17.0": [
-		"Added k!blackjack",
-		"Added k@fliptest",
-		"Nicer aquarium income change message + view others' income",
-		"Improved k@query"
+		"Added 'blackjack'",
+		"Added 'fliptest'",
+		"Nicer 'aquarium' income change message + ability to view others' income",
+		"Improved 'query'"
 	],
 	"0.16.2": [
 		"Added 'aquarium reset'",

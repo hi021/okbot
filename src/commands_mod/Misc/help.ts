@@ -15,12 +15,15 @@ export function displayAllCommands(
 ) {
 	const bot = msg.client as okbot.Client<true>;
 
+	const commandHelp = `Use \`${prefix}${name} <command name>\` to view command details.\n`;
+	const ownerHelp = `📢 Shout at <@${SET.BOT_OWNER?.[0]}> if I break something!\n`;
+	const repositoryHelp = `🐱 My [GitHub repository](${SET.REPOSITORY_URL})`;
 	const msge = new EmbedBuilder()
 		.setColor(Colors.LightGrey)
-		.setTitle("ok mod commands")
-		.setDescription(`Use \`${prefix}${name} <command name>\` to view command details.`)
+		.setTitle(commandType == "commands" ? "ok commands" : "ok mod commands")
+		.setDescription(commandHelp + ownerHelp + repositoryHelp + "\n_ _")
 		.setFooter({
-			text: `okbot ${SET.BOT_VER} ● shout @hiihailey if I break something`,
+			text: `okbot ${SET.BOT_VER}`,
 			iconURL: bot.user!.displayAvatarURL({ size: 32 })
 		});
 

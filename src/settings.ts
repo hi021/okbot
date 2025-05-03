@@ -6,6 +6,8 @@ type T_SET = {
 	BOT_VER?: string;
 	BOT_OWNER?: string[];
 	BOT_ADMIN?: string[];
+	REPOSITORY_URL?: string;
+	INVITE_URL?: string;
 	DAILY_AMOUNT?: number;
 	DAILY_STREAK_AMOUNT?: number;
 	DAILY_STREAK_LEN?: number;

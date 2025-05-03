@@ -8,6 +8,9 @@
 	"BOT_OWNER": ["200005362861080576"],
 	"BOT_ADMIN": ["200005362861080576", "186673613091373056"],
 
+    "REPOSITORY_URL": "https://github.com/hi021/okbot",
+    "INVITE_URL": "https://discord.com/api/oauth2/authorize?client_id=837068150947971092&permissions=137439242304&scope=bot",
+
 	"DAILY_AMOUNT": 120,
 	"DAILY_STREAK_AMOUNT": 600,
 	"DAILY_STREAK_LEN": 5,
