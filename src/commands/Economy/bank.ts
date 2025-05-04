@@ -188,7 +188,7 @@ async function getAndShowBank(user: User, msg: okbot.Message) {
 function showBank(bank: okbot.Bank, user: User) {
 	const membership = BankMemberships[bank.lv ?? 0];
 	const lastWithdraw = getLastWithdraw(bank);
-	let desc = `${formatDoler(bank.balance)}\n ${e_blank}${e_blank}/${formatNumber(membership.max)} 💵`;
+	let desc = `${formatDoler(bank.balance)}\n ${e_blank}${e_blank}/${formatDoler(membership.max, false)}`;
 	if (lastWithdraw.withdrawFee > 0)
 		desc += `\n\nWithdrawing earlier than <t:${(bank.lastWithdraw ?? 0) + membership.withdrawCD}:R> will incur a ${
 			lastWithdraw.withdrawFee * 100

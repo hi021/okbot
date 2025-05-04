@@ -1,6 +1,7 @@
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
+	ButtonInteraction,
 	ButtonStyle,
 	Colors,
 	EmbedBuilder,
@@ -287,15 +288,23 @@ export const PondLevels = [
 	}
 ];
 
+function sendNoPondMessage<T>(msg: okbot.MessageOrInteraction<T>, user?: User) {
+	const author = msg instanceof ButtonInteraction ? msg.user : msg.author;
+	sendSimpleMessage(
+		msg,
+		user && author != user
+			? `\`${user.displayName}\` doesn't own a pond :(`
+			: `You don't own a pond :(\nYou can open one if you have ${formatDoler(PondLevels[0].cost)} using \`${name} open\`.`
+	);
+}
+
 function fish() {
-	//get random fish minus collectors'
-	const r = Math.random() * (Fish.tot - 10); //5 collectors'
+	// get random fish minus collectors'
+	const r = Math.random() * (Fish.tot - 10); // HARDCODED WARNING 5 collectors
 
 	for (const nam in Fish.f) {
 		const caught = Fish.f[nam];
-		if (r >= caught.odds![0] && r < caught.odds![1]) {
-			return { nam, emoji: caught.emoji };
-		}
+		if (r >= caught.odds![0] && r < caught.odds![1]) return { nam, emoji: caught.emoji };
 	}
 	return { nam: "WHAT", emoji: "" };
 }
@@ -311,7 +320,7 @@ export function pondUpdateFish(pond: okbot.Pond, now?: number) {
 		Math.floor(pond.budget / fishCost)
 	);
 
-	pond.col = Math.round(now - pond.interval * (caughtTime % 1)); //don't reset next fish' catch timer
+	pond.col = Math.round(now - pond.interval * (caughtTime % 1)); // don't reset next fish' catch timer
 	if (toCatch <= 0) return pond;
 
 	for (let i = 0; i < toCatch; i++) {
@@ -345,7 +354,7 @@ function displayLevels() {
 	return msge;
 }
 
-//lv is current pond level; returns EmbedBuilder with upgrade confirmation; need to check if the level isn't max beforehand
+// lv is current pond level; returns EmbedBuilder with upgrade confirmation; need to check if the level isn't max beforehand
 function displayUpgradeStats(lv: number, money: number) {
 	const msge = new EmbedBuilder()
 		.setColor(Colors.White)
@@ -363,7 +372,7 @@ function displayUpgradeStats(lv: number, money: number) {
 			showUpgradeStat(PondLevels, lv, "interval", "Fish catch interval", v =>
 				v >= 60 ? Math.round(Math.round(v * 100) / 60) / 100 + "min" : v + "s"
 			),
-			showUpgradeStat(PondLevels, lv, "budgetMax", "Max budget", v => formatNumber(v) + " 💵")
+			showUpgradeStat(PondLevels, lv, "budgetMax", "Max budget", v => formatDoler(v, false))
 		])
 		.setFooter({ text: "Use 'pond levels' to view all upgrades" });
 }
@@ -392,7 +401,7 @@ function displayPondFish(pond: okbot.Pond) {
 		});
 	}
 
-	//sort by type
+	// sort by type
 	fishArr.sort((a, b) => (a.sort < b.sort ? -1 : 1));
 	for (const i of fishArr) {
 		stringAmount += i.count;
@@ -403,7 +412,7 @@ function displayPondFish(pond: okbot.Pond) {
 		.addFields(
 			{ name: "Caught fish", value: stringAmount, inline: true },
 			{ name: `(${pond.fishNum}/${pond.fishMax})`, value: stringName, inline: true },
-			{ name: "Total value", value: formatNumber(valTot) + " 💵", inline: false }
+			{ name: "Total value", value: formatDoler(valTot, false), inline: false }
 		)
 		.setFooter({
 			text: "Use 'pond collect' to put all caught fish in your inventory\nUse 'pond sell' to sell all caught fish"
@@ -421,7 +430,7 @@ async function displayPondStats(pond: okbot.Pond, usr: User) {
 		name: `${usr.username}'s pond stats`,
 		iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })
 	});
-	if (!pond.fishTot) return msge.setDescription("This pond has never caught any fish...");
+	if (!pond.fishTot) return msge.setDescription("🕸️ *This pond has never caught any fish...*");
 
 	let valTot = 0;
 	let stringName = "";
@@ -438,19 +447,21 @@ async function displayPondStats(pond: okbot.Pond, usr: User) {
 		{ name: "\u200b", value: stringAmount, inline: true },
 		{ name: "\u200b", value: "\u200b", inline: true },
 		{ name: "Total caught", value: formatNumber(pond.fishTot), inline: true },
-		{ name: "Total value", value: formatNumber(valTot) + " 💵", inline: true }
+		{ name: "Total value", value: formatDoler(valTot, false), inline: true }
 	);
 
 	return msge;
 }
 
-//returns [pond view EmbedBuilder, pond fish EmbedBuilder]
+/**
+ * @returns [pond view EmbedBuilder, pond fish EmbedBuilder]
+ */
 async function displayPond(pond: okbot.Pond, usr: User) {
 	const pondAfterCatch = pondUpdateFish(pond);
 	pond = pondAfterCatch;
 	await db_plr_set({ _id: usr.id, pond });
 
-	const budgetBar = `**${formatNumber(pond.budget)}**/${formatNumber(pond.budgetMax)} 💵
+	const budgetBar = `**${formatNumber(pond.budget)}**/${formatDoler(pond.budgetMax, false)}
   ${drawProgressBar(Math.round((pond.budget / pond.budgetMax) * 10), 10)}`;
 
 	const msge = new EmbedBuilder()
@@ -459,13 +470,13 @@ async function displayPond(pond: okbot.Pond, usr: User) {
 			name: pond.nam ? pond.nam : `${usr.username}'s pond`,
 			iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
-		.setDescription(PondLevels[pond.lv - 1].sprite + "\u200b") //whitespace for mobile
+		.setDescription(PondLevels[pond.lv - 1].sprite + "\u200b") // whitespace for mobile
 		.addFields({ name: "\u200b", value: "\u200b" })
 		.addFields({ name: "Budget", value: budgetBar });
 
 	let footerText = `Level ${pond.lv}\nUse 'pond budget' to manage the budget`;
 	if (pond.lv < PondLevels.length)
-		footerText += `\nUse 'pond upgrade' to upgrade your pond for ${PondLevels[pond.lv].cost} 💵`;
+		footerText += `\nUse 'pond upgrade' to upgrade your pond for ${formatDoler(PondLevels[pond.lv].cost, false)}`;
 	msge.setFooter({ text: footerText });
 
 	return [msge, displayPondFish(pondAfterCatch)];
@@ -483,16 +494,10 @@ export function getFishToCollect(pond: okbot.Pond) {
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	let usr = msg.author;
-
-	//display author's pond
+	const usr = msg.author;
 	if (!args.length) {
 		const plrdat = await db_plr_get({ _id: usr.id, pond: 1 });
-		if (!plrdat?.pond)
-			return sendSimpleMessage(
-				msg,
-				`You have no fishing pond :(\nYou can open one using \`pond open\` for **${PondLevels[0].cost}** 💵`
-			);
+		if (!plrdat?.pond) return sendNoPondMessage(msg, usr);
 
 		return msg.reply({
 			embeds: await displayPond(plrdat.pond, usr),
@@ -532,16 +537,12 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		}
 		case "pay":
 		case "collect": {
-			//return to inventory
 			const plrdat = await db_plr_get({ _id: usr.id, pond: 1 });
-			if (!plrdat?.pond)
-				return sendSimpleMessage(
-					msg,
-					`You have no fishing pond :(\nYou can open one using \`pond open\` for **${PondLevels[0].cost}** 💵`
-				);
+			if (!plrdat?.pond) return sendNoPondMessage(msg);
 
 			const pondAfterCatch = pondUpdateFish(plrdat.pond);
-			if (!pondAfterCatch.fishNum) return sendSimpleMessage(msg, "There are no fish stored in your pond.");
+			if (!pondAfterCatch.fishNum)
+				return sendSimpleMessage(msg, "🕸️ *There are no fish stored in your pond...*");
 
 			const collected = getFishToCollect(pondAfterCatch);
 
@@ -549,29 +550,24 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			await db_plr_set({ _id: usr.id, pond: { ...pondAfterCatch, fishNum: 0, fish: {} } });
 			return sendSimpleMessage(
 				msg,
-				`Put **${pondAfterCatch.fishNum}** fish worth ${formatDoler(collected.value)} into your inventory.`,
+				`Put **${formatNumber(pondAfterCatch.fishNum)}** fish worth ${formatDoler(collected.value)} into your inventory.`,
 				Colors.DarkGreen
 			);
 		}
 		case "sell": {
-			//sell all
 			const plrdat = await db_plr_get({ _id: usr.id, pond: 1 });
-			if (!plrdat?.pond)
-				return sendSimpleMessage(
-					msg,
-					`You have no fishing pond :(\nYou can open one using \`pond open\` for **${PondLevels[0].cost}** 💵`
-				);
+			if (!plrdat?.pond) return sendNoPondMessage(msg);
 
 			const pondAfterCatch = pondUpdateFish(plrdat.pond);
-			if (!pondAfterCatch.fishNum) return sendSimpleMessage(msg, "There are no fish stored in your pond.");
+			if (!pondAfterCatch.fishNum)
+				return sendSimpleMessage(msg, "🕸️ *There are no fish stored in your pond...*");
 
 			let value = 0;
 			for (const i in pondAfterCatch.fish) value += Fish.f[i].price * pondAfterCatch.fish[i];
 			await db_plr_set({ _id: usr.id, pond: pondAfterCatch });
 
-			//confirm
 			const msge = createSimpleMessage(
-				`Do you want to sell all **${pondAfterCatch.fishNum}** fish for a total of ${formatDoler(value)}?`,
+				`Do you want to sell all **${formatNumber(pondAfterCatch.fishNum)}** fish for a total of ${formatDoler(value)}?`,
 				Colors.White
 			);
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -593,29 +589,22 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				return sendSimpleMessage(msg, "The usage for this command is:\n`" + usageBudget + "`", Colors.White);
 
 			const plrdat = await db_plr_get({ _id: usr.id, mon: 1, pond: 1 });
-			if (!plrdat?.pond)
-				return sendSimpleMessage(
-					msg,
-					`You have no fishing pond :(\nYou can open one using \`pond open\` for **${PondLevels[0].cost}** 💵.`
-				);
+			if (!plrdat?.pond) return sendNoPondMessage(msg);
 
-			let budget = args[0].toLowerCase();
-			let budgetVal = budget === "max" ? plrdat.pond.budgetMax : Number(budget); //the value subtracted from player's money, changes later
+			const budget = args[0].toLowerCase();
+			let budgetVal = budget === "max" ? plrdat.pond.budgetMax : parseInt(budget);
 			if (isNaN(budgetVal))
 				return sendSimpleMessage(msg, "The usage for this command is:\n`" + usageBudget + "`", Colors.White);
 
 			const pondAfterCatch = pondUpdateFish(plrdat.pond);
-			let newBudget = budgetVal; //the value the budget will be set to
-			if (budget[0] === "+" || budget[0] === "-") {
-				newBudget += pondAfterCatch.budget;
-			} else {
-				budgetVal -= pondAfterCatch.budget;
-			}
+			let newBudget = budgetVal;
+			if (budget[0] === "+" || budget[0] === "-") newBudget += pondAfterCatch.budget;
+			else budgetVal -= pondAfterCatch.budget;
 
 			if (budgetVal > (plrdat.mon ?? 0))
 				return sendSimpleMessage(
 					msg,
-					`You only have ${formatDoler(plrdat.mon ?? 0)}** 💵.\nThat's **${formatNumber(budgetVal - (plrdat.mon ?? 0))} short.`
+					`You only have ${formatDoler(plrdat.mon ?? 0)}.\nThat's ${formatDoler(budgetVal - (plrdat.mon ?? 0), false)} short.`
 				);
 
 			if (newBudget < 0)
@@ -626,8 +615,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			if (newBudget > pondAfterCatch.budgetMax)
 				return sendSimpleMessage(
 					msg,
-					`The maximum budget is ${formatDoler(pondAfterCatch.budgetMax)}.
-          That's ${formatDoler(newBudget - pondAfterCatch.budgetMax)} over.`
+					`The maximum budget is ${formatDoler(pondAfterCatch.budgetMax)}.\nThat's ${formatDoler(newBudget - pondAfterCatch.budgetMax)} over.`
 				);
 			pondAfterCatch.budget = newBudget;
 
@@ -636,19 +624,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			return sendSimpleMessage(msg, `Set your pond's budget to ${formatDoler(newBudget)}.`, Colors.DarkGreen);
 		}
 		case "stats": {
-			if (args.length) {
-				const tmpusr = await getUserFromMsg(msg, args);
-				if (tmpusr) usr = tmpusr;
-			}
-
+			const usr = (await getUserFromMsg(msg, args)) ?? msg.author;
 			const plrdat = await db_plr_get({ _id: usr.id, pond: 1 });
-			if (!plrdat?.pond)
-				return sendSimpleMessage(
-					msg,
-					usr.id === msg.author.id
-						? `You have no fishing pond :(\nYou can open one using \`pond open\` for **${PondLevels[0].cost}** 💵`
-						: `\`${usr.username}\` has no fishing pond :(`
-				);
+			if (!plrdat?.pond) return sendNoPondMessage(msg, usr);
 
 			return msg.reply({
 				embeds: [await displayPondStats(plrdat.pond, usr)],
@@ -661,12 +639,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			return msg.reply({ embeds: [displayLevels()], allowedMentions: { repliedUser: false } });
 		}
 		case "name": {
-			//reset name
 			if (!args.length) {
 				await db_plr_set({ _id: usr.id, "pond.nam": undefined } as any);
 				return sendSimpleMessage(msg, "Reset your pond's name.", Colors.DarkGreen);
 			}
-			//set name
+
 			const nam = args.join(" ");
 			if (nam.length > 100) return sendSimpleMessage(msg, "The maximum name length is **100** characters.");
 			await db_plr_set({ _id: usr.id, "pond.nam": nam } as any);
@@ -675,21 +652,14 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		case "set":
 		case "fill": {
 			const plrdat = await db_plr_get({ _id: usr.id, mon: 1, pond: 1 });
-			if (!plrdat?.pond)
-				return sendSimpleMessage(
-					msg,
-					`You have no fishing pond :(\nYou can open one using \`pond open\` for **${PondLevels[0].cost}** 💵.`
-				);
+			if (!plrdat?.pond) return sendNoPondMessage(msg);
 
 			const pondAfterCatch = pondUpdateFish(plrdat.pond);
 			const mon = plrdat.mon ?? 0;
 			const neededBudget = pondAfterCatch.budgetMax - pondAfterCatch.budget;
 			const addBudget = Math.min(mon, neededBudget);
 			if (!addBudget && !pondAfterCatch.fishNum)
-				return sendSimpleMessage(
-					msg,
-					"There are no fish to collect and no possibility to increase the budget."
-				);
+				return sendSimpleMessage(msg, "No actions to take - no fish to collect and the budget is full 😴.");
 
 			const collected = getFishToCollect(pondAfterCatch);
 			pondAfterCatch.budget += addBudget;
@@ -697,32 +667,26 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			await db_plr_set({ _id: usr.id, pond: { ...pondAfterCatch, fishNum: 0, fish: {} } });
 			return sendSimpleMessage(
 				msg,
-				`Put **${pondAfterCatch.fishNum}** fish worth **${formatNumber(
+				`Put **${pondAfterCatch.fishNum}** fish worth ${formatDoler(
 					collected.value
-				)}** 💵 into your inventory.\nIncreased the budget by ${formatDoler(addBudget, false)} up to **${formatNumber(
+				)} into your inventory.\nIncreased the budget by ${formatDoler(addBudget, false)} up to **${formatDoler(
 					pondAfterCatch.budget
-				)}** 💵.`,
+				)}.`,
 				Colors.DarkGreen
 			);
 		}
 		default: {
-			//assume that the user wants to display someone's pond
+			// assume user wants to display someone's pond
 			args.unshift(action);
-			const tmpusr = await getUserFromMsg(msg, args);
-			if (!tmpusr)
+			const usr = await getUserFromMsg(msg, args);
+			if (!usr)
 				return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
 
-			const plrdat = await db_plr_get({ _id: tmpusr.id, pond: 1 });
-			if (!plrdat?.pond)
-				return sendSimpleMessage(
-					msg,
-					tmpusr.id === msg.author.id
-						? `You have no fishing pond :(\nYou can open one using \`pond open\` for **${PondLevels[0].cost}** 💵.`
-						: `\`${tmpusr.username}\` has no fishing pond :(`
-				);
+			const plrdat = await db_plr_get({ _id: usr.id, pond: 1 });
+			if (!plrdat?.pond) return sendNoPondMessage(msg, usr);
 
 			return msg.reply({
-				embeds: await displayPond(plrdat.pond, tmpusr),
+				embeds: await displayPond(plrdat.pond, usr),
 				allowedMentions: { repliedUser: false }
 			});
 		}

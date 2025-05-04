@@ -5,7 +5,6 @@ import {
 	calcMoneyLevelsGain,
 	e_blank,
 	formatDoler,
-	formatNumber,
 	parseNumberSuffix,
 	randomInt,
 	sendSimpleMessage,
@@ -149,7 +148,7 @@ function parseBet(input: string, plrdat: okbot.User | null): BetArguments | okbo
 	const bet = action === "all" ? Math.min(mon, MAX_BET) : parseNumberSuffix(action);
 	if (bet == null || isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
 		return {
-			error: `Bet amount must be between **${formatNumber(MIN_BET)}** and **${formatNumber(MAX_BET)}** 💵.`
+			error: `Bet amount must be between ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}.`
 		};
 	if (bet > mon) return { error: `You only have ${formatDoler(mon)}.` };
 

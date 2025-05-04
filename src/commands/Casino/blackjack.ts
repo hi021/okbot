@@ -13,7 +13,6 @@ import {
 	addCasinoStat,
 	calcMoneyLevelsGain,
 	formatDoler,
-	formatNumber,
 	parseNumberSuffix,
 	randomFromArray,
 	sendEphemeralReply,
@@ -318,7 +317,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (bet == null || isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
 		return sendSimpleMessage<okbot.Message>(
 			msg,
-			`Bet amount must be within **${formatNumber(MIN_BET)}** and **${formatNumber(MAX_BET)}** 💵.`
+			`Bet amount must be within ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}.`
 		);
 	if (bet > mon) return sendSimpleMessage<okbot.Message>(msg, `You only have ${formatDoler(mon)}.`);
 

@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import { db_plr_get } from "../../db/db.js";
-import { formatNumber, getUserFromMsg } from "../../utils.js";
+import { formatDoler, getUserFromMsg } from "../../utils.js";
 
 export const name = "profile";
 export const alias = ["balance"];
@@ -19,20 +19,17 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			title: 1,
 			badge: 1
 		})) || {};
+	const rep = plrdat.rep?.v ?? 0;
 
 	const profileMsg = new EmbedBuilder()
 		.setTitle(`${plrdat.badge ? plrdat.badge + " " : ""}${user.displayName}`)
 		.setThumbnail(user.displayAvatarURL({ size: 128 }))
 		.setFooter({ text: "ok" });
 
-	if (plrdat.mon == null) plrdat.mon = 0;
-	const rep = plrdat?.rep?.v ?? 0;
-
 	profileMsg.addFields(
-		{ name: "doler", value: formatNumber(plrdat.mon) + " 💵 ", inline: true },
+		{ name: "doler", value: formatDoler(plrdat.mon ?? 0, false), inline: true },
 		{ name: "rapes", value: rep + " o.o ", inline: true }
 	);
-
 	if (plrdat.title) profileMsg.setDescription(plrdat.title);
 	if (plrdat.color) profileMsg.setColor(plrdat.color as `#${string}`);
 

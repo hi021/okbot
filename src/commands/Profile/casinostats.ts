@@ -96,20 +96,20 @@ function showDefaultStat(
 			)}** loses (${rate}% win rate)`,
 			inline: false
 		},
-		{ name: "Highest bet", value: formatNumber(stat[game]!.highestBet) + " 💵", inline: true }
+		{ name: "Highest bet", value: formatDoler(stat[game]!.highestBet, false), inline: true }
 	);
 	if (highestWin)
 		msge.addFields({
 			name: "Highest win",
-			value: formatNumber(highestWin) + ` 💵 <t:${stat[game]!.highestWin!.date}:R>`,
+			value: `${formatDoler(highestWin, false)} <t:${stat[game]!.highestWin!.date}:R>`,
 			inline: true
 		});
 	else msge.addFields(blank);
 
 	msge.addFields(
 		blank,
-		{ name: "Spent", value: `${formatNumber(expense)} 💵`, inline: true },
-		{ name: "Gained", value: `${formatNumber(income)} 💵`, inline: true },
+		{ name: "Spent", value: `${formatDoler(expense, false)}`, inline: true },
+		{ name: "Gained", value: `${formatDoler(income, false)}`, inline: true },
 		blank
 	);
 

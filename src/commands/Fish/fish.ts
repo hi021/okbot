@@ -310,8 +310,8 @@ async function info(msg: okbot.Message, nam: string) {
 
 	const globalfish = (await db_fish_get(fisNam)) as okbot.FishGlobal;
 	const msge = new EmbedBuilder().setTitle(`${fis.emoji} ${fisNam}`).addFields(
-		{ name: "Sell price", value: fis.price ? `${fis.price} 💵` : "-", inline: true },
-		{ name: "Aquarium income", value: fis.aq ? `${fis.aq} 💵/h` : "-", inline: true },
+		{ name: "Sell price", value: fis.price ? formatDoler(fis.price, false) : "-", inline: true },
+		{ name: "Aquarium income", value: fis.aq ? `${formatDoler(fis.aq, false)}/h` : "-", inline: true },
 		{ name: "\u200b", value: "\u200b", inline: true },
 		{ name: "Type", value: getRarityEmoji(fis.type) + " " + fis.type, inline: true },
 		{

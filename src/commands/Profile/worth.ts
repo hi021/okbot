@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import { db_plr_get, db_plr_set } from "../../db/db.js";
 import { db_store_get_item } from "../../db/store.js";
-import { formatDoler, formatNumber, getUserFromMsg, sendSimpleMessage } from "../../utils.js";
+import { formatDoler, getUserFromMsg, sendSimpleMessage } from "../../utils.js";
 import {
 	bake,
 	BakeryCookies,
@@ -41,7 +41,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	const msge = new EmbedBuilder()
 		.setFooter({ text: "ok worth" })
-		.addFields({ name: "doler", value: formatNumber(plrdat.mon) + " 💵" });
+		.addFields({ name: "doler", value: formatDoler(plrdat.mon, false) });
 	if (plrdat.color) msge.setColor(plrdat.color);
 	if (plrdat.badge) msge.setTitle(plrdat.badge);
 
@@ -57,7 +57,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		total += (bank.balance ?? 0) + bankLv;
 		msge.addFields({
 			name: `bank [lv. ${bank.lv}]`,
-			value: `${formatNumber(bank.balance)} 💵 stored **|** ${formatDoler(bankLv, false)} upgrades`,
+			value: `${formatDoler(bank.balance, false)} stored **|** ${formatDoler(bankLv, false)} upgrades`,
 			inline: false
 		});
 	}
@@ -74,7 +74,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		total += pond + pondLv + pondAfterCatch.budget;
 		msge.addFields({
 			name: `pond [lv. ${pondAfterCatch.lv}]`,
-			value: `${formatNumber(pond)} 💵 stored **|** ${formatNumber(pondLv)} 💵 upgrades **|** ${formatNumber(pondAfterCatch.budget)} 💵 budget`,
+			value: `${formatDoler(pond, false)} stored **|** ${formatDoler(pondLv, false)} upgrades **|** ${formatDoler(pondAfterCatch.budget, false)} budget`,
 			inline: false
 		});
 	}
@@ -101,7 +101,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		total += aqua + aquaLv + aquaFish;
 		msge.addFields({
 			name: `aquarium [lv. ${plrdat.aqua.lv}]`,
-			value: `${formatNumber(aqua)} 💵 stored **|** ${formatNumber(aquaLv)} 💵 upgrades **|** ${formatNumber(aquaFish)} 💵 fish`,
+			value: `${formatDoler(aqua, false)} stored **|** ${formatDoler(aquaLv, false)} upgrades **|** ${formatDoler(aquaFish, false)} fish`,
 			inline: false
 		});
 	}
@@ -130,7 +130,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		total += invValue + lv + eqValue;
 		msge.addFields({
 			name: `bakery [lv. ${bakery.lv}]`,
-			value: `${formatNumber(invValue)} 💵 inventory **|** ${formatNumber(lv)} 💵 upgrades **|** ${formatNumber(eqValue)} 💵 equipment`,
+			value: `${formatDoler(invValue, false)} inventory **|** ${formatDoler(lv, false)} upgrades **|** ${formatDoler(eqValue, false)} equipment`,
 			inline: false
 		});
 	}
@@ -142,7 +142,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		}
 
 		total += fish;
-		msge.addFields({ name: "fish", value: formatNumber(fish) + " 💵", inline: true });
+		msge.addFields({ name: "fish", value: formatDoler(fish, false), inline: true });
 	}
 
 	let fishCol = 0;
@@ -159,7 +159,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		}
 
 		total += fishCol;
-		msge.addFields({ name: "collection", value: "~" + formatNumber(fishCol) + " 💵", inline: true });
+		msge.addFields({ name: "collection", value: "~" + formatDoler(fishCol, false), inline: true });
 	}
 
 	let items = 0;
@@ -183,7 +183,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 		await Promise.allSettled(promises);
 		total += items;
-		msge.addFields({ name: "items", value: formatNumber(items) + " 💵", inline: true });
+		msge.addFields({ name: "items", value: formatDoler(items, false), inline: true });
 	}
 
 	let title = "The Hobo";
@@ -199,7 +199,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	else if (total > 7500) title = "The Scraper-by";
 
 	msge
-		.addFields({ name: "\u200b", value: "\u200b" }, { name: "total", value: formatNumber(total) + " 💵" })
+		.addFields({ name: "\u200b", value: "\u200b" }, { name: "total", value: formatDoler(total, false) })
 		.setAuthor({
 			name: `${usr.displayName} - ${title}`,
 			iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })

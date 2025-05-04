@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import { db_plr_get, db_plr_set } from "../../db/db.js";
-import { formatDoler, formatNumber, getUserFromMsg } from "../../utils.js";
+import { formatDoler, getUserFromMsg } from "../../utils.js";
 
 export const name = "income";
 export const alias = ["expenses", "money"];
@@ -40,7 +40,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	msge.addFields([
 		{
 			name: "doler",
-			value: `${formatNumber(plrdat.mon ?? 0)} 💵
+			value: `${formatDoler(plrdat.mon ?? 0, false)}
       ${formatDoler(plrdat.monTot ?? 0, false)} total`
 		},
 		{

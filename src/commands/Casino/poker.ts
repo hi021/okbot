@@ -12,7 +12,6 @@ import {
 	createSimpleMessage,
 	e_blank,
 	formatDoler,
-	formatNumber,
 	sendEphemeralReply,
 	sendSimpleMessage,
 	shuffleArray
@@ -170,7 +169,7 @@ async function updatePlayers(game: okbot.PokerGame) {
 		2,
 		2,
 		{ name: "Players", value: playersField },
-		{ name: "Pot", value: "💵 " + formatNumber(game.pot) }
+		{ name: "Pot", value: formatDoler(game.pot, false) }
 	);
 	await game.msg.edit({ embeds: [msge] });
 }
@@ -311,10 +310,10 @@ async function createGame(
 		.setDescription("Awaiting players...")
 		.setFooter({ text: "2 - 10 players, waiting for host to start.\nGame will timeout after 5 minutes." })
 		.setFields(
-			{ name: "Bets", value: `${formatNumber(minBet)} 💵 - ${formatDoler(maxBet, false)}`, inline: true },
+			{ name: "Bets", value: `${formatDoler(minBet, false)} - ${formatDoler(maxBet, false)}`, inline: true },
 			{ name: "Round", value: `0/${maxRound}`, inline: true },
 			{ name: "Players", value: `<@${host}> ⭐` },
-			{ name: "Pot", value: "💵 0" },
+			{ name: "Pot", value: formatDoler(0, false) },
 			{ name: "\u200b", value: "\u200b" }
 		);
 
@@ -415,7 +414,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		if ((plr?.mon ?? 0) < minBet * 2)
 			return sendSimpleMessage(
 				msg,
-				`You need at least 💵 **${formatNumber(minBet * 2)}** to host a 💵 ${formatNumber(maxBet)} table.`,
+				`You need at least ${formatDoler(minBet * 2)} to host a ${formatDoler(maxBet, false)} table.`,
 				Colors.DarkRed
 			);
 

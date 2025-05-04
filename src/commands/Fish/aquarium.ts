@@ -222,7 +222,7 @@ function displayAquarium(aq: okbot.Aquarium, user: User, collect?: boolean) {
 		msge.addFields({
 			name: incomeText,
 			value:
-				`**${formatNumber(income)}**/${formatNumber(aq.maxColl)} 💵\n` +
+				`**${formatNumber(income)}**/${formatDoler(aq.maxColl, false)}\n` +
 				drawProgressBar(Math.round((income / aq.maxColl) * 10), 10, "🟩")
 		});
 	} else {
@@ -256,7 +256,7 @@ async function collect<T>(msg: okbot.MessageOrInteraction<T>) {
 
 	const content = `Collected ${formatDoler(income)} of ticket revenue.`;
 	if (msg instanceof ButtonInteraction) {
-		const invText = `**0**/${formatNumber(aq.maxColl)} 💵`;
+		const invText = `**0**/${formatDoler(aq.maxColl, false)}`;
 		const invBar = drawProgressBar(0, 10, "🟩");
 
 		const msge = EmbedBuilder.from(msg.message.embeds[0]);
@@ -357,7 +357,7 @@ function displayUpgradeStats(lv: number, money: number) {
 	msge
 		.addFields([
 			showUpgradeStat(AquaLevels, lv, "collMul", "Income multiplier", v => v + "x"),
-			showUpgradeStat(AquaLevels, lv, "maxColl", "Income storage", v => formatNumber(v) + " 💵")
+			showUpgradeStat(AquaLevels, lv, "maxColl", "Income storage", v => formatDoler(v, false))
 		])
 		.setFooter({ text: "Use 'aqua levels' to view all upgrades" });
 
@@ -481,9 +481,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 					newColl += fisIncome;
 				}
 			}
-			msgeDesc += `\n\nHourly income ${Math.round(plrdat.aqua.collTot * 100) / 100} 💵 → **${
+			msgeDesc += `\n\nHourly income ${formatDoler(Math.round(plrdat.aqua.collTot * 100) / 100, false)} → ${formatDoler(
 				Math.round(newColl * plrdat.aqua.collMul * 100) / 100
-			}** 💵`;
+			)}`;
 
 			curTank![tankId - 1] = fis
 				? { emoji: fis.emoji, nam: fisNam as string, aq: fisIncome as number }

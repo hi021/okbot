@@ -25,7 +25,6 @@ import {
 	createCollector,
 	formatDoler,
 	formatMilliseconds,
-	formatNumber,
 	getGuildPrefix,
 	sendEphemeralReply,
 	sendSimpleMessage,
@@ -396,7 +395,7 @@ function addSingleItemToMsgEmbed(msge: EmbedBuilder, item: okbot.Item, owned: nu
 	msge.setTitle(`Item - ${showItemName(item, false)}`);
 	msge.addFields(
 		{ name: "Category", value: item.cat, inline: true },
-		{ name: "Price", value: `💵 ${formatNumber(item.price)}`, inline: true }
+		{ name: "Price", value: formatDoler(item.price, false), inline: true }
 	);
 
 	if (item.desc) msge.addFields({ name: "Description", value: item.desc, inline: false });

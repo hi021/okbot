@@ -1,7 +1,7 @@
 import { Colors, EmbedBuilder } from "discord.js";
 import { db_plr_get } from "../../db/db.js";
 import { db_store_get_category, db_store_get_item } from "../../db/store.js";
-import { formatNumber, getUserFromMsg, sendSimpleMessage, storeCategoryToId } from "../../utils.js";
+import { formatDoler, getUserFromMsg, sendSimpleMessage, storeCategoryToId } from "../../utils.js";
 
 export const name = "inventory";
 export const alias = ["inv"];
@@ -67,7 +67,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
 		.addFields(fields)
-		.addFields({ name: "Total value", value: `${formatNumber(value)} 💵` })
+		.addFields({ name: "Total value", value: `${formatDoler(value, false)}` })
 		.setColor(Colors.White)
 		.setFooter({ text: "Page 1" });
 	return msg.reply({ embeds: [msge] });

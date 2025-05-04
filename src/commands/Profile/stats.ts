@@ -14,9 +14,7 @@ export const description = "📊 states";
 export const usage = "<Username OR Mention>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	let user: User;
-	if (!args.length) user = msg.author;
-	else user = (await getUserFromMsg(msg, args)) ?? msg.author;
+	const user = (await getUserFromMsg(msg, args)) ?? msg.author;
 
 	const plrdat = await db_plr_get({
 		_id: user.id,
@@ -49,19 +47,14 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		});
 
 		statMsg.setDescription("🕸️ *There are no stats for this user...*");
-
 		msg.reply({ embeds: [statMsg] });
 		return;
 	}
 
 	const rep = plrdat.rep ?? { am: 0, v: 0 };
-	let day = plrdat.day;
-	if (!day) {
-		day = { am: 0, v: 0 };
-	} else {
-		if (day.am === undefined) day.am = 0;
-		if (day.v === undefined) day.v = 0;
-	}
+	const day = plrdat.day ?? { am: 0, v: 0 };
+	if (day.am === undefined) day.am = 0;
+	if (day.v === undefined) day.v = 0;
 
 	const lvMonTot = calcMoneyTotNeeded(plrdat.monLv);
 	const nextLvMonTot = calcMoneyTotNeeded((plrdat.monLv ?? 0) + 1);
@@ -73,7 +66,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	let monProgressString = drawProgressBar(lvMonProgressBarValue, 10);
 
 	if (lvMonProgress < 1 && lvMonProgress >= 0)
-		monProgressString += `\n${formatNumber(nextLvMonNeeded)} 💵 to next level (${lvMonProgressPercent}%)`;
+		monProgressString += `\n${formatDoler(nextLvMonNeeded, false)} to next level (${lvMonProgressPercent}%)`;
 	else monProgressString += `⭐\nNext level ready! Gain any amount of money to rank up.`;
 
 	statMsg.addFields(
@@ -87,7 +80,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		{ name: "rapes", value: `${rep?.v ?? 0} ♂️ **|** ${rep?.am ?? 0} ♂️ given`, inline: true },
 		{
 			name: "dailies",
-			value: `${(SET.DAILY_AMOUNT ?? 0) + (day?.v ?? 0)} 💵 **|** ${day.am} claimed`,
+			value: `${formatDoler((SET.DAILY_AMOUNT ?? 0) + (day?.v ?? 0), false)} **|** ${day.am} claimed`,
 			inline: false
 		},
 		{ name: "\u200b", value: "╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼", inline: false },

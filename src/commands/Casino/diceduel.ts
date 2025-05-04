@@ -14,7 +14,6 @@ import {
 	addCasinoStat,
 	calcMoneyLevelsGain,
 	formatDoler,
-	formatNumber,
 	getUserFromMsg,
 	numberToEmoji,
 	parseNumberSuffix,
@@ -222,7 +221,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
 		return sendSimpleMessage(
 			msg,
-			`Bet amount must be between **${formatNumber(MIN_BET)}** and **${formatNumber(MAX_BET)}** 💵.${
+			`Bet amount must be between ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}.${
 				plrdat?.itms?.BOS0010 != plrdatRecipient?.itms?.BOS0010
 					? "\nBoth players must have the High Roller card for it to count."
 					: ""

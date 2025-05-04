@@ -32,9 +32,8 @@ export async function loadBot() {
 	if (!process.env.DB_URL) console.log("No DB_URL provided - initializing without database access.");
 	else await db_init(process.env.INIT_STORE == "true");
 
-	if ((bot.commands.get("fish") as any)?.fishInit()) console.log("Loaded fish.");
-	if (process.env.DB_URL && (bot.commands.get("store") as any)?.loadStoreItems())
-		console.log("Loaded store items.");
+	if (bot.commands.get("fish")?.fishInit()) console.log("Loaded fish.");
+	if (process.env.DB_URL && bot.commands.get("store")?.loadStoreItems()) console.log("Loaded store items.");
 
 	if (SET.STATUS_TEXT) bot.user!.setActivity(SET.STATUS_TEXT, { type: ActivityType.Custom });
 

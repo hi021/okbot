@@ -447,5 +447,6 @@ declare namespace okbot {
 		hidden?: boolean;
 		restrict: CommandPermission;
 		execute: (msg: Message, args: string[]) => void;
+        [additional: string]: any;
 	}
 }

@@ -6,7 +6,6 @@ import {
 	calcMoneyLevelsGain,
 	createSimpleMessage,
 	formatDoler,
-	formatNumber,
 	objLength,
 	parseNumberSuffix,
 	sendSimpleMessage,
@@ -82,7 +81,7 @@ async function updateParticipants(game: okbot.JackpotGame) {
 	for (const i in game.plr) s += `<@${i}>: ${formatDoler(game.plr[i], false)}\n`;
 
 	msgeEdit.spliceFields(0, 1, { name: "Participants", value: s });
-	msgeEdit.setTitle(formatNumber(game.pool) + " 💵");
+	msgeEdit.setTitle(formatDoler(game.pool, false));
 	await game.msg.edit({ embeds: [msgeEdit] });
 }
 
@@ -124,7 +123,7 @@ async function createGame(msg: okbot.Message, bet: number, mon: number) {
 			name: `Jackpot game started by ${msg.author.displayName}`,
 			iconURL: msg.author.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
-		.setTitle(formatNumber(bet) + " 💵")
+		.setTitle(formatDoler(bet, false))
 		.addFields(
 			{ name: "Participants", value: `<@${msg.author.id}>: ${formatDoler(bet, false)}` },
 			{
@@ -211,7 +210,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (bet == null || isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
 		return sendSimpleMessage(
 			msg,
-			`Your bet must be between **${formatNumber(MIN_BET)}** and **${formatNumber(MAX_BET)}** 💵!`
+			`Your bet must be between ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}!`
 		);
 
 	if (action == "start" || action == "new") {

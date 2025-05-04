@@ -127,7 +127,7 @@ async function forgeItem(user: User, item: string) {
 	const msge = new EmbedBuilder()
 		.setColor(Colors.Blurple)
 		.setAuthor({ name: `Forging ${showItemName({ nam: item, emoji: Fish.f[item].emoji }, false)}` })
-		.addFields({ name: "Total cost", value: "💵 " + formatNumber(cost) });
+		.addFields({ name: "Total cost", value: formatDoler(cost, false) });
 
 	const components: ActionRowBuilder<ButtonBuilder>[] = [
 		new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -351,7 +351,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (forgeableItems.length) {
 		const cost = formatNumber(SET.COLLECTION_FORGE_COST ?? 1000000);
 		msge.setFooter({
-			text: `You have forgeable collection items!\nUse 'collection forge <item name>' to claim your rewards.\nEach forge costs 💵 ${cost}.`
+			text: `You have forgeable collection items!\nUse 'collection forge <item name>' to claim your rewards.\nEach forge costs ${formatDoler(cost, false)}.`
 		});
 
 		const buttons = new ActionRowBuilder<ButtonBuilder>();
