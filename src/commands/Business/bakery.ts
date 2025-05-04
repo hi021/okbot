@@ -761,8 +761,7 @@ Use 'bakery edit' to manage your staff and ovens`
 }
 
 // returns a bakery with set cookies and stats
-export function bake(bakery: okbot.Bakery, now?: number) {
-	if (!now) now = Math.round(new Date().getTime() / 1000);
+export function bake(bakery: okbot.Bakery, now = Math.round(new Date().getTime() / 1000)) {
 	const elapsedSeconds = now - bakery.lastColl;
 	const invSpace = bakery.maxColl - bakery.toCollTot;
 	const staffMulti = countStaffMulti(bakery);
@@ -807,29 +806,25 @@ export function bake(bakery: okbot.Bakery, now?: number) {
 	for (const i in bakedPerOven) {
 		if (!bakedPerOven[i]) continue;
 		const oven = bakery.ovens[i];
-		const { rares, rareBundles } = bakeRares(BakeryOvens[oven!.id], bakedPerOven[i]);
-		const cookies = bakedPerOven[i] - rares - rareBundles;
+		const rares = bakeRares(BakeryOvens[oven!.id], bakedPerOven[i]);
+		const cookies = bakedPerOven[i] - rares;
 
-		bakery.toColl[oven!.cookie]
-			? (bakery.toColl[oven!.cookie] += cookies)
-			: (bakery.toColl[oven!.cookie] = cookies);
-		bakery.stat[oven!.cookie]
-			? (bakery.stat[oven!.cookie] += cookies)
-			: (bakery.stat[oven!.cookie] = cookies);
-		bakery.toColl[RARE_ID] ? (bakery.toColl[RARE_ID] += rares) : (bakery.toColl[RARE_ID] = rares);
-		bakery.stat[RARE_ID] ? (bakery.stat[RARE_ID] += rares) : (bakery.stat[RARE_ID] = rares);
-		bakery.toColl[RARE_BUNDLE_ID]
-			? (bakery.toColl[RARE_BUNDLE_ID] += rareBundles)
-			: (bakery.toColl[RARE_BUNDLE_ID] = rareBundles);
-		bakery.stat[RARE_BUNDLE_ID]
-			? (bakery.stat[RARE_BUNDLE_ID] += rareBundles)
-			: (bakery.stat[RARE_BUNDLE_ID] = rareBundles);
+		bakery.toColl[oven!.cookie] = (bakery.toColl[oven!.cookie] ?? 0) + cookies;
+		bakery.stat[oven!.cookie] = (bakery.stat[oven!.cookie] ?? 0) + cookies;
+		bakery.toColl[RARE_ID] = (bakery.toColl[RARE_ID] ?? 0) + rares;
 
-		totalBakedValue +=
-			cookies * BakeryCookies[oven!.cookie].value +
-			rares * BakeryCookies[RARE_ID].value +
-			rareBundles * BakeryCookies[RARE_BUNDLE_ID].value;
+		totalBakedValue += cookies * BakeryCookies[oven!.cookie].value;
 	}
+
+	const rareBundles = bakeRareBundles(bakery.toColl[RARE_ID]);
+	bakery.toColl[RARE_ID] -= rareBundles;
+
+	bakery.toColl[RARE_BUNDLE_ID] = (bakery.toColl[RARE_BUNDLE_ID] ?? 0) + rareBundles;
+	bakery.stat[RARE_BUNDLE_ID] = (bakery.stat[RARE_BUNDLE_ID] ?? 0) + rareBundles;
+	bakery.stat[RARE_ID] = (bakery.stat[RARE_ID] ?? 0) + bakery.toColl[RARE_ID];
+
+	totalBakedValue += bakery.toColl[RARE_ID] * BakeryCookies[RARE_ID].value;
+	totalBakedValue += rareBundles * BakeryCookies[RARE_BUNDLE_ID].value;
 
 	bakery.tot += totalBaked;
 	bakery.totVal += totalBakedValue;
@@ -844,8 +839,11 @@ function bakeRares(oven: okbot.BakeryOven, bakedCookies: number) {
 	const raresDecimal = raresRaw - raresFloor;
 
 	const rares = raresFloor + (Math.random() < raresDecimal ? 1 : 0);
-	const rareBundles = rares ? Math.ceil(Math.random() * 0.504 - 0.5) : 0;
-	return { rares: rares - rareBundles, rareBundles };
+	return rares;
+}
+
+function bakeRareBundles(bakedRares: number) {
+	return bakedRares >= 2 ? Math.ceil(Math.random() * (0.5 + 0.002 * bakedRares) - 0.5) : 0;
 }
 
 export function getBakeryToCollect(bakery: okbot.Bakery) {
@@ -922,7 +920,7 @@ Use 'bakery explain' to view a detailed breakdown of your cookies' bake time`
 		});
 
 	const staffMulti = countStaffMulti(bakery);
-	const ovens = showOvens(bakery.ovens, bakery.multi, staffMulti); //field value string + income per hour
+	const ovens = showOvens(bakery.ovens, bakery.multi, staffMulti); // field value string + income per hour
 	const ovensC = bakery.ovens.length;
 	const staff = showStaff(bakery.staff);
 	const staffC = bakery.staff.length;
@@ -966,12 +964,12 @@ async function showStats(usr: User, bakery: okbot.Bakery) {
 		name: `${usr.displayName}'s bakery stats`,
 		iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })
 	});
-	if (!bakery.tot) return msge.setDescription("This bakery hasn't baked anything yet...");
+	if (!bakery.tot) return msge.setDescription("🕸️ *This bakery hasn't baked anything yet...*");
 
 	let stringName = "";
 	let stringAmount = "";
 	for (const i in bakery.stat) {
-		if (!bakery.stat[i]) continue; //skip in case 0 cookies
+		if (!bakery.stat[i]) continue;
 		const cookie = BakeryCookies[i];
 		stringName += `${showItemName(cookie, false)}\n`;
 		stringAmount += `x**${bakery.stat[i]}**${e_blank}\n`;
@@ -1031,12 +1029,12 @@ async function showInventory(usr: User, bakery: okbot.Bakery) {
 
 async function collect(usr: User, bakery: okbot.Bakery) {
 	bakery = bake(bakery);
-	if (!bakery.toCollTot) return createSimpleMessage("There are no cookies to collect!");
+	if (!bakery.toCollTot) return createSimpleMessage("🕸️ *There are no cookies to collect...*");
 
 	let totValue = 0;
 	for (const i in bakery.toColl) {
 		bakery.inv[i] = (bakery.inv?.[i] ?? 0) + bakery.toColl[i];
-		if (i == RARE_ID) continue;
+		if (i == RARE_ID || i == RARE_BUNDLE_ID) continue;
 		totValue += bakery.toColl[i] * BakeryCookies[i].value;
 	}
 
@@ -1054,7 +1052,7 @@ async function collect(usr: User, bakery: okbot.Bakery) {
 	await db_plr_set({ _id: usr.id, bakery });
 
 	return createSimpleMessage(
-		`Collected ${formatNumber(toColl - rares)} cookies worth ${formatDoler(totValue)}.${rareString}${rareBundlesString}`,
+		`Collected ${formatNumber(toColl - rares - rareBundles)} cookies worth ${formatDoler(totValue)}.${rareString}${rareBundlesString}`,
 		Colors.DarkGreen
 	).setFooter({ text: "Use 'bakery inventory' to view them" });
 }

@@ -157,7 +157,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 					pngStream.pipe(writeStream);
 					writeStream.on("finish", () => {
-						console.log("PNG created in " + filePath);
+						if (process.env.VERBOSE) console.log("PNG created in " + filePath);
 						resolve(filePath);
 					});
 				};
@@ -178,10 +178,10 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			.setFooter({ text: `${w}x${h} ● ${threshold} threshold ● ${noiseThreshold} noise` });
 		msg.reply({ embeds: [msge], files: [attachment], allowedMentions: { repliedUser: false } });
 	} catch (e) {
-		console.error(`Failed to pinkify ${url}:\n`, e);
+		console.error(`Failed to pinkify "${url}":\n`, e);
 		return sendSimpleMessage(
 			msg,
-			"No suitable image found.\nIt might not exist or be of an unsupported type (e.g. .webp)."
+			"No suitable image or user found.\nThe image might not exist or be of an unsupported type (e.g. .webp)."
 		);
 	}
 }
