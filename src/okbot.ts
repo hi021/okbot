@@ -1,7 +1,7 @@
 import Discord, { ActivityType, Message, OmitPartialGroupDMChannel, PermissionsBitField } from "discord.js";
 import dotenv from "dotenv";
 import fs from "fs";
-import { gameAnswer } from "./commands/Quiz/flags.js";
+import { roundAnswer } from "./commands/Quiz/flags.js";
 import { db_init, db_ok_add, db_plr_add } from "./db/db.js";
 import { db_guild_init } from "./db/guild.js";
 import { SET, SET_INIT } from "./settings.js";
@@ -88,7 +88,7 @@ async function executeCommandOrAction(msg: OmitPartialGroupDMChannel<Message<tru
 				: undefined;
 		if (reaction) msg.channel.send(reaction);
 
-		if (Flag_games[msg.channel.id]) gameAnswer(msg.channel.id, msg.content.toLowerCase(), msg.author.id);
+		if (Flag_games[msg.channel.id]) roundAnswer(msg.channel.id, msg.content.toLowerCase(), msg.author.id);
 		return;
 	}
 

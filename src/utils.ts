@@ -16,6 +16,10 @@ import { db_get_casino_top, db_plr_get, db_plr_set } from "./db/db.js";
 import { SET } from "./settings.js";
 import { Casino_tops, Cooldowns, Guilds, Players_in_collector } from "./volatile.js";
 
+const MS_PER_HOUR = 3600000;
+const MS_PER_MINUTE = 60000;
+const MS_PER_SECOND = 1000;
+
 export const e_blank = "<:blank:986204417512575036>";
 
 //UTIL
@@ -44,6 +48,8 @@ export const capitalizeFirstLetter = (str?: string) =>
 	str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : "";
 
 export const isVowel = (letter: string) => ["a", "e", "i", "o", "u", "y"].includes(letter.toLowerCase());
+
+export const nowSeconds = () => Math.floor(Date.now() / 1000);
 //UTIL
 
 //FORMAT
@@ -78,6 +84,25 @@ export function formatMilliseconds(ms: number) {
 		if (s > 1) str += "s";
 	}
 	return str ? str.trim() : "< 1 second";
+}
+
+/**
+ * @returns `HH:MM:SS:mmm` formatted string
+ */
+export function formatTimer(ms: number, showMs = true, alwaysShowHours = false) {
+	const h = Math.floor(ms / MS_PER_HOUR);
+	ms -= h * MS_PER_HOUR;
+	const m = Math.floor(ms / MS_PER_MINUTE);
+	ms -= m * MS_PER_MINUTE;
+	const s = Math.floor(ms / MS_PER_SECOND);
+	ms -= s * MS_PER_SECOND;
+
+	const timerParts = new Array<string>();
+	(h || alwaysShowHours) && timerParts.push(h.toString().padStart(2, "0"));
+	timerParts.push(m.toString().padStart(2, "0"), s.toString().padStart(2, "0"));
+	showMs && timerParts.push(ms.toString().padStart(3, "0"));
+
+	return timerParts.join(":");
 }
 
 /**
@@ -147,8 +172,8 @@ export function formatDate(
 	return formatted;
 }
 
-export const showItemName = (itm: { nam: string; emoji?: string }, bold = true) =>
-	`${itm.emoji ? itm.emoji + " " : ""}${bold ? `**${itm.nam}**` : itm.nam}`;
+export const showItemName = (item: { nam: string; emoji?: string }, bold = true) =>
+	`${item.emoji ? item.emoji + " " : ""}${bold ? `**${item.nam}**` : item.nam}`;
 //FORMAT
 
 export const drawProgressBar = (len: number, maxLen: number, activeSquare = "🟩", inactiveSquare = "⬛") => {
@@ -284,7 +309,7 @@ export function sendSimpleMessage<T>(
 		embeds: [createSimpleMessage(text, color)],
 		allowedMentions: { repliedUser: mention },
 		flags: MessageFlagsBitField.resolve(flags)
-	});
+	}) as Promise<T>;
 }
 
 export function sendEphemeralReply(interaction: ButtonInteraction, text: string, color?: ColorResolvable) {
@@ -309,7 +334,7 @@ export function createCollector(playerId: string, channel: SendableChannels, tim
 /**
  * @returns the amount of money needed to reach given money level
  */
-export function calcMoneyTotNeeded(lv: number | undefined) {
+export function calcMoneyTotNeeded(lv?: number) {
 	if (!lv || lv < 1) return 0;
 	return Math.round(1000 * lv + Math.pow(150, lv / 28));
 }
@@ -317,6 +342,7 @@ export function calcMoneyTotNeeded(lv: number | undefined) {
 /**
  * @param winnings net win (excluding bet)
  */
+// TODO: probably needs a lil refactor
 export async function addCasinoStat(
 	plrId: string,
 	game: okbot.CasinoGame,
@@ -359,7 +385,7 @@ export async function addCasinoStat(
 	if (result != "lose" && (stat.highestWin?.v == undefined || winnings > stat.highestWin.v))
 		stat.highestWin = {
 			v: winnings,
-			date: Math.floor(new Date().getTime() / 1000)
+			date: nowSeconds()
 		};
 
 	if (additional?.is21) (stat as any).bj == undefined ? ((stat as any).bj = 1) : (stat as any).bj++;
@@ -422,7 +448,7 @@ export async function getImageUrlFromMsg(msg: okbot.Message, args?: string[]) {
 	}
 
 	//3. check if a reply to a message with an image
-	if (msg.type === MessageType.Reply) {
+	if (MessageType.Reply == msg.type) {
 		const reference = await msg.fetchReference();
 
 		//check if replied to has an image
@@ -453,7 +479,6 @@ export function checkBoosterValidity(
 	boosterItemId: string
 ) {
 	const booster = plr?.boosters?.[boosterItemId];
-	//no booster
 	if (!booster) return null;
 
 	const now = new Date().getTime();
@@ -461,14 +486,13 @@ export function checkBoosterValidity(
 	const cooldownRemaining = cooldown - (Math.round(now / 1000) - booster.start);
 	const timeRemaining = booster.start * 1000 + booster.time - now;
 
-	//outdated booster
 	if (timeRemaining <= 0)
 		return {
 			name: booster.name as string,
 			start: booster.start as number,
 			cooldownRemaining
 		} as okbot.ExpiredBooster;
-	//active booster
+
 	return { ...booster, timeRemaining } as okbot.TimedBooster & {
 		timeRemaining: number;
 	};
@@ -566,7 +590,7 @@ export function isOnCooldown(
 	usrId: Snowflake,
 	msg?: okbot.Message,
 	customMessage = "",
-	now = Math.floor(Date.now() / 1000)
+	now = nowSeconds()
 ) {
 	const cooldown = SET[`${activity.toUpperCase() as Uppercase<okbot.CooldownActivity>}_COOLDOWN`] ?? 0;
 	const lastTimestamp = Cooldowns[activity][usrId];

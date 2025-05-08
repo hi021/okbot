@@ -420,12 +420,15 @@ declare namespace okbot {
 		category: string;
 		rounds: number;
 		round: number;
-		flags: Set<string>;
-		curFlag: string;
+		flags: Set<string>; // all potential country codes
+		curFlag: string; // country code
 		points: { [plrId: string]: number };
-		roundTime: number;
-		time: NodeJS.Timeout;
+		roundTime: number; // ms
+		roundStartTime: number; // s
+        gameStartTime: number; // ms
+		time?: NodeJS.Timeout;
 		channel: TextChannel;
+        flagMsg: okbot.Message; // current flag round message
 	}
 
 	interface Country extends CountryState {

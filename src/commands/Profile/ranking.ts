@@ -19,6 +19,7 @@ bot.on("interactionCreate", async interaction => {
 	const split = interaction.customId.split("-");
 	if (split[0] !== "ranking_prev" && split[0] !== "ranking_next") return;
 
+	interaction.deferUpdate();
 	const category = split[1] as okbot.RankingField | "okGuild";
 	const usrId = split[2];
 	const page = parseInt(split[3]);
@@ -28,12 +29,10 @@ bot.on("interactionCreate", async interaction => {
 		category == "okGuild"
 			? await db_ranking_get_guild_ok(startRank - 1, perPage, true)
 			: await db_ranking_get(category, startRank - 1, perPage, true);
-	if (!ranking?.length) {
-		interaction.reply({
-			embeds: [createSimpleMessage("🕸️ No matches for the given criteria.", Colors.Orange)]
+	if (!ranking?.length)
+		return interaction.editReply({
+			embeds: [createSimpleMessage("🕸️ *No matches for the given criteria...*", Colors.Orange)]
 		});
-		return;
-	}
 
 	const nextPageAvailable = ranking.length > perPage;
 	if (nextPageAvailable) ranking.pop();
@@ -46,10 +45,7 @@ bot.on("interactionCreate", async interaction => {
 	const row = new ActionRowBuilder<ButtonBuilder>();
 
 	if (split[0] === "ranking_prev") {
-		if (page <= 0) {
-			interaction.update({});
-			return;
-		}
+		if (page <= 0) return;
 
 		row.setComponents(
 			new ButtonBuilder()
@@ -63,7 +59,7 @@ bot.on("interactionCreate", async interaction => {
 				.setStyle(ButtonStyle.Primary)
 		);
 	} else {
-		//ranking_next
+		// ranking_next
 		row.setComponents(
 			new ButtonBuilder()
 				.setCustomId(`ranking_prev-${category}-${usrId}-${page - 1}`)
@@ -77,8 +73,7 @@ bot.on("interactionCreate", async interaction => {
 		);
 	}
 
-	console.log("BEFORE UODATE"); //
-	interaction.update({ content: "WAAA" });
+	interaction.editReply({ embeds: [msge] });
 });
 
 function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: Guild | null) {
@@ -291,18 +286,18 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const { valueFormatter, categoryTitle } = setCat;
 
 	msg.channel.sendTyping();
-	const rankS = (page - 1) * perPage + 1; //start rank
+	const rankStart = (page - 1) * perPage + 1;
 	const ranking =
 		category == "okGuild"
-			? await db_ranking_get_guild_ok(rankS - 1, perPage, true)
-			: await db_ranking_get(category as okbot.RankingField, rankS - 1, perPage, true);
+			? await db_ranking_get_guild_ok(rankStart - 1, perPage, true)
+			: await db_ranking_get(category as okbot.RankingField, rankStart - 1, perPage, true);
 
 	if (!ranking?.length)
 		return sendSimpleMessage(msg, "No matches for the given criteria.", Colors.DarkOrange);
 
 	const nextPageAvailable = ranking.length > perPage;
-	if (nextPageAvailable) ranking.pop(); //will get one more result that wouldn't fit on the page to check for next page
-	const msge = createRankingEmbed(category, categoryTitle, ranking, rankS, page, usr.id, valueFormatter);
+	if (nextPageAvailable) ranking.pop(); // will get one more result that wouldn't fit on the page to check for next page
+	const msge = createRankingEmbed(category, categoryTitle, ranking, rankStart, page, usr.id, valueFormatter);
 
 	const components = nextPageAvailable
 		? [

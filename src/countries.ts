@@ -73,7 +73,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ["Saint John's", "Saint John", "St. John", "St. John's"]
+		capital: ["Saint John's"]
 	},
 	ai: {
 		nam: ["Anguilla"],
@@ -144,7 +144,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Oranjestad"]
 	},
 	ax: {
-		nam: ["Åland Islands", "Aland", "Aland Islands"],
+		nam: ["Åland Islands", "Åland"],
 		region: CountryRegion.EUROPE,
 		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
@@ -221,11 +221,11 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Porto Novo"]
 	},
 	bl: {
-		nam: ["Saint Barthélemy", "St. Barthélemy", "Saint Barthelemy", "St. Barthelemy", "St. Barts"],
+		nam: ["Saint Barthélemy", "St. Barts"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ["Gustavia", "Le Carénage", "Le Carenage", "Carenage"]
+		capital: ["Gustavia", "Le Carénage", "Carenage"]
 	},
 	bm: {
 		nam: ["Bermuda"],
@@ -304,14 +304,14 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Ottawa"]
 	},
 	cc: {
-		nam: ["Cocos (Keeling) Islands", "Cocos", "Cocos Islands", "Keeling Islands"],
+		nam: ["Cocos Islands", "Keeling Islands"],
 		region: CountryRegion.OCEANIA,
 		regionDetail: "Australia and New Zealand",
 		type: CountryType.TERRITORY,
 		capital: ["West Island"]
 	},
 	cd: {
-		nam: ["Democratic Republic of the Congo", "DR Congo", "Democratic Republic of Congo", "DRC", "Congo"],
+		nam: ["Democratic Republic of the Congo", "DR Congo", "DRC", "Congo"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
@@ -325,7 +325,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Bangui"]
 	},
 	cg: {
-		nam: ["Republic of the Congo", "Congo Republic", "Republic of Congo"],
+		nam: ["Republic of the Congo", "Congo Republic"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
@@ -339,7 +339,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Bern"]
 	},
 	ci: {
-		nam: ["Côte d'Ivoire", "Ivory Coast", "Cote d'Ivoire", "Cote Ivoire"],
+		nam: ["Côte d'Ivoire", "Cote d'Ivoire", "Ivory Coast"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
@@ -402,7 +402,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Praia"]
 	},
 	cw: {
-		nam: ["Curaçao", "Curacao"],
+		nam: ["Curaçao"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
@@ -493,11 +493,11 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Cairo"]
 	},
 	eh: {
-		nam: ["Western Sahara"],
+		nam: ["Western Sahara", "West Sahara"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Northern Africa",
 		type: CountryType.TERRITORY,
-		capital: ["Laayoune", "Laâyoune", "El Aaiún", "El Aaiun"]
+		capital: ["Laâyoune", "El Aaiún"]
 	},
 	er: {
 		nam: ["Eritrea"],
@@ -557,7 +557,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.EUROPE,
 		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ["Tórshavn", "Torshavn"]
+		capital: ["Tórshavn"]
 	},
 	fr: {
 		nam: ["France"],
@@ -585,7 +585,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
-		capital: ["Saint George's", "Saint George", "St. George's", "St. George"]
+		capital: ["Saint George's", "Saint George"]
 	},
 	ge: {
 		nam: ["Georgia"],
@@ -606,7 +606,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.EUROPE,
 		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ["Saint Peter Port", "St. Peter Port"]
+		capital: ["Saint Peter Port"]
 	},
 	gh: {
 		nam: ["Ghana"],
@@ -648,7 +648,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
-		capital: ["Basse-Terre", "Basse Terre"]
+		capital: ["Basse-Terre"]
 	},
 	gq: {
 		nam: ["Equatorial Guinea"],
@@ -686,7 +686,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Hagåtña", "Hagatna"]
 	},
 	gw: {
-		nam: ["Guinea-Bissau", "Guinea Bissau"],
+		nam: ["Guinea-Bissau"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
@@ -706,7 +706,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		type: CountryType.TERRITORY
 	},
 	hm: {
-		nam: ["Heard Island and McDonald Islands", "Heard Island", "McDonald Islands", "Australia"],
+		nam: ["Heard Island and McDonald Islands", "Heard Island", "McDonald Islands"],
 		region: CountryRegion.OCEANIA,
 		regionDetail: "Australia and New Zealand",
 		type: CountryType.TERRITORY
@@ -814,7 +814,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.EUROPE,
 		regionDetail: "Northern Europe",
 		type: CountryType.TERRITORY,
-		capital: ["Saint Helier", "St. Helier"]
+		capital: ["Saint Helier"]
 	},
 	jm: {
 		nam: ["Jamaica"],
@@ -873,7 +873,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Moroni"]
 	},
 	kn: {
-		nam: ["Saint Kitts and Nevis", "Saint Kitts", "St. Kitts", "Kitts and Nevis"],
+		nam: ["Saint Kitts and Nevis", "Saint Kitts", "Kitts and Nevis"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
@@ -912,7 +912,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.ASIA,
 		regionDetail: "Central Asia",
 		type: CountryType.COUNTRY,
-		capital: ["Nur-Sultan", "Nur Sultan"]
+		capital: ["Nur-Sultan"]
 	},
 	la: {
 		nam: ["Lao People's Democratic Republic", "Laos"],
@@ -929,7 +929,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Beirut"]
 	},
 	lc: {
-		nam: ["Saint Lucia", "St. Lucia"],
+		nam: ["Saint Lucia"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
@@ -1010,7 +1010,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.EUROPE,
 		regionDetail: "Eastern Europe",
 		type: CountryType.COUNTRY,
-		capital: ["Chișinău", "Chisinau"]
+		capital: ["Chișinău"]
 	},
 	me: {
 		nam: ["Montenegro"],
@@ -1020,7 +1020,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Podgorica"]
 	},
 	mf: {
-		nam: ["Saint Martin", "St. Martin"],
+		nam: ["Saint Martin"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
@@ -1163,7 +1163,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.OCEANIA,
 		regionDetail: "Melanesia",
 		type: CountryType.TERRITORY,
-		capital: ["Nouméa", "Noumea"]
+		capital: ["Nouméa"]
 	},
 	ne: {
 		nam: ["Niger"],
@@ -1173,7 +1173,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Niamey"]
 	},
 	nf: {
-		nam: ["Norfolk Island"],
+		nam: ["Norfolk Island", "Norfolk"],
 		region: CountryRegion.OCEANIA,
 		regionDetail: "Australia and New Zealand",
 		type: CountryType.TERRITORY,
@@ -1194,7 +1194,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Managua"]
 	},
 	nl: {
-		nam: ["The Netherlands", "Netherlands"],
+		nam: ["The Netherlands"],
 		region: CountryRegion.EUROPE,
 		regionDetail: "Western Europe",
 		type: CountryType.COUNTRY,
@@ -1292,11 +1292,11 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Warsaw"]
 	},
 	pm: {
-		nam: ["Saint Pierre and Miquelon", "St. Pierre and Miquelon", "Pierre and Miquelon"],
+		nam: ["Saint Pierre and Miquelon"],
 		region: CountryRegion.NORTH_AMERICA,
 		regionDetail: "Northern America",
 		type: CountryType.TERRITORY,
-		capital: ["Saint-Pierre", "Saint Pierre", "St. Pierre"]
+		capital: ["Saint-Pierre"]
 	},
 	pn: {
 		nam: ["Pitcairn Islands"],
@@ -1347,11 +1347,11 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Doha"]
 	},
 	re: {
-		nam: ["Réunion", "Reunion"],
+		nam: ["Réunion"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.TERRITORY,
-		capital: ["Saint-Denis", "Saint Denis", "St. Denis"]
+		capital: ["Saint-Denis"]
 	},
 	ro: {
 		nam: ["Romania"],
@@ -1424,13 +1424,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Singapore"]
 	},
 	sh: {
-		nam: [
-			"Saint Helena, Ascension and Tristan da Cunha",
-			"Saint Helena",
-			"St. Helena",
-			"Ascension",
-			"Tristan da Cunha"
-		],
+		nam: ["Saint Helena, Ascension and Tristan da Cunha", "Saint Helena", "Ascension", "Tristan da Cunha"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.TERRITORY,
@@ -1493,7 +1487,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Juba"]
 	},
 	st: {
-		nam: ["São Tomé and Príncipe", "Sao Tome and Principe", "Sao Tome"],
+		nam: ["São Tomé and Príncipe", "São Tomé"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.SMALL_COUNTRY,
@@ -1546,7 +1540,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.AFRICA,
 		regionDetail: "Eastern Africa",
 		type: CountryType.TERRITORY,
-		capital: ["Saint Pierre", "St. Pierre"]
+		capital: ["Saint Pierre"]
 	},
 	tg: {
 		nam: ["Togo"],
@@ -1577,7 +1571,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Nukunonu"]
 	},
 	tl: {
-		nam: ["Democratic Republic of Timor-Leste", "Timor-Leste", "Timor Leste", "East Timor"],
+		nam: ["Democratic Republic of Timor-Leste", "Timor-Leste", "East Timor"],
 		region: CountryRegion.ASIA,
 		regionDetail: "South-eastern Asia",
 		type: CountryType.COUNTRY,
@@ -1605,7 +1599,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Nuku'alofa", "Nuku alofa"]
 	},
 	tr: {
-		nam: ["Turkey", "Türkiye", "Turkiye"],
+		nam: ["Turkey", "Türkiye"],
 		region: CountryRegion.ASIA,
 		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
@@ -1685,7 +1679,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		type: CountryType.SMALL_COUNTRY
 	},
 	vc: {
-		nam: ["Saint Vincent and the Grenadines", "Saint Vincent", "St. Vincent"],
+		nam: ["Saint Vincent and the Grenadines", "Saint Vincent", "Grenadines"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.SMALL_COUNTRY,
@@ -1699,14 +1693,14 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Caracas"]
 	},
 	vg: {
-		nam: ["British Virgin Islands", "UK Virgin Islands", "UK Virgin"],
+		nam: ["British Virgin Islands", "UK Virgin Islands"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
 		capital: ["Road Town"]
 	},
 	vi: {
-		nam: ["United States Virgin Islands", "US Virgin Islands", "US Virgin", "American Virgin Islands"],
+		nam: ["United States Virgin Islands", "US Virgin Islands", "American Virgin Islands"],
 		region: CountryRegion.SOUTH_AMERICA,
 		regionDetail: "Latin America and the Caribbean",
 		type: CountryType.TERRITORY,
@@ -1727,11 +1721,11 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Port Vila"]
 	},
 	wf: {
-		nam: ["Wallis and Futuna Islands", "Wallis and Futuna Island", "Wallis and Futuna", "Wallis Futuna"],
+		nam: ["Wallis and Futuna Islands", "Wallis and Futuna"],
 		region: CountryRegion.OCEANIA,
 		regionDetail: "Polynesia",
 		type: CountryType.TERRITORY,
-		capital: ["Matā'utu", "Mata Utu", "Mata'utu", "Matautu"]
+		capital: ["Matā'utu", "Mata Utu", "Matautu"]
 	},
 	ws: {
 		nam: ["Samoa"],
@@ -1752,7 +1746,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		region: CountryRegion.ASIA,
 		regionDetail: "Western Asia",
 		type: CountryType.COUNTRY,
-		capital: ["Sana'a", "Sanaa"]
+		capital: ["Sana'a"]
 	},
 	yt: {
 		nam: ["Mayotte"],
@@ -1762,7 +1756,7 @@ export const countries: { [countryCode: string]: okbot.Country } = {
 		capital: ["Mamoudzou"]
 	},
 	za: {
-		nam: ["South Africa", "S Africa"],
+		nam: ["South Africa"],
 		region: CountryRegion.AFRICA,
 		regionDetail: "Sub-Saharan Africa",
 		type: CountryType.COUNTRY,
