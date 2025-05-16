@@ -19,7 +19,7 @@ bot.on("interactionCreate", async interaction => {
 	const split = interaction.customId.split("-");
 	if (split[0] !== "ranking_prev" && split[0] !== "ranking_next") return;
 
-	interaction.deferUpdate();
+	await interaction.deferUpdate();
 	const category = split[1] as okbot.RankingField | "okGuild";
 	const usrId = split[2];
 	const page = parseInt(split[3]);
@@ -31,7 +31,7 @@ bot.on("interactionCreate", async interaction => {
 			: await db_ranking_get(category, startRank - 1, perPage, true);
 	if (!ranking?.length)
 		return interaction.editReply({
-			embeds: [createSimpleMessage("🕸️ *No matches for the given criteria...*", Colors.Orange)]
+			embeds: [createSimpleMessage("🕸️ *No matches for the given criteria...*", Colors.DarkOrange)]
 		});
 
 	const nextPageAvailable = ranking.length > perPage;
@@ -73,7 +73,7 @@ bot.on("interactionCreate", async interaction => {
 		);
 	}
 
-	interaction.editReply({ embeds: [msge] });
+	interaction.editReply({ embeds: [msge], components: [row] });
 });
 
 function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: Guild | null) {
@@ -258,8 +258,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	let usr: User | Guild | undefined = msg.author;
 	if (args?.length) {
 		const pageRaw = parseInt(args[0]);
-		if (isNaN(pageRaw)) usr = await getUserFromMsg(msg, args);
-		else {
+		if (isNaN(pageRaw) || pageRaw < 1) {
+			usr = await getUserFromMsg(msg, args);
+		} else {
 			page = pageRaw;
 			args.shift();
 			if (args.length) usr = await getUserFromMsg(msg, args);
@@ -293,24 +294,25 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			: await db_ranking_get(category as okbot.RankingField, rankStart - 1, perPage, true);
 
 	if (!ranking?.length)
-		return sendSimpleMessage(msg, "No matches for the given criteria.", Colors.DarkOrange);
+		return sendSimpleMessage(msg, "🕸️ *No matches for the given criteria...*", Colors.DarkOrange);
 
 	const nextPageAvailable = ranking.length > perPage;
 	if (nextPageAvailable) ranking.pop(); // will get one more result that wouldn't fit on the page to check for next page
 	const msge = createRankingEmbed(category, categoryTitle, ranking, rankStart, page, usr.id, valueFormatter);
 
-	const components = nextPageAvailable
+	const components = page > 1 || nextPageAvailable
 		? [
 				new ActionRowBuilder<ButtonBuilder>().addComponents(
 					new ButtonBuilder()
-						.setCustomId(`ranking_prev-${category}-${usr.id}-0`)
+						.setCustomId(`ranking_prev-${category}-${usr.id}-${page - 1}`)
 						.setEmoji("⬅️")
 						.setStyle(ButtonStyle.Secondary)
-						.setDisabled(true),
+						.setDisabled(page <= 1),
 					new ButtonBuilder()
-						.setCustomId(`ranking_next-${category}-${usr.id}-2`)
+						.setCustomId(`ranking_next-${category}-${usr.id}-${page + 1}`)
 						.setEmoji("➡️")
 						.setStyle(ButtonStyle.Primary)
+                        .setDisabled(!nextPageAvailable)
 				)
 			]
 		: [];

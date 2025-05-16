@@ -41,7 +41,7 @@ bot.on("interactionCreate", async interaction => {
 	if (!game) return sendEphemeralReply(interaction, "This game has already ended.");
 
 	if (split[0] === "bj_hit") {
-		//player draw
+		// player draw
 		const card = drawCard(game.tot, game.hasAce);
 		if (card.val === "A") game.hasAce = true;
 		game.cards[game.cards.length] = card;
@@ -55,7 +55,7 @@ bot.on("interactionCreate", async interaction => {
 		}
 
 		await displayGame(game);
-		interaction.deferUpdate(); //otherwise says 'interaction failed'
+		interaction.deferUpdate(); // 'interaction failed' otherwise
 		return;
 	} else if (split[0] === "bj_stand") {
 		game.msg.edit({ components: [] });
