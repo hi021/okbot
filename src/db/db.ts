@@ -47,26 +47,26 @@ export function db_get<T>(collection?: T): DbOrCollection<T> {
 }
 
 //// OK
-export async function db_ok_add(ok: string, server = "0") {
-	const toIncrement = {
-		all: 1,
-		[ok]: 1
-	};
+export function db_ok_add(ok: string, guildId = "0") {
+	const $inc = { all: 1, [ok]: 1 };
 
-	db_get("ok").updateMany(
-		{ _id: { $in: [server, "_GLOBAL"] as any } },
-		{ $inc: toIncrement },
-		{ upsert: true }
-	);
+	db_get("ok").bulkWrite([
+		{
+			updateOne: { filter: { _id: guildId as any }, update: { $inc }, upsert: true }
+		},
+		{
+			updateOne: { filter: { _id: "_GLOBAL" as any }, update: { $inc }, upsert: true }
+		}
+	]);
 }
 
-export async function db_ok_get(server = "_GLOBAL", sort = true) {
+export async function db_ok_get(guildId = "_GLOBAL", sort = true) {
 	try {
-		const okObj = await db_get("ok").findOne({ _id: server as any });
+		const okObj = await db_get("ok").findOne({ _id: guildId as any });
 		if (!okObj?.all) return null;
 
-		const total: number = okObj.all;
-		//@ts-ignore
+		const total = okObj.all as number;
+		// @ts-ignore
 		delete okObj._id;
 		delete okObj.all;
 
@@ -160,8 +160,10 @@ export async function db_plr_get(plr: okbot.User | any) {
 	}
 }
 
-//returns from min to max+1 to know whether there are further pages, splice the array later
-//TODO: add user lookup
+/**
+ * @returns records from `min` to `max+1` to know whether there are further pages, splice the array removing the last element later
+ * @TODO add user lookup
+ */
 export async function db_ranking_get(
 	field: okbot.RankingField,
 	min = 0,
@@ -181,11 +183,11 @@ export async function db_ranking_get(
 				.limit(max + 1)
 				.toArray()) as unknown as Array<okbot.RankingUser>;
 		} else {
-			//TODO
+			// TODO
 			ranking = (await cursor.toArray()) as unknown as Array<okbot.RankingUser>;
 		}
 
-		//TODO: move to a function
+		// TODO: move to a function
 		if (setUsername) {
 			const promises = [];
 			for (const i in ranking) {
@@ -226,7 +228,7 @@ export async function db_ranking_get_guild_ok(min = 0, max = 0, setName = true) 
 			.limit(max)
 			.toArray()) as unknown as Array<okbot.RankingGuild>;
 
-		//TODO: move to a function
+		// TODO: move to a function
 		if (setName) {
 			const promises = [];
 			for (const i in ranking) {
@@ -283,7 +285,7 @@ export async function db_fish_add(
 		db_plr_add({ ...toAdd, fish: { [nam]: numFish } });
 	}
 
-	//global fish stats
+	// global fish stats
 	db_get("fish").updateOne({ _id: nam as any }, { $inc: { v: numFish } }, { upsert: true });
 }
 
@@ -299,14 +301,18 @@ export async function db_fish_get(nam?: string) {
 }
 
 //// CASINO
-// populates the casino_top array in plr_arrays
+/**
+ * Populates in-memory `Casino_tops` by copying stats from the db
+ */
 export async function db_get_casino_top(game: okbot.CasinoGame) {
 	const top = (await db_get("rankings").findOne({ _id: game as any })) || { v: [] };
 	Casino_tops[game] = [];
 	for (const i in top.v) Casino_tops[game]![Number(i)] = top.v[i];
 }
 
-// where winnings is total win (net + bet)
+/**
+ *  @param winnings total win (net + bet)
+ */
 export async function db_add_casino_top(
 	game: okbot.CasinoGame,
 	plrId: string,

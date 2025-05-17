@@ -1,5 +1,5 @@
 import { Colors } from "discord.js";
-import { randomInt, sendSimpleMessage } from "../../utils.js";
+import { formatNumber, randomInt, sendSimpleMessage } from "../../utils.js";
 
 function runFlipSimulation(iterations: number, odds: number) {
 	let won = 0,
@@ -8,7 +8,7 @@ function runFlipSimulation(iterations: number, odds: number) {
 	for (let i = 0; i < iterations; i++) {
 		const res = randomInt(1, 100);
 
-		if (res >= odds) ++won;
+		if (res > odds) ++won;
 		else ++lost;
 	}
 
@@ -22,15 +22,15 @@ export const description = "see how rigged this is";
 
 export function execute(msg: okbot.Message, args: string[]) {
 	if (!args.length) return;
-	const iterations = Number(args.shift()) || 1;
+	const iterations = Math.min(Math.max(parseInt(args.shift() as string) || 1, 1), 100_000_000);
 	let odds = Number(args.shift());
 	if (isNaN(odds) || odds < 0 || odds > 100) odds = 50;
 
-	const sim = runFlipSimulation(Math.min(100_000_000, iterations), 100 - odds);
+	const sim = runFlipSimulation(iterations, 100 - odds);
 	const wtl = sim.won / iterations;
 	sendSimpleMessage(
 		msg,
-		`Won **${sim.won}** (${(wtl * 100).toFixed(3)}%) and lost **${sim.lost}**\ngames over ${iterations} iterations with ${odds}% chance`,
+		`Won **${formatNumber(sim.won)}** (${(wtl * 100).toFixed(3)}%) and lost **${formatNumber(sim.lost)}**\ngames over ${formatNumber(iterations)} iterations with ${odds}% chance`,
 		Colors.White
 	);
 }

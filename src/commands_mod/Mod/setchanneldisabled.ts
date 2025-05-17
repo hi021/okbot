@@ -41,9 +41,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	Guilds[guildId] = { ...Guilds[guildId], blacklist };
 	await db_guild_set({ _id: guildId, blacklist });
 
-	sendSimpleMessage(
-		msg,
-		`Messages in this channel will \`${newValue ? "be ignored" : "not be ignored"}\`.\nThis setting does not apply to mod commands.`,
-		Colors.DarkGreen
-	);
+	const content = newValue
+		? `Messages in this channel will \`be ignored\`.\nThis setting does not apply to mod commands.`
+		: `Messages in this channel will \`not be ignored\`.`;
+	sendSimpleMessage(msg, content, Colors.DarkGreen);
 }

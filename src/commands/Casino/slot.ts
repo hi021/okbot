@@ -59,8 +59,8 @@ function oneElement() {
 
 function runSlot(msg: okbot.Message, bet: number) {
 	const row = [oneElement(), oneElement(), oneElement()];
-	let element = row[0]; //most prevalent element
-	let num = 1; //how many times it repeats
+	let element = row[0]; // most prevalent element
+	let num = 1; // how many times it repeats
 	if (element === row[1]) {
 		num = element === row[2] ? 3 : 2;
 	} else if (element === row[2]) {
@@ -129,9 +129,9 @@ function finalizeSlot(msg: okbot.Message, bet: number, plrdat: any) {
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (Players_in_collector[msg.author.id])
 		return sendSimpleMessage(msg, "A different activity requires your attention first!");
-	if (isOnCooldown("slot", msg.author.id, msg, "before gambling again.")) return;
 	if (!args?.length)
 		return sendSimpleMessage(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
+	if (isOnCooldown("slot", msg.author.id, msg, "before gambling again.")) return;
 
 	const action = args[0].toLowerCase();
 	if (action === "top")
@@ -140,7 +140,6 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			allowedMentions: { repliedUser: false }
 		});
 
-	// run slot
 	const plrdat = await db_plr_get({
 		_id: msg.author.id,
 		mon: 1,
@@ -156,8 +155,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (action === "all") bet = mon;
 	else bet = parseNumberSuffix(args[0]) ?? 0;
 
-	if (bet == null || isNaN(bet) || bet < MIN_BET) bet = MIN_BET;
-	else if (bet > MAX_BET) bet = MAX_BET;
+	if (bet == null || isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
+		return sendSimpleMessage(
+			msg,
+			`Bet amount must be within ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}.`
+		);
 	if (bet > mon) return sendSimpleMessage(msg, `You only have ${formatDoler(mon)}.`);
 
 	const betPercent = bet / mon;

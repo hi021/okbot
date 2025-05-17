@@ -3,6 +3,7 @@ import { randomInt } from "../../utils.js";
 export const name = "randtest";
 export const description = "see how rigged this is";
 
+// very old command, shush
 export async function execute(msg: okbot.Message, args: string[]) {
 	const reps = Number(args[0]) || 100_000;
 	if (reps <= 0) return;

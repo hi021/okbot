@@ -26,9 +26,11 @@ import {
 	formatDoler,
 	formatMilliseconds,
 	getGuildPrefix,
+	nowSeconds,
 	sendEphemeralReply,
 	sendSimpleMessage,
-	showItemName
+	showItemName,
+	uniqueArray
 } from "../../utils.js";
 import { Players_in_collector } from "../../volatile.js";
 import { calculateAquaIncome } from "../Fish/aquarium.js";
@@ -71,12 +73,8 @@ export async function loadStoreItems() {
 	return Store_Items;
 }
 
-//the returned status starts with "NO" if unable to purchase, and "OK" if the purchase can get finalized
-async function purchase(
-	usr: User,
-	purchaseOrders: Array<{ itm: okbot.Item; am: number }>,
-	confirmed: boolean = false
-) {
+// the returned status starts with "NO" if unable to purchase, and "OK" if the purchase can be finalized
+async function purchase(usr: User, purchaseOrders: okbot.StorePurchaseOrders, confirmed: boolean = false) {
 	const plrdat = await db_plr_get({
 		_id: usr.id,
 		mon: 1,
@@ -85,7 +83,7 @@ async function purchase(
 	if (!plrdat)
 		return {
 			success: false,
-			msg: "Sorry, you don't have any money!"
+			msg: "Sorry, you're completely broke!"
 		};
 
 	const mon = plrdat.mon ?? 0;
@@ -126,7 +124,7 @@ async function purchase(
 	return { success: true, needConfirmation: true, msg: itemsBought, totalSpent, moneyLeft: mon - totalSpent };
 }
 
-async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.Item; am: number }>) {
+async function purchase_finalize(usr: User, purchaseOrders: okbot.StorePurchaseOrders) {
 	let itemsBought = "";
 	let spentTotal = 0;
 	const itms: { [_id: string]: number } = {};
@@ -164,7 +162,7 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 					msg: "Sorry, you first need an aquarium to purchase this booster.\nYou can open one using `aqua open`."
 				};
 
-			const now = Math.floor(new Date().getTime() / 1000);
+			const now = nowSeconds();
 			plrdatAqua.aqua.toColl = calculateAquaIncome(plrdatAqua.aqua, now);
 			plrdatAqua.aqua.maxColl += itm.v * quantity;
 			plrdatAqua.aqua.lastColl = now;
@@ -194,7 +192,7 @@ async function purchase_finalize(usr: User, purchaseOrders: Array<{ itm: okbot.I
 						"`."
 				};
 
-			const now = Math.round(new Date().getTime() / 1000);
+			const now = nowSeconds();
 
 			if ((booster as okbot.ExpiredBooster)?.cooldownRemaining > 0)
 				return {
@@ -242,9 +240,9 @@ export const description = "🛒 Browse the store, a category, or a specific ite
 export const usage = '<Category OR Item name OR "All">';
 const perPage = 20;
 
-//pagination, purchasing, and category selection
+// pagination, purchasing, and category selection
 bot.on("interactionCreate", async interaction => {
-	//pagination and purchasing
+	// pagination and purchasing TODO: refactor :)
 	if (interaction.isButton()) {
 		const split = interaction.customId.split("-");
 		if (split[0] !== "store_prev" && split[0] !== "store_next" && split[0] !== "store_buy") return;
@@ -256,10 +254,7 @@ bot.on("interactionCreate", async interaction => {
 		const plrId = split[3];
 
 		if (split[0] === "store_prev") {
-			if (page <= 0) {
-				interaction.update({});
-				return;
-			}
+			if (page <= 0) return interaction.update({});
 
 			const plr = await db_plr_get({ _id: plrId, itms: 1 });
 			const playerItems = plr?.itms ?? {};
@@ -285,8 +280,7 @@ bot.on("interactionCreate", async interaction => {
 					.setStyle(ButtonStyle.Primary)
 			);
 
-			interaction.update({ embeds: [msgeEdit], components: [rowNew, ...interaction.message.components] });
-			return;
+			return interaction.update({ embeds: [msgeEdit], components: [rowNew, ...interaction.message.components] });
 		} else if (split[0] === "store_next") {
 			let maxPage;
 			const plr = await db_plr_get({ _id: plrId, itms: 1 });
@@ -303,10 +297,7 @@ bot.on("interactionCreate", async interaction => {
 			}
 
 			// should never happen:)
-			if (page > maxPage) {
-				interaction.update({});
-				return;
-			}
+			if (page > maxPage) return interaction.update({});
 
 			const row = interaction.message.components.shift() as ActionRow<ButtonComponent>;
 			const rowNew = ActionRowBuilder.from(row) as ActionRowBuilder<ButtonBuilder>;
@@ -322,8 +313,10 @@ bot.on("interactionCreate", async interaction => {
 					.setDisabled(page >= maxPage)
 			);
 
-			interaction.update({ embeds: [msgeEdit], components: [rowNew, ...interaction.message.components] });
-			return;
+			return interaction.update({
+				embeds: [msgeEdit],
+				components: [rowNew, ...interaction.message.components]
+			});
 		} else if (split[0] === "store_buy") {
 			const itmId = split[1];
 			const plrId = split[2];
@@ -337,8 +330,7 @@ bot.on("interactionCreate", async interaction => {
 			const response = await purchase(interaction.user, [{ itm, am: 1 }], true);
 			if (!response.success) {
 				sendSimpleMessage(interaction.message as okbot.Message, response.msg);
-				interaction.update({ components: [] });
-				return;
+				return interaction.update({ components: [] });
 			}
 
 			const responseFinal = await purchase_finalize(interaction.user, [{ itm, am: 1 }]);
@@ -347,7 +339,7 @@ bot.on("interactionCreate", async interaction => {
 			interaction.update({ components: [] });
 		}
 	}
-	//  select categories (k!store no arguments)
+	// select categories (k!store no arguments)
 	else if (interaction.isStringSelectMenu()) {
 		const split = interaction.customId.split("-");
 		if (split[0] !== "store_category") return;
@@ -360,13 +352,11 @@ bot.on("interactionCreate", async interaction => {
 
 		const category = interaction.values[0];
 		const categoryItems = await db_store_get_category(category);
-		if (!categoryItems) {
-			sendSimpleMessage(
+		if (!categoryItems)
+			return sendSimpleMessage(
 				interaction.message as okbot.Message,
 				"Something went wrong... chosen category seems not to exist..."
 			);
-			return;
-		}
 
 		const plr = await db_plr_get({ _id: plrId, itms: 1 });
 		const playerItems = plr?.itms ?? {};
@@ -382,7 +372,7 @@ bot.on("interactionCreate", async interaction => {
 			categoryItems
 		);
 
-		if (interaction.message.components.length >= 2) interaction.message.components.shift(); //remove existing buttons
+		if (interaction.message.components.length >= 2) interaction.message.components.shift(); // remove existing buttons
 		interaction.update({
 			embeds: msgeCategory.embeds,
 			components: [...msgeCategory.components, ...interaction.message.components]
@@ -437,7 +427,7 @@ function addItemsToMsgEmbed(
 	return msge;
 }
 
-//for showing category items (must remove existing fields before calling this function)
+// for showing category items (must remove existing fields before calling this function)
 function addCategoryItemsToMsgEmbed(
 	msge: EmbedBuilder,
 	items: okbot.Item[],
@@ -476,7 +466,6 @@ function showCategory(
 	msge.setTitle(`Category - ${categoryItems[0].cat} (${categoryItems.length})`).setDescription(null);
 	addCategoryItemsToMsgEmbed(msge, categoryItems, playerItems);
 
-	//buttons
 	const components =
 		categoryItems.length > perPage
 			? [
@@ -497,7 +486,7 @@ function showCategory(
 	return { embeds: [msge], components };
 }
 
-//shown after purchase() (before confirmation)
+// shown after purchase() (before confirmation)
 function createPurchaseEmbedFromOrders(purchaseOrders: okbot.StorePurchaseOrders, plrMon: number) {
 	let total = 0;
 	let desc = "";
@@ -531,41 +520,39 @@ function createPurchaseCollector(
 	msg: okbot.Message,
 	categoryItems: okbot.Item[]
 ) {
-	//item collector (user has to pick the items and quantity)
+	// item collector (user has to pick the items and quantity)
 	const itemCollector = createCollector(user.id, channel, 60000);
 	if (!itemCollector) return;
 	playerCollectors[user.id] = itemCollector;
 
-	const purchaseOrders: okbot.StorePurchaseOrders = [];
-	//Collect messages from the user
+	let purchaseOrders: okbot.StorePurchaseOrders = [];
 	itemCollector.on("collect", async m => {
-		if (!m.guild) return;
-		const prefix = getGuildPrefix(m.guild.id);
-		if (m.content.startsWith(prefix)) return; //ignore message if a command
-		const query = m.content.split(" "); //item IDs in items[], amounts (or 'ok'), 'ok' (if amounts provided)
+		if (!m.inGuild()) return;
+		if (m.content.startsWith(getGuildPrefix(m.guildId))) return; // ignore message if a command
+		const query = m.content.split(" "); // item IDs in items[], amounts (or 'ok'), 'ok' (if amounts provided)
 
-		//parse args
 		const splitLower = query[0].toLowerCase();
 		if (splitLower === "cancel" || splitLower === "abort" || splitLower === "stop" || splitLower === "no")
 			return itemCollector.stop("cancel");
 
 		const itemIds = query[0].split(",");
 		let amounts: string[] = [];
-		let confirmed; //preconfirmed if 'ok' provided (skips calling purchase())
+		let confirmed; // preconfirmed if 'ok' provided (skips calling purchase())
 
 		if (query.length >= 2) {
-			if (query[1].toLowerCase() === "ok") confirmed = true;
-			else {
+			if (query[1].toLowerCase() === "ok") {
+				confirmed = true;
+			} else {
 				amounts = query[1].split(",");
 				confirmed = query[2]?.toLowerCase() === "ok";
 			}
 		}
 
-		//parse purchase orders
+		// parse purchase orders
 		for (const i in itemIds) {
 			const itemId = parseInt(itemIds[i]);
 			if (itemId == null || isNaN(itemId)) continue;
-			const itm = categoryItems[itemId - 1]; //(1-indexed in store, 0 indexed in array)
+			const itm = categoryItems[itemId - 1]; // (1-indexed in store, 0 indexed in array)
 			if (!itm) continue;
 
 			const amount = parseInt(amounts[i]) || 1;
@@ -575,19 +562,17 @@ function createPurchaseCollector(
 		}
 
 		itemCollector.resetTimer();
-		if (!purchaseOrders.length) {
-			sendSimpleMessage(msg, "Invalid items provided!\nUse the numbers next to the item names.");
-			return;
-		}
+		if (!purchaseOrders.length)
+			return sendSimpleMessage(msg, "Invalid items provided!\nUse the numbers next to the item names.");
 
+		purchaseOrders = uniqueArray(purchaseOrders); // TODO make sure not to cound "am" fields as necessary for uniqueness
 		const response = await purchase(user, purchaseOrders, confirmed);
 		if (!response.success) {
 			sendSimpleMessage(msg, response.msg);
-			purchaseOrders.length = 0;
-			return;
+			return (purchaseOrders.length = 0);
 		}
 
-		//items valid and can be purchased, await user confirmation
+		// items valid and can be purchased, await user confirmation
 		itemCollector.stop(response.needConfirmation ? "toConfirm" : "confirmed");
 	});
 
@@ -595,35 +580,29 @@ function createPurchaseCollector(
 		delete Players_in_collector[user.id];
 		if (process.env.VERBOSE) console.log(`Ended purchase collector: ${reason}`);
 
-		if (reason === "clear") return; //user changed category
-		if (reason === "time" || reason === "cancel") {
-			sendSimpleMessage(msg, "Canceled your purchase.", Colors.DarkOrange, false);
-			return;
-		}
+		if (reason === "clear") return; // user changed category
+		if (reason === "time" || reason === "cancel")
+			return sendSimpleMessage(msg, "Canceled your purchase.", Colors.DarkOrange, false);
 
-		//purchase can go through, but now needs confirmation
-		//purchase preconfirmed with 'ok'
+		// purchase can go through, but now needs confirmation
+		// purchase preconfirmed with 'ok'
 		if (reason === "confirmed") {
 			const response = await purchase_finalize(user, purchaseOrders);
 			if (!response.success) {
 				sendSimpleMessage(msg, response.msg);
-				purchaseOrders.length = 0;
-				return;
+				return (purchaseOrders.length = 0);
 			}
 
-			msg.reply({ embeds: [createPurchaseEmbed(response.msg, response.spentTotal as number)] });
-			return;
+			return msg.reply({ embeds: [createPurchaseEmbed(response.msg, response.spentTotal as number)] });
 		}
 
-		//finalizer collector (not preconfirmed, user has to confirm purchase)
+		// finalizer collector (not preconfirmed, user has to confirm purchase)
 		const plrdat = await db_plr_get({ _id: user.id, mon: 1 });
 		msg.reply({ embeds: [createPurchaseEmbedFromOrders(purchaseOrders, plrdat?.mon ?? 0)] });
 
 		const finCollector = createCollector(user.id, channel);
-		if (!finCollector) {
-			sendSimpleMessage(msg, "Another activity requires your attention first!");
-			return;
-		}
+		if (!finCollector) return sendSimpleMessage(msg, "Another activity requires your attention first!");
+
 		playerCollectors[user.id] = finCollector;
 
 		finCollector.on("collect", m => {
@@ -640,16 +619,13 @@ function createPurchaseCollector(
 				const response = await purchase_finalize(user, purchaseOrders);
 				if (!response.success) {
 					sendSimpleMessage(msg, response.msg);
-					purchaseOrders.length = 0;
-					return;
+					return (purchaseOrders.length = 0);
 				}
 
-				msg.reply({ embeds: [createPurchaseEmbed(response.msg, response.spentTotal as number)] });
-				return;
+				return msg.reply({ embeds: [createPurchaseEmbed(response.msg, response.spentTotal as number)] });
 			}
 
-			sendSimpleMessage(msg, "Canceled your purchase.", Colors.DarkOrange, false);
-			return;
+			return sendSimpleMessage(msg, "Canceled your purchase.", Colors.DarkOrange, false);
 		});
 	});
 }
@@ -660,7 +636,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		.setColor(Colors.Blue)
 		.setAuthor({ name: "🛒 ok store, congratulations you caught a shopping cart" });
 
-	//  Show all categories
+	// Show all categories
 	if (!args.length) {
 		msge
 			.setTitle(`Showing all ${Store_Categories.length} categories`)
@@ -674,9 +650,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 		msg.reply({ embeds: [msge], components: [row] });
 	}
-	//  Show all items
+	// Show all items
 	else if (query.toLowerCase() === "all") {
-		if (!Store_Items?.length) return sendSimpleMessage(msg, "Sorry, the store is closed idk :woozy_face:");
+		if (!Store_Items?.length) return sendSimpleMessage(msg, "Sorry, the store is closed idk 🥴");
 
 		const plrdat = await db_plr_get({ _id: msg.author.id, itms: 1 });
 		addItemsToMsgEmbed(msge, Store_Items, plrdat?.itms ?? {});
@@ -701,28 +677,26 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 		msg.reply({ embeds: [msge], components });
 	}
-	//  Show category or item
+	// Show category or item
 	else {
 		const queryReg = new RegExp(query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
 		const categoryItems = await db_store_get_category(queryReg);
 		if (!categoryItems?.length) {
 			const item = await db_store_get_item({ nam: queryReg });
-			if (!item) {
-				//Not a category nor an item
+			if (!item)
 				return sendSimpleMessage(
 					msg,
 					`Sorry, **${query}** is not a category nor an item in the store.
 					Use \`${name} all\` to browse all items or provide no arguments to view all categories.`
 				);
-			}
 
-			//Show item
+			// Show item
 			const plrdat = await db_plr_get({ _id: msg.author.id, itms: 1, mon: 1 });
 			const owned = plrdat?.itms?.[item._id] || 0;
 			const maxOwned = item.maxQ == Infinity || item.timed ? Infinity : item.maxQ ? item.maxQ : 1;
 			addSingleItemToMsgEmbed(msge, item, owned, maxOwned);
 
-			//TODO: add amount stringSelect
+			// TODO: add amount stringSelect
 			const components = [];
 			if ((plrdat?.mon || 0) >= item.price && maxOwned > owned)
 				components.push(
@@ -736,7 +710,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 			return msg.reply({ embeds: [msge], components });
 		} else {
-			//Show category
+			// Show category
 			const plrdat = await db_plr_get({ _id: msg.author.id, itms: 1 });
 			msg.reply(showCategory(msge, categoryItems, plrdat?.itms ?? {}, msg.author.id));
 			createPurchaseCollector(msg.author, msg.channel as SendableChannels, msg, categoryItems);

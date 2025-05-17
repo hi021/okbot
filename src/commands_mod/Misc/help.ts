@@ -1,6 +1,6 @@
-import { Colors, EmbedBuilder } from "discord.js";
+import { Colors, EmbedBuilder, userMention } from "discord.js";
 import { SET } from "../../settings.js";
-import { sendSimpleMessage } from "../../utils.js";
+import { e_blank, sendSimpleMessage } from "../../utils.js";
 
 export const name = "help";
 export const alias = ["commands"];
@@ -15,13 +15,15 @@ export function displayAllCommands(
 ) {
 	const bot = msg.client as okbot.Client<true>;
 
-	const commandHelp = `Use \`${prefix}${name} <command name>\` to view command details.\n`;
-	const ownerHelp = `📢 Shout at <@${SET.BOT_OWNER?.[0]}> if I break something!\n`;
-	const repositoryHelp = `🐱 My [GitHub repository](${SET.REPOSITORY_URL})`;
+	const commandHelp = `❔ Use \`${prefix}${name} <command name>\` to view command details.\n`;
+	const ownerHelp = SET.BOT_OWNER?.[0]
+		? `🔧 Shout at ${userMention(SET.BOT_OWNER[0])} if I break something!\n`
+		: "";
+	const repositoryHelp = SET.REPOSITORY_URL ? `🐱 My [GitHub repository](${SET.REPOSITORY_URL})` : "";
 	const msge = new EmbedBuilder()
 		.setColor(Colors.LightGrey)
 		.setTitle(commandType == "commands" ? "ok commands" : "ok mod commands")
-		.setDescription(commandHelp + ownerHelp + repositoryHelp + "\n_ _")
+		.setDescription(commandHelp + ownerHelp + repositoryHelp + "\n" + e_blank)
 		.setFooter({
 			text: `okbot ${SET.BOT_VER}`,
 			iconURL: bot.user!.displayAvatarURL({ size: 32 })

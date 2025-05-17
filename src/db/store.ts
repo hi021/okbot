@@ -3,7 +3,9 @@ import { db_get } from "./db.js";
 
 const storePath = "../assets/store/";
 
-//populates the store collection
+/**
+ * Populates the store collection
+ */
 export async function db_store_init(reset = true) {
 	try {
 		const col = db_get("store");
@@ -29,16 +31,9 @@ export async function db_store_init(reset = true) {
 }
 
 export async function db_store_get_item(query: { nam?: string | RegExp; id?: string }) {
-	try {
-		if (query.id) return (await db_get("store").findOne({ _id: query.id as any })) as okbot.Item | null;
-
-		if (query.nam) return (await db_get("store").findOne({ nam: query.nam })) as okbot.Item | null;
-
-		return null;
-	} catch (err) {
-		console.error(err);
-		return null;
-	}
+	if (query.id) return (await db_get("store").findOne({ _id: query.id as any })) as okbot.Item | null;
+	if (query.nam) return (await db_get("store").findOne({ nam: query.nam })) as okbot.Item | null;
+	return null;
 }
 
 export async function db_store_get_category(cat: string | RegExp) {

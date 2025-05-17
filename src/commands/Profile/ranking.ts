@@ -255,8 +255,9 @@ function createRankingEmbed(
 export async function execute(msg: okbot.Message, args: string[]) {
 	let category = args.shift();
 	let page = 1;
-	let usr: User | Guild | undefined = msg.author;
+	let usr: User | undefined = msg.author;
 	if (args?.length) {
+		// TODO?: low priority but no implementation for looking up specific guilds, only users
 		const pageRaw = parseInt(args[0]);
 		if (isNaN(pageRaw) || pageRaw < 1) {
 			usr = await getUserFromMsg(msg, args);
@@ -300,22 +301,23 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (nextPageAvailable) ranking.pop(); // will get one more result that wouldn't fit on the page to check for next page
 	const msge = createRankingEmbed(category, categoryTitle, ranking, rankStart, page, usr.id, valueFormatter);
 
-	const components = page > 1 || nextPageAvailable
-		? [
-				new ActionRowBuilder<ButtonBuilder>().addComponents(
-					new ButtonBuilder()
-						.setCustomId(`ranking_prev-${category}-${usr.id}-${page - 1}`)
-						.setEmoji("⬅️")
-						.setStyle(ButtonStyle.Secondary)
-						.setDisabled(page <= 1),
-					new ButtonBuilder()
-						.setCustomId(`ranking_next-${category}-${usr.id}-${page + 1}`)
-						.setEmoji("➡️")
-						.setStyle(ButtonStyle.Primary)
-                        .setDisabled(!nextPageAvailable)
-				)
-			]
-		: [];
+	const components =
+		page > 1 || nextPageAvailable
+			? [
+					new ActionRowBuilder<ButtonBuilder>().addComponents(
+						new ButtonBuilder()
+							.setCustomId(`ranking_prev-${category}-${usr.id}-${page - 1}`)
+							.setEmoji("⬅️")
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(page <= 1),
+						new ButtonBuilder()
+							.setCustomId(`ranking_next-${category}-${usr.id}-${page + 1}`)
+							.setEmoji("➡️")
+							.setStyle(ButtonStyle.Primary)
+							.setDisabled(!nextPageAvailable)
+					)
+				]
+			: [];
 
 	return msg.reply({ embeds: [msge], components, allowedMentions: { repliedUser: false } });
 }

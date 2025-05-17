@@ -1100,7 +1100,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			if (!args.length) return sendSimpleMessage<okbot.Message>(msg, usageSell, Colors.White);
 			return executeSell(msg, args);
 		default:
-			return executeShowBakery(msg, args);
+			return executeShowBakery(msg, action ? [action, ...args] : []);
 	}
 }
 
@@ -1199,7 +1199,7 @@ async function executeStats(msg: okbot.Message, args: string[]) {
 }
 
 async function executeShowBakery(msg: okbot.Message, args: string[]) {
-	const user = (await getUserFromMsg(msg, args)) || msg.author;
+	const user = (args.length && (await getUserFromMsg(msg, args))) || msg.author;
 	const plrdat = await db_plr_get({ _id: user.id, bakery: 1 });
 
 	if (!plrdat?.bakery) return sendNoBakeryMessage(msg, user);

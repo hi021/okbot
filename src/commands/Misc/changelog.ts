@@ -25,7 +25,7 @@ bot.on("interactionCreate", async interaction => {
 });
 
 const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
-	"1.11.0": "2025-05-06",
+	"1.11.0": "2025-05-18",
 	"1.10.4": "2025-01-29",
 	"1.10.3": "2025-01-23",
 	"1.10.2": "2024-08-10",
@@ -96,7 +96,29 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 });
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
-	"1.11.0": ["Major refactor"],
+	"1.11.0": [
+		"**Major refactor**",
+		"Linked public GitHub repository",
+		"Added 'bakery' rare bundles",
+		"Added 'daily' streak multipliers",
+		"Improved 'flag' quiz",
+		"Revamped ok counting, adding many more variants",
+		"Added 'changelog' release dates (hi!)",
+		"Brought down 'flip' win odds from 51% to even 50%",
+		"Improved a few mod commands",
+		"Tweaked the visuals and put some thought into uniformity",
+		"Improved 'roulette' argument parsing allowing any argument order",
+		"Fixed 'bank' counting interest before first deposit",
+		"Fixed ok count not saving for guilds with no prior records",
+		"Fixed garbled text at the top of 'lyrics'",
+		"Fixed 'store' allowing duplicate item orders",
+		"Fixed minor 'ranking' pagination issues",
+		"Fixed 'slot' forcing bet amounts when user provided amount is invalid",
+		"Added more gay",
+		"Made error messages and logs easier to understand",
+		"Updated dependencies",
+		"Miscellaneous fixes all over the place"
+	],
 	"1.10.4": ["Fixed 'top50' charts not rendering", "Aded new 'bakery' levels up to 23"],
 	"1.10.3": ["Updated genius API fetcher to bring lyrics back", "Updated dependencies"],
 	"1.10.2": ["Fixed 'song' auto spotify queries"],

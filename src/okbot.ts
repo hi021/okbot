@@ -65,7 +65,7 @@ function countOk(msg: OmitPartialGroupDMChannel<Message<true>>) {
 	const ok = okArr?.[3];
 	if (!ok || isOnCooldown("ok", msg.author.id)) return;
 
-	db_ok_add(ok, msg.guild.id);
+	db_ok_add(ok, msg.guildId);
 	db_plr_add({ _id: msg.author.id, okTot: 1 });
 }
 
@@ -152,7 +152,7 @@ bot.on("ready", async () => {
 		try {
 			executeCommandOrAction(msg, prefix);
 		} catch (e) {
-			console.error(e);
+			console.error(`Exception when executing action '${msg.content.split(" ")[0]}':`, e);
 			msg.reply("> **Fuckie Wuckie!**\nI have caught on fire...");
 		}
 	});

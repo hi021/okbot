@@ -10,7 +10,7 @@ export const usage =
 export const restrict = "BOT_ADMIN";
 
 function settingVal(args: string[]) {
-	if (args[0] == "_NUM") return Number(args[2]);
+	if (args[0] == "_NUM") return Number(args[1]);
 	if (args[0] == "_UNDEF") return undefined;
 	if (args[0]) return args.join(" ");
 

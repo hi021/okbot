@@ -12,32 +12,28 @@ export const usage = '<"Global">';
 export const restrict = "GUILD_ADMIN";
 
 bot.on("interactionCreate", async interaction => {
-	if (interaction.isButton() && interaction.guild) {
-		const split = interaction.customId.split("-");
-		if (split[0] !== "clear_reaction") return;
+	if (!interaction.isButton() || !interaction.inGuild()) return;
+	const split = interaction.customId.split("-");
+	if (split[0] !== "clear_reaction") return;
 
-		const action = split[1];
-		const guildId = split[2];
-		const usrId = split[3];
+	const action = split[1];
+	const guildId = split[2];
+	const usrId = split[3];
 
-		if (interaction.user.id !== usrId)
-			return sendEphemeralReply(interaction, "I'm asking someone else, sorry...");
+	if (interaction.user.id !== usrId)
+		return sendEphemeralReply(interaction, "I'm asking someone else, sorry...");
 
-		if (action === "confirm") {
-			await db_guild_clear_reactions(guildId);
-			const msge = createSimpleMessage(
-				`Removed all ${guildId === "_GLOBAL" ? "global" : "guild"} reactions.`,
-				Colors.DarkGreen
-			);
-			interaction.message.edit({ components: [] });
-			interaction.reply({ embeds: [msge] });
-			return;
-		} else if (action === "cancel") {
-			// TODO?: maybe delete the message instead..?
-			interaction.update({ components: [] });
-			return;
-		}
+	if (action === "confirm") {
+		await db_guild_clear_reactions(guildId);
+		const msge = createSimpleMessage(
+			`Removed all ${guildId === "_GLOBAL" ? "global" : "guild"} reactions.`,
+			Colors.DarkGreen
+		);
+
+		if (interaction.message.channel.isSendable()) interaction.message.channel.send({ embeds: [msge] });
 	}
+
+	interaction.message.delete();
 });
 
 export async function execute(msg: okbot.Message, args: string[]) {
@@ -61,8 +57,10 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			false
 		);
 
+	const guildString = guildId == "_GLOBAL" ? "global" : "guild";
+	const reactionString = `reaction${numReactions == 1 ? "" : "s"}`;
 	const msge = createSimpleMessage(
-		`Are you sure you wish to delete **${numReactions}** ${guildId === "_GLOBAL" ? "global" : "guild"} reactions?`,
+		`Are you sure you wish to delete **${numReactions}** ${guildString} ${reactionString}?`,
 		Colors.White
 	);
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(

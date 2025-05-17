@@ -25,7 +25,7 @@ async function runFlip(
 	const res = randomInt(1, 100);
 	let msgR;
 
-	if (res >= odds) {
+	if (res > odds) {
 		const desc = `Rolled a **${res}** and landed within ${odds} and 100!`;
 		msgR = createUserMsgEmbed(msg.author, Colors.DarkGreen);
 

@@ -17,6 +17,7 @@ import {
 	formatDoler,
 	formatNumber,
 	getUserFromMsg,
+	nowSeconds,
 	parseNumberSuffix,
 	sendEphemeralReply,
 	sendSimpleMessage,
@@ -50,7 +51,7 @@ bot.on("interactionCreate", async interaction => {
 				`You need ${formatDoler(cost - mon)} more to afford this upgrade.`
 			);
 
-		const now = Math.floor(new Date().getTime() / 1000);
+		const now = nowSeconds();
 		await db_plr_set({
 			_id: id,
 			bank: {
@@ -105,23 +106,28 @@ export const BankMemberships = [
 	{ cost: 2050000, name: "Ultimate", max: 15000000, interest: 0.018, withdrawFee: 0.01, withdrawCD: 64800 } //lv14
 ];
 
-//plr = {bank, monTot, monLv}, pass a message to sendMessage to inform about potential level up
-export async function bankInterest(plr: okbot.User, user: User, now?: number, sendMessage?: okbot.Message) {
+// plr = {bank, monTot, monLv}, pass a message to sendMessage to inform about potential level up
+export async function bankInterest(
+	plr: okbot.User,
+	user: User,
+	now = nowSeconds(),
+	sendMessage?: okbot.Message
+) {
 	let bank = plr.bank;
-	if (!now) now = Math.floor(new Date().getTime() / 1000);
-	if (!bank?.lastInterest) {
-		bank = { ...bank, balance: bank?.balance ?? 0, lastInterest: now };
+	if (bank?.balance == null) {
+		bank = { ...bank, balance: bank?.balance ?? 0 };
 		await db_plr_set({ _id: user.id, bank });
 		return bank;
 	}
+	if (!bank.lastInterest) return bank;
 
 	const membership = BankMemberships[bank.lv ?? 0];
 	if (!membership.interest) return bank;
 
 	const interestCD = SET.BANK_INTEREST_INTERVAL || 604800;
-	let sinceInterest = now - bank.lastInterest;
+	let sinceInterest = now - (bank.lastInterest ?? now);
 
-	//count interest (in case of skipped payments)
+	// count interest (in case of skipped payments)
 	let interestCount = 0;
 	let interestValue = 0;
 	while (sinceInterest >= interestCD) {
@@ -131,7 +137,7 @@ export async function bankInterest(plr: okbot.User, user: User, now?: number, se
 	}
 	if (!interestValue) return bank;
 
-	//add interest
+	// add interest
 	bank.lastInterest = now - sinceInterest;
 	const monLvGain = calcMoneyLevelsGain(plr.monLv ?? 0, (plr.monTot ?? 0) + interestValue, sendMessage);
 	await db_plr_set({ _id: user.id, bank });
@@ -155,8 +161,7 @@ export async function bankInterest(plr: okbot.User, user: User, now?: number, se
 	return bank;
 }
 
-function getLastWithdraw(bank: okbot.Bank, now?: number) {
-	if (!now) now = Math.floor(new Date().getTime() / 1000);
+function getLastWithdraw(bank: okbot.Bank, now = nowSeconds()) {
 	const membership = BankMemberships[bank.lv ?? 0];
 	const lastWithdraw = bank.lastWithdraw ?? 0;
 	const sinceLastWithdraw = now - lastWithdraw;
@@ -169,13 +174,13 @@ function getLastWithdraw(bank: okbot.Bank, now?: number) {
 	};
 }
 
-//get from db and showBank
+// get from db and call showBank
 async function getAndShowBank(user: User, msg: okbot.Message) {
 	const plrdat = await db_plr_get({ _id: user.id, bank: 1, mon: 1, monTot: 1, monLv: 1 });
-	const now = Math.floor(new Date().getTime() / 1000);
+	const now = nowSeconds();
 
 	if (!plrdat?.bank) {
-		const bank = { balance: 0, lv: 0, totDeposit: 0, lastInterest: now };
+		const bank = { balance: 0, lv: 0, totDeposit: 0 };
 		await db_plr_set({ _id: user.id, bank });
 
 		return msg.reply({ embeds: [showBank(bank, user)], allowedMentions: { repliedUser: false } });
@@ -215,9 +220,10 @@ function showStats(bank: okbot.Bank, user: User) {
 		name: `${user.displayName}'s bank stats`,
 		iconURL: user.displayAvatarURL({ forceStatic: true, size: 32 })
 	});
-	if (!bank.totDeposit) return msge.setDescription("There are no stats to show...");
+	if (!bank.lastInterest || bank.totDeposit == null)
+		return msge.setDescription("🕸️ *There are no stats to show...*");
 
-	const now = Math.floor(new Date().getTime() / 1000);
+	const now = nowSeconds();
 	const lastWithdraw = getLastWithdraw(bank, now);
 	const untilNextInterest = (bank.lastInterest ?? now) - now + (SET.BANK_INTEREST_INTERVAL || 604800);
 	if (bank.lvTime) msge.setDescription(`Level **${bank.lv}** achieved <t:${bank.lvTime}:R>.`);
@@ -237,7 +243,7 @@ function showStats(bank: okbot.Bank, user: User) {
 			value:
 				(bank.lastInterest ? `<t:${bank.lastInterest}:R>` : "Never") +
 				(untilNextInterest <= 0
-					? "\nNext payment due now!"
+					? "\nNext payment due now! ✨"
 					: `\nNext payment <t:${now + untilNextInterest}:R>`)
 		},
 		{ name: "Total deposited", value: formatDoler(bank.totDeposit, false) }
@@ -250,13 +256,14 @@ async function withdraw(am: number, msg: okbot.Message, bank: okbot.Bank, id: Sn
 	if (bank.balance < am)
 		return sendSimpleMessage(msg, `There is only ${formatDoler(bank.balance)} in your account.`);
 
-	const now = Math.floor(new Date().getTime() / 1000);
+	const now = nowSeconds();
 	const lastWithdraw = getLastWithdraw(bank, now);
 
 	const fee = lastWithdraw.withdrawFee > 0 ? Math.round(lastWithdraw.withdrawFee * am) : 0;
 	bank.lastWithdraw = now;
 	bank.balance -= am;
 
+	// TODO?: should probably reset lastInterest timestamp if withdrawing doesn't leave enough balance to provide interest
 	await db_plr_add({ _id: id, expense: { bank: fee }, mon: am - fee });
 	await db_plr_set({ _id: id, bank });
 
@@ -281,10 +288,11 @@ async function deposit(am: number, msg: okbot.Message, bank: okbot.Bank, id: Sno
 	const maxDeposit = membership.max - bank.balance;
 	if (am > maxDeposit) am = maxDeposit;
 
-	if (!am) return sendSimpleMessage(msg, "Your bank account is already full.");
+	if (!am) return sendSimpleMessage(msg, "Your bank account is already full. 💰");
 
 	bank.balance += am;
 	bank.totDeposit = (bank.totDeposit ?? 0) + am;
+	if (!bank.lastInterest) bank.lastInterest = nowSeconds();
 
 	await db_plr_add({ _id: id, mon: -am });
 	await db_plr_set({ _id: id, bank });
@@ -335,10 +343,10 @@ function showUpgradeStats(lv: number, money: number) {
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	const user = (await getUserFromMsg(msg, args)) ?? msg.author;
-	if (!args.length) return getAndShowBank(user, msg);
-
+	if (!args.length) return getAndShowBank(msg.author, msg);
 	const action = args.shift()!.toLowerCase();
+	const user = (await getUserFromMsg(msg, args)) ?? msg.author;
+
 	switch (action) {
 		case "withdraw":
 		case "w": {

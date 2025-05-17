@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, User } from "discord.js";
 import { db_plr_get, db_plr_set } from "../../db/db.js";
 import { e_blank, formatDoler, formatNumber, getUserFromMsg } from "../../utils.js";
 
@@ -219,8 +219,8 @@ function showSlot(stat: okbot.CasinoStat, msge: EmbedBuilder, income: number, ex
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	let game;
-	let user;
+	let game: string | undefined;
+	let user: User | undefined;
 	//parse arguments
 	if (args.length) {
 		const gameTmp = args[args.length - 1].toLowerCase();
@@ -237,7 +237,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				"jackpot",
 				"rl",
 				"roulette",
-				"slot"
+				"slot",
+				"slots"
 			].includes(gameTmp)
 		) {
 			game = gameTmp;
@@ -305,6 +306,8 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			statMsg = showRl(plrdat.casinoStat, statMsg, plrdat.income?.rl ?? 0, plrdat.expense?.rl ?? 0);
 			break;
 		case "slot":
+		case "slots":
+			game = "slot";
 			statMsg = showSlot(plrdat.casinoStat, statMsg, plrdat.income?.slot ?? 0, plrdat.expense?.slot ?? 0);
 			break;
 		default:

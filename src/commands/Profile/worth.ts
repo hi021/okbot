@@ -37,7 +37,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		color: 1,
 		badge: 1
 	});
-	if (plrdat?.mon == null) return sendSimpleMessage(msg, "There are no stats for `" + usr.displayName + "`.");
+	if (plrdat?.mon == null) return sendSimpleMessage(msg, `🕸️ *No stats for \`${usr.displayName}\`...*`);
 
 	const msge = new EmbedBuilder()
 		.setFooter({ text: "ok worth" })

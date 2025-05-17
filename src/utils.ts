@@ -23,8 +23,8 @@ const MS_PER_SECOND = 1000;
 export const e_blank = "<:blank:986204417512575036>";
 
 //UTIL
-export function randomFromArray<T>(arr: Array<T>): T {
-	return arr[Math.floor(Math.random() * arr.length)];
+export function randomFromArray<T>(array: Array<T>): T {
+	return array[Math.floor(Math.random() * array.length)];
 }
 
 export function shuffleArray<T>(array: Array<T>) {
@@ -43,6 +43,10 @@ export const objLength = (obj: Record<string, any>) => {
 	for (const _ in obj) ++s;
 	return s;
 };
+
+export function uniqueArray<T>(array: Array<T>): Array<T> {
+	return [...new Set(array.map(obj => JSON.stringify(obj)))].map(str => JSON.parse(str));
+}
 
 export const capitalizeFirstLetter = (str?: string) =>
 	str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : "";

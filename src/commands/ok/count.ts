@@ -8,14 +8,14 @@ export const description = "🆗 get okays";
 export const usage = '<Guild id OR "global">';
 
 export async function execute(msg: okbot.Message, args: string[]) {
-	if (!msg.guild) return;
-	let server = args[0]?.toLowerCase() || msg.guild.id;
+	if (!msg.inGuild()) return;
+	let guildId = args[0]?.toLowerCase() || msg.guildId;
 
 	let title;
 	const msge = new EmbedBuilder().setColor(Colors.White);
 
-	if (server === "global" || server === "g") {
-		server = "_GLOBAL";
+	if (guildId == "global" || guildId == "g") {
+		guildId = "_GLOBAL";
 		title = `global 🆗 count${e_blank}🌎`;
 	} else {
 		title = "🆗 count for " + msg.guild.name;
@@ -23,7 +23,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		icon && msge.setThumbnail(icon);
 	}
 
-	const okarr = await db_ok_get(server);
+	const okarr = await db_ok_get(guildId);
 	if (!okarr) return sendSimpleMessage(msg, "🕸️ *This place is not ok :(*", Colors.White);
 
 	let typeColumn = "",

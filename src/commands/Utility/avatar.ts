@@ -17,18 +17,17 @@ export const usage = "<Username OR Mention>";
 
 bot.on("interactionCreate", async interaction => {
 	if (!interaction.isButton()) return;
-
 	const split = interaction.customId.split("-");
 	if (split[0] !== "av") return;
-	const userId = split[1];
-	let mode = split[2];
 
+	const userId = split[1];
+	let mode = split[2] as "user" | "guild";
 	let user: User | GuildMember;
 	const msge = EmbedBuilder.from(interaction.message.embeds[0]);
 
 	if (mode == "user") {
 		user = await bot.users.fetch(userId);
-		mode = "server";
+		mode = "guild";
 	} else if (interaction.guild) {
 		user = await interaction.guild.members.fetch(userId);
 		mode = "user";
@@ -37,36 +36,33 @@ bot.on("interactionCreate", async interaction => {
 		return;
 	}
 
-	msge.setImage(user.displayAvatarURL({ size: 4096, extension: "png" }));
-	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-		new ButtonBuilder()
-			.setCustomId(`av-${userId}-${mode}`)
-			.setStyle(ButtonStyle.Primary)
-			.setLabel(`Show ${mode} avatar`)
-	);
-
-	interaction.update({ embeds: [msge], components: [row] });
+	interaction.update({ embeds: [buildAvatarEmbed(msge, user)], components: [buildButtonRow(userId, mode)] });
 });
+
+function buildAvatarEmbed(msge: EmbedBuilder, user: User | GuildMember) {
+	return msge
+		.setDescription(`${user}'s Avatar`)
+		.setImage(user.displayAvatarURL({ size: 4096, extension: "png" })) // works with animated avatars!
+		.setColor((user instanceof GuildMember && user.displayColor) || Colors.White);
+}
+
+function buildButtonRow(userId: string, modeAfterSwitch: "user" | "guild") {
+	return new ActionRowBuilder<ButtonBuilder>().setComponents(
+		new ButtonBuilder()
+			.setCustomId(`av-${userId}-${modeAfterSwitch}`)
+			.setStyle(ButtonStyle.Primary)
+			.setLabel(`Show ${modeAfterSwitch} avatar`)
+			.setEmoji(modeAfterSwitch == "user" ? "🤵" : "👯")
+	);
+}
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	const user = args.length ? await getUserFromMsg(msg, args) : msg.author;
 	if (!user) return sendSimpleMessage(msg, "User not found.");
-	const userGuild = await msg.guild!.members.fetch(user);
-
-	const msge = new EmbedBuilder()
-		.setDescription(`${userGuild}'s Avatar`) //user mention
-		.setImage(userGuild.displayAvatarURL({ size: 4096, extension: "png" })) //png to allow pinkifying
-		.setColor(userGuild.displayColor || Colors.White);
-
-	const row = new ActionRowBuilder<ButtonBuilder>().setComponents(
-		new ButtonBuilder()
-			.setCustomId(`av-${userGuild.id}-user`)
-			.setStyle(ButtonStyle.Primary)
-			.setLabel("Show user avatar")
-	);
+	const userOrMember = msg.inGuild() ? await msg.guild.members.fetch(user) : user;
 
 	return msg.reply({
-		embeds: [msge],
-		components: [row]
+		embeds: [buildAvatarEmbed(new EmbedBuilder(), userOrMember)],
+		components: [buildButtonRow(userOrMember.id, msg.inGuild() ? "user" : "guild")]
 	});
 }
