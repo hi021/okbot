@@ -93,7 +93,7 @@ bot.on("interactionCreate", async interaction => {
 			await db_plr_add({ _id: id, mon: -cost, expense: { aqua: cost } });
 			sendSimpleMessage(
 				interaction.message as okbot.Message,
-				"Upgraded your aquarium to level **" + plrdat.aqua.lv + "**!",
+				`Upgraded your aquarium to level **${plrdat.aqua.lv}**!`,
 				Colors.DarkGreen
 			);
 		}

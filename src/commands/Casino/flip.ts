@@ -26,7 +26,7 @@ async function runFlip(
 	let msgR;
 
 	if (res > odds) {
-		const desc = `Rolled a **${res}** and landed within ${odds} and 100!`;
+		const desc = `Rolled a **${res}** and landed between ${odds + 1} and 100!`;
 		msgR = createUserMsgEmbed(msg.author, Colors.DarkGreen);
 
 		let win = 0;
@@ -49,7 +49,7 @@ async function runFlip(
 
 		await addCasinoStat(msg.author.id, "flip", "win", bet, win);
 	} else {
-		const desc = `Rolled a **${res}** which is not within ${odds} and 100.`;
+		const desc = `Rolled a **${res}** which is not between ${odds + 1} and 100.`;
 		msgR = createUserMsgEmbed(msg.author, Colors.Red);
 
 		if (bet) {

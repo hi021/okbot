@@ -25,6 +25,7 @@ bot.on("interactionCreate", async interaction => {
 });
 
 const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
+	"1.11.1": "2025-06-07",
 	"1.11.0": "2025-05-18",
 	"1.10.4": "2025-01-29",
 	"1.10.3": "2025-01-23",
@@ -96,6 +97,12 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 });
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
+	"1.11.1": [
+		"Added more 'bakery' levels up to 26",
+		"Slightly improved 'bakery' ovens, staff, and cookie list visuals",
+		"Fixed 'country' types not displaying",
+		"Fixed minor typos"
+	],
 	"1.11.0": [
 		"**Major refactor**",
 		"Linked public GitHub repository",

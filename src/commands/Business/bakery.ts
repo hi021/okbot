@@ -2,6 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Use
 import { db_bakery_get_stats, db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import {
+	areValuesConsecutive,
 	calcMoneyLevelsGain,
 	createSimpleMessage,
 	drawProgressBar,
@@ -240,7 +241,26 @@ export const BakeryOvens: { [ovenId: string]: okbot.BakeryOven } = {
 		multi: 0.875,
 		cost: 125000,
 		rare: 0.00005
+	},
+	"15": {
+		nam: "Choccy",
+		cookie: ["4", "5", "6"],
+		lv: 24,
+		multi: 0.7875,
+		cost: 100000,
+		costRare: 4,
+		rare: 0.00007
+	},
+	"16": {
+		nam: "Puffy",
+		cookie: ["7", "8", "9"],
+		lv: 24,
+		multi: 0.7875,
+		cost: 100000,
+		costRare: 4,
+		rare: 0.00004
 	}
+	// at least one more for infinity cookie
 };
 const SPECIAL_WORKER_CUT_OFF_ID = "90";
 export const BakeryStaff: { [staffId: string]: okbot.BakeryStaff } = {
@@ -307,7 +327,10 @@ export const BakeryLevels = [
 	{ cost: 4660000, maxOven: 5, maxStaff: 4, multi: 0.7, maxColl: 100000 }, //lv20
 	{ cost: 5500000, maxOven: 5, maxStaff: 5, multi: 0.685, maxColl: 100000 }, //lv21
 	{ cost: 7000000, maxOven: 5, maxStaff: 5, multi: 0.685, maxColl: 125000 }, //lv22
-	{ cost: 9000000, maxOven: 5, maxStaff: 5, multi: 0.65, maxColl: 144000 } //lv23
+	{ cost: 9000000, maxOven: 5, maxStaff: 5, multi: 0.65, maxColl: 144000 }, //lv23
+	{ cost: 13333333, maxOven: 5, maxStaff: 5, multi: 0.633, maxColl: 144000 }, //lv24
+	{ cost: 17777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 166000 }, //lv25
+	{ cost: 27777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 177777 } //lv26
 ];
 const BakeryLevelRequirements: Array<null | {
 	cookie?: { [cookieId: string]: number };
@@ -437,7 +460,26 @@ const BakeryLevelRequirements: Array<null | {
 	{
 		cookie: { "1": 950000, "2": 900000, "9": 850000, "10": 525000, "11": 700000, "12": 288000 },
 		tot: 22777777
-	} //23
+	}, //23
+	{
+		cookie: { "1": 999999, "2": 999999, "3": 99999, "11": 1000000, [RARE_ID]: 2777 }
+	}, //24
+	{
+		cookie: {
+			"1": 999999,
+			"2": 999999,
+			"4": 750000,
+			"5": 760000,
+			"6": 770000,
+			"7": 500000,
+			"8": 750000,
+			"9": 1000000
+		}
+	}, //25
+	{
+		cookie: { "12": 1000000, [RARE_ID]: 4777 },
+		tot: 4777777
+	} // 26
 ];
 
 function sendNoBakeryMessage(msg: okbot.Message, user?: User) {
@@ -490,8 +532,8 @@ function getCookieIdByIdOrName(msg: okbot.Message, nameOrId: string) {
 }
 
 function showOvenList(lv: number) {
-	let s = "";
-	let overLevel = false;
+	let text = "";
+	let overLevel = false; // to allow one level worth of future ovens
 	let curLv = 0;
 
 	for (const i in BakeryOvens) {
@@ -499,68 +541,69 @@ function showOvenList(lv: number) {
 		if (oven.lv > lv) {
 			if (overLevel && oven.lv > curLv) break;
 			overLevel = true;
-			s += "❌ ";
-		} else s += "✅ ";
+			text += "🔒 ";
+		}
 		curLv = oven.lv;
 
-		const lastCookie = oven.cookie[oven.cookie.length - 1];
-		const cookieS =
-			oven.cookie.length.toString() === lastCookie
-				? `#${oven.cookie[0]} - #${lastCookie}`
-				: "#" + oven.cookie.join(", ");
-		const unlockS = overLevel
+		const idText = `\`${("#" + i).padStart(3, " ")}\``;
+		const bakedCookiesText =
+			oven.cookie.length > 1 && areValuesConsecutive(oven.cookie)
+				? `#${oven.cookie[0]} - #${oven.cookie[oven.cookie.length - 1]}`
+				: `#${oven.cookie.join(", ")}`;
+		const costText = overLevel
 			? "unlocks at level " + curLv
 			: formatDoler(oven.cost, false) +
 				(oven.costRare ? ` + ${oven.costRare} ${showItemName(BakeryCookies[RARE_ID], false)}` : "");
 
-		s += `\`${("#" + i).padStart(3, " ")}\` **${oven.nam}** (${unlockS})
-		Bakes cookies ${cookieS}
-		${Math.round((1 / oven.multi) * 100) / 100}x speed | ${oven.rare * 100}% rare cookie chance\n`;
+		text += `${idText} **${oven.nam}** (${costText})
+-# Bakes cookies ${bakedCookiesText}
+-# **${Math.round((1 / oven.multi) * 100) / 100}**x speed | ${Math.round(oven.rare * 10_000_000) / 100_000}% rare cookie chance\n`;
 	}
 
-	return createSimpleMessage(s, Colors.Yellow, "Available and soon unlocked ovens");
+	return createSimpleMessage(text, Colors.Yellow, "Available and soon unlocked ovens");
 }
 
 function showStaffList(lv: number, hasPerfectGenome = false) {
-	let s = "";
-	let overLevel = false;
+	let text = "";
+	let overLevel = false; // to allow one level worth of future staff
 	let curLv = 0;
 
 	for (const i in BakeryStaff) {
 		if (!hasPerfectGenome && i >= SPECIAL_WORKER_CUT_OFF_ID) continue; // don't display special workers if locked
 
 		if (BakeryStaff[i].lv > lv) {
-			if (overLevel && BakeryStaff[i].lv > curLv) continue; // skip locked staff but don't break loop (unsorted objects + special employee)
+			if (overLevel && BakeryStaff[i].lv > curLv) continue; // skip locked staff but don't break loop (allow unsorted objects + special employee)
 			overLevel = true;
-			s += "❌ ";
-		} else s += "✅ ";
+			text += "🔒 ";
+		}
 		curLv = BakeryStaff[i].lv;
 
-		const unlockS =
+		const idText = `\`${("#" + i).padStart(3, " ")}\``;
+		const costText =
 			i >= SPECIAL_WORKER_CUT_OFF_ID
 				? "special worker"
 				: overLevel
 					? "unlocks at level " + curLv
 					: formatDoler(BakeryStaff[i].cost, false);
 
-		s += `\`${("#" + i).padStart(3, " ")}\` ${showItemName(BakeryStaff[i])} (${unlockS})
-		Increases baking speed by ${Math.round((1 / BakeryStaff[i].multi) * 100) / 100}x\n`;
+		text += `${idText} ${showItemName(BakeryStaff[i])} (${costText})
+-# Increases baking speed by **${Math.round((1 / BakeryStaff[i].multi) * 100) / 100}**x\n`;
 
 		if (BakeryStaff[i].spec) {
-			s += "Specializes in baking:\n";
+			text += "-# Specializes in baking:\n";
 			for (const j in BakeryStaff[i].spec)
-				s += `${showItemName(BakeryCookies[j], false)} - ${Math.round((1 / (BakeryStaff[i].spec?.[j] ?? 1)) * 100) / 100}x\n`;
+				text += `-# - ${showItemName(BakeryCookies[j], false)} - ${Math.round((1 / (BakeryStaff[i].spec?.[j] ?? 1)) * 100) / 100}x\n`;
 		}
 	}
 
-	return createSimpleMessage(s, Colors.Yellow, "Available and soon unlocked workers");
+	return createSimpleMessage(text, Colors.Yellow, "Available and soon unlocked workers");
 }
 
 function showCookieList(bakery: okbot.Bakery) {
-	let s = "";
+	let text = "";
 
 	for (const i in BakeryCookies) {
-		if (i == RARE_ID) break;
+		if (i == RARE_ID || i == RARE_BUNDLE_ID) break;
 
 		const ovens = [];
 		for (const j in BakeryOvens) {
@@ -570,24 +613,26 @@ function showCookieList(bakery: okbot.Bakery) {
 		const req = BakeryLevelRequirements[bakery.lv]?.cookie?.[i];
 		const baked = bakery.stat[i] ?? 0;
 
-		s += `\`${("#" + i).padStart(3, " ")}\` ${showItemName(BakeryCookies[i])}
-		**${BakeryCookies[i].time}**s to bake, valued at ${formatDoler(BakeryCookies[i].value)}`;
-		if (ovens.length)
-			s += `\nCan be baked in oven${ovens.length === 1 ? "" : "s"} \`#${ovens.join(", ")}\`\n`;
+		const idText = `\`${("#" + i).padStart(3, " ")}\``;
 
-		if (baked) s += `Baked **${formatNumber(baked)}** so far `;
+		text += `${idText} ${showItemName(BakeryCookies[i])}
+		**${BakeryCookies[i].time}**s to bake | valued at ${formatDoler(BakeryCookies[i].value)}`;
+		if (ovens.length)
+			text += `\n-# Can be baked in oven${ovens.length === 1 ? "" : "s"} \`#${ovens.join(", ")}\``;
+
+		if (baked) text += `\n-# Baked **${formatNumber(baked)}** so far `;
 		if (req) {
 			const reqAchieved = req - baked;
-			s +=
+			text +=
 				reqAchieved <= 0
-					? `🟢 ${formatNumber(-reqAchieved)} more than necessary to level up`
-					: `🔴 need ${formatNumber(reqAchieved)} more to level up`;
+					? `🟢 ${formatNumber(-reqAchieved)} more than required to level up`
+					: `${baked ? "" : "\n-# "}🔴 ${formatNumber(reqAchieved)} more required to level up`;
 		}
 
-		s += "\n";
+		text += "\n";
 	}
 
-	return createSimpleMessage(s, Colors.Yellow, "List of cookies");
+	return createSimpleMessage(text, Colors.Yellow, "List of cookies");
 }
 
 function checkBakeryLevelRequirements(monLv: number, bakery?: okbot.Bakery) {
@@ -629,19 +674,18 @@ function checkBakeryLevelRequirements(monLv: number, bakery?: okbot.Bakery) {
 }
 
 function showLevels() {
-	const msge = new EmbedBuilder().setColor(Colors.White).setTitle("Bakery upgrades");
+	const msge = new EmbedBuilder().setColor(Colors.White).setTitle("Bakery upgrades ✨");
 
+	let text = "";
 	for (const i in BakeryLevels) {
 		const stat = BakeryLevels[i];
-		msge.addFields({
-			name: "Level " + (Number(i) + 1),
-			value: `\`${formatNumber(stat.cost).padStart(9, " ")}\` 💵 | max ovens: **${stat.maxOven}** ● max staff: **${stat.maxStaff}** ● **${
+		text += `**Level ${Number(i) + 1}**
+			\`${formatNumber(stat.cost).padStart(10, " ")}\` 💵 **|** max ovens: **${stat.maxOven}** ● max staff: **${stat.maxStaff}** ● **${
 				Math.round((1 / stat.multi) * 100) / 100
-			}**x speed multiplier`
-		});
+			}**x speed multiplier\n\n`;
 	}
 
-	return msge;
+	return msge.setDescription(text);
 }
 
 function showUpgradeStats(lv: number, money: number, reqString: string) {
@@ -669,7 +713,9 @@ function showUpgradeStats(lv: number, money: number, reqString: string) {
 	return msge;
 }
 
-// count cookie speed multipliers for every cookie per every employee
+/**
+ * Counts cookie speed multipliers for every cookie per every employee
+ */
 function countStaffMulti(bakery: okbot.Bakery) {
 	const staffMulti: { base: number; cookie: { [cookieId: string]: number } } = { base: 1, cookie: {} };
 
@@ -972,7 +1018,7 @@ async function showStats(usr: User, bakery: okbot.Bakery) {
 		if (!bakery.stat[i]) continue;
 		const cookie = BakeryCookies[i];
 		stringName += `${showItemName(cookie, false)}\n`;
-		stringAmount += `x**${bakery.stat[i]}**${e_blank}\n`;
+		stringAmount += `x**${formatNumber(bakery.stat[i])}**${e_blank}\n`;
 	}
 
 	msge.setDescription(

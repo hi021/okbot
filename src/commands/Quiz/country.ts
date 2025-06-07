@@ -1,5 +1,5 @@
 import { Colors, EmbedBuilder } from "discord.js";
-import { countries } from "../../countries.js";
+import { countries, CountryType } from "../../countries.js";
 import { capitalizeFirstLetter, sendSimpleMessage } from "../../utils.js";
 
 export const name = "country";
@@ -40,8 +40,7 @@ export function execute(msg: okbot.Message, args: string[]) {
 		.setColor(Colors.DarkerGrey)
 		.setTitle(country.nam[0])
 		.setThumbnail(`https://flagcdn.com/w160/${code}.jpg`);
-	if (country.nam.length > 1)
-		msge.addFields({ name: "Alternative names", value: country.nam.slice(1).join(", ") });
+	if (country.nam.length > 1) msge.setDescription("-# " + country.nam.slice(1).join(", "));
 	if (country.region)
 		msge.addFields({
 			name: "Region",
@@ -49,6 +48,6 @@ export function execute(msg: okbot.Message, args: string[]) {
 			inline: false
 		});
 	if (country.capital) msge.addFields({ name: "Capital", value: country.capital[0] });
-	if (country.type) msge.setFooter({ text: country.type.toString().toLowerCase() });
+	if (country.type != null) msge.setFooter({ text: CountryType[country.type].toString().toLowerCase() });
 	return msg.reply({ embeds: [msge], allowedMentions: { repliedUser: false } });
 }

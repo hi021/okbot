@@ -89,7 +89,7 @@ bot.on("interactionCreate", async interaction => {
 		await db_plr_add({ _id: id, mon: -cost, expense: { pond: cost } });
 		sendSimpleMessage(
 			interaction.message as okbot.Message,
-			"Upgraded your pond to level **" + pond.lv + "**!",
+			`Upgraded your pond to level **${pond.lv}**!`,
 			Colors.DarkGreen
 		);
 
@@ -669,7 +669,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				msg,
 				`Put **${pondAfterCatch.fishNum}** fish worth ${formatDoler(
 					collected.value
-				)} into your inventory.\nIncreased the budget by ${formatDoler(addBudget, false)} up to **${formatDoler(
+				)} into your inventory.\nIncreased the budget by ${formatDoler(addBudget, false)} up to ${formatDoler(
 					pondAfterCatch.budget
 				)}.`,
 				Colors.DarkGreen

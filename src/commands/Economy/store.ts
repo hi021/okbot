@@ -280,7 +280,10 @@ bot.on("interactionCreate", async interaction => {
 					.setStyle(ButtonStyle.Primary)
 			);
 
-			return interaction.update({ embeds: [msgeEdit], components: [rowNew, ...interaction.message.components] });
+			return interaction.update({
+				embeds: [msgeEdit],
+				components: [rowNew, ...interaction.message.components]
+			});
 		} else if (split[0] === "store_next") {
 			let maxPage;
 			const plr = await db_plr_get({ _id: plrId, itms: 1 });

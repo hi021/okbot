@@ -53,6 +53,17 @@ export const capitalizeFirstLetter = (str?: string) =>
 
 export const isVowel = (letter: string) => ["a", "e", "i", "o", "u", "y"].includes(letter.toLowerCase());
 
+/**
+ * @returns `true` if array has one element or all elements are sorted ascending and separated by exactly 1 unit on the number line
+ */
+export function areValuesConsecutive(array: Array<number | string>) {
+	for (let i = 0; i < array.length - 1; i++) {
+		if (Number(array[i]) + 1 != Number(array[i + 1])) return false;
+	}
+
+	return true;
+}
+
 export const nowSeconds = () => Math.floor(Date.now() / 1000);
 //UTIL
 
