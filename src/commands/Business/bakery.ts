@@ -11,6 +11,7 @@ import {
 	formatMilliseconds,
 	formatNumber,
 	getUserFromMsg,
+	nowSeconds,
 	sendEphemeralReply,
 	sendSimpleMessage,
 	showItemName,
@@ -25,10 +26,33 @@ export const description = "🍪 Roll in dough";
 export const usage = "<Username OR Mention> <Action> [Action parameters]";
 export const usageDetail =
 	"List of actions:\n- inventory\n- stats\n- upgrade\n- sell\n- collect\n- levels\n- ovens\n- staff\n- cookies\n- explain\n- globalstats\n(defaults to viewing)\n\nRare cookies have a chance to generate instead of any baked cookie (chance depends on the oven)";
-const usageEdit =
-	'The usage for this command is:\n`edit ["Oven" OR "Staff" OR "Name"] [Oven/worker spot OR New bakery name (leave blank to set to default)] [Action ("sell", "buy", "set/cookie", "fire", "hire")] [Oven/worker/cookie name or id]`\nE.g. edit oven 1 buy Old';
-const usageSell =
-	'The usage for this command is:\n`sell [Comma-separated list of cookies\' names or ids OR "All" OR "Common" (all cookies besides the rares)] <Amount to sell (applies to all cookies, defaults to selling all in inventory)>`\nE.g. sell Butter,Sweet 250\nUse \'bakery inventory\' to view all your stored cookies';
+const usageEdit = `The usage for this command is:
+1. \`edit\`
+2. \`["Oven"]\`
+OR \`["Staff"]\`
+OR \`["Name"]\`
+3. \`[Oven/worker spot number]\`
+OR \`[New bakery name (leave blank to set to default)]\`
+4. \`<Action ("sell", "buy", "set/cookie", "fire", "hire")>\`
+5. \`<Oven/worker/cookie name or numeric index (id)>\`
+
+**Examples**:
+- edit oven 1 buy Old
+- edit oven 1 cookie Butter
+- edit staff 2 hire 3
+- edit name My Bakery's New Name`;
+const usageSell = `The usage for this command is:
+1. \`sell\`
+2. \`[Comma-separated list of cookies' names or numeric indexes (ids)]\`
+OR \`["All"]\`
+3. \`<Amount to sell (applies to all listed cookies, defaults to selling all in inventory)>\`
+
+**Examples**:
+- sell Butter, Sweet 250
+- sell all
+- sell 2
+
+-# Use 'bakery inventory' to view all your stored cookies.`;
 
 bot.on("interactionCreate", async interaction => {
 	if (!interaction.isButton() || !interaction.guild) return;
@@ -52,7 +76,7 @@ bot.on("interactionCreate", async interaction => {
 				`You need ${formatDoler(cost - mon)} more to afford this upgrade.`
 			);
 
-		const now = Math.floor(new Date().getTime() / 1000);
+		const now = nowSeconds();
 		if (!plrdat?.bakery) {
 			// open new
 			await db_plr_set({
@@ -167,7 +191,7 @@ export const BakeryCookies: { [cookieId: string]: okbot.BakeryCookie } = {
 	"10": { nam: "Oat", value: 25, emoji: "<:cookie_plain:1067061379737059328>", time: 100 }, //15  | lv16
 	"11": { nam: "Strawberry", value: 40, emoji: "<:cookie_strawberry:1130602583229206549>", time: 120 }, //20  | lv19
 	"12": { nam: "Bread", value: 55, emoji: ":flatbread:", time: 120 }, //22.5 | lv22
-	"13": { nam: "Infinity", value: 144, emoji: "<:cookie_infinity:1130602580821692468>", time: 256 }, //33.75 | lv25?
+	"13": { nam: "Infinity", value: 144, emoji: "<:cookie_infinity:1130602580821692468>", time: 256 }, //33.75 | lv28?
 	[RARE_ID]: { nam: "Rare", value: 900, emoji: "<:adam:1007621226379886652>", time: 900 },
 	[RARE_BUNDLE_ID]: {
 		nam: "Rare Bundle",
@@ -191,14 +215,14 @@ export const BakeryOvens: { [ovenId: string]: okbot.BakeryOven } = {
 		cost: 12000,
 		rare: 0.00004
 	},
-	"8": { nam: "Compact", cookie: ["1", "2"], lv: 10, multi: 0.5, cost: 25000, costRare: 2, rare: 0.00008 },
+	"8": { nam: "Compact", cookie: ["1", "2"], lv: 10, multi: 0.5, cost: 25000, costRare: 8, rare: 0.00008 },
 	"9": {
 		nam: "Contemporary",
 		cookie: ["1", "2", "3", "4", "5", "6", "7", "8"],
 		lv: 10,
 		multi: 1.1,
 		cost: 27500,
-		costRare: 2,
+		costRare: 6,
 		rare: 0.00005
 	},
 	"10": {
@@ -207,7 +231,7 @@ export const BakeryOvens: { [ovenId: string]: okbot.BakeryOven } = {
 		lv: 12,
 		multi: 0.9,
 		cost: 55000,
-		costRare: 2,
+		costRare: 6,
 		rare: 0.00005
 	},
 	"11": {
@@ -248,7 +272,7 @@ export const BakeryOvens: { [ovenId: string]: okbot.BakeryOven } = {
 		lv: 24,
 		multi: 0.7875,
 		cost: 100000,
-		costRare: 4,
+		costRare: 27,
 		rare: 0.00007
 	},
 	"16": {
@@ -257,12 +281,47 @@ export const BakeryOvens: { [ovenId: string]: okbot.BakeryOven } = {
 		lv: 24,
 		multi: 0.7875,
 		cost: 100000,
-		costRare: 4,
+		costRare: 27,
 		rare: 0.00004
+	},
+	"17": {
+		nam: "Golden",
+		cookie: ["1", "2"],
+		lv: 27,
+		multi: 0.5,
+		cost: 125000,
+		costRare: 250,
+		rare: 0.0003
+	},
+	"18": {
+		nam: "Doughy",
+		cookie: ["9", "12"],
+		lv: 27,
+		multi: 0.775,
+		cost: 225000,
+		costRare: 25,
+		rare: 0.00004
+	},
+	"19": {
+		nam: "Space",
+		cookie: ["13"],
+		lv: 29,
+		multi: 1,
+		cost: 200000,
+		costRare: 175,
+		rare: 0.0001
+	},
+	"20": {
+		nam: "Undefined",
+		cookie: ["13"],
+		lv: 30,
+		multi: 0.775,
+		cost: 444000,
+		costRare: 444,
+		rare: 0.00005
 	}
-	// at least one more for infinity cookie
 };
-const SPECIAL_WORKER_CUT_OFF_ID = "90";
+const SPECIAL_WORKERS_THRESHOLD_ID = "90";
 export const BakeryStaff: { [staffId: string]: okbot.BakeryStaff } = {
 	"1": { nam: "Rat", emoji: "🐀", cost: 4000, lv: 4, multi: 0.95 },
 	"2": { nam: "Grade schooler", emoji: "🧒", cost: 10000, lv: 7, multi: 0.925 },
@@ -295,7 +354,7 @@ export const BakeryStaff: { [staffId: string]: okbot.BakeryStaff } = {
 		spec: { "9": 0.675, "10": 0.675, "11": 0.675, "12": 0.675 }
 	},
 	"10": { nam: "Kneader", emoji: "🐱", cost: 300000, lv: 26, multi: 0.666 },
-	[SPECIAL_WORKER_CUT_OFF_ID]: {
+	[SPECIAL_WORKERS_THRESHOLD_ID]: {
 		nam: "Genetically engineered baker",
 		emoji: "🕵️",
 		cost: 0,
@@ -316,21 +375,25 @@ export const BakeryLevels = [
 	{ cost: 350000, maxOven: 3, maxStaff: 2, multi: 0.9, maxColl: 22500 }, //lv9
 	{ cost: 600000, maxOven: 4, maxStaff: 2, multi: 0.9, maxColl: 30000 }, //lv10
 	{ cost: 750000, maxOven: 4, maxStaff: 2, multi: 0.825, maxColl: 40000 }, //lv11
-	{ cost: 1000000, maxOven: 4, maxStaff: 3, multi: 0.8, maxColl: 42500 }, //lv12
-	{ cost: 1000000, maxOven: 4, maxStaff: 3, multi: 0.8, maxColl: 50000 }, //lv13
-	{ cost: 1250000, maxOven: 5, maxStaff: 3, multi: 0.8, maxColl: 75000 }, //lv14
-	{ cost: 1770000, maxOven: 5, maxStaff: 3, multi: 0.75, maxColl: 77700 }, //lv15
-	{ cost: 1800000, maxOven: 5, maxStaff: 3, multi: 0.75, maxColl: 80000 }, //lv16
-	{ cost: 1880000, maxOven: 5, maxStaff: 4, multi: 0.75, maxColl: 80000 }, //lv17
-	{ cost: 2000000, maxOven: 5, maxStaff: 4, multi: 0.7, maxColl: 90000 }, //lv18
-	{ cost: 2330000, maxOven: 5, maxStaff: 4, multi: 0.7, maxColl: 90000 }, //lv19
-	{ cost: 4660000, maxOven: 5, maxStaff: 4, multi: 0.7, maxColl: 100000 }, //lv20
-	{ cost: 5500000, maxOven: 5, maxStaff: 5, multi: 0.685, maxColl: 100000 }, //lv21
-	{ cost: 7000000, maxOven: 5, maxStaff: 5, multi: 0.685, maxColl: 125000 }, //lv22
-	{ cost: 9000000, maxOven: 5, maxStaff: 5, multi: 0.65, maxColl: 144000 }, //lv23
-	{ cost: 13333333, maxOven: 5, maxStaff: 5, multi: 0.633, maxColl: 144000 }, //lv24
-	{ cost: 17777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 166000 }, //lv25
-	{ cost: 27777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 177777 } //lv26
+	{ cost: 1_000000, maxOven: 4, maxStaff: 3, multi: 0.8, maxColl: 42500 }, //lv12
+	{ cost: 1_000000, maxOven: 4, maxStaff: 3, multi: 0.8, maxColl: 50000 }, //lv13
+	{ cost: 1_250000, maxOven: 5, maxStaff: 3, multi: 0.8, maxColl: 75000 }, //lv14
+	{ cost: 1_770000, maxOven: 5, maxStaff: 3, multi: 0.75, maxColl: 77700 }, //lv15
+	{ cost: 1_800000, maxOven: 5, maxStaff: 3, multi: 0.75, maxColl: 80000 }, //lv16
+	{ cost: 1_880000, maxOven: 5, maxStaff: 4, multi: 0.75, maxColl: 80000 }, //lv17
+	{ cost: 2_000000, maxOven: 5, maxStaff: 4, multi: 0.7, maxColl: 90000 }, //lv18
+	{ cost: 2_330000, maxOven: 5, maxStaff: 4, multi: 0.7, maxColl: 90000 }, //lv19
+	{ cost: 4_660000, maxOven: 5, maxStaff: 4, multi: 0.7, maxColl: 100000 }, //lv20
+	{ cost: 5_500000, maxOven: 5, maxStaff: 5, multi: 0.685, maxColl: 100000 }, //lv21
+	{ cost: 7_000000, maxOven: 5, maxStaff: 5, multi: 0.685, maxColl: 125000 }, //lv22
+	{ cost: 13_333333, maxOven: 5, maxStaff: 5, multi: 0.65, maxColl: 144000 }, //lv23
+	{ cost: 17_777777, maxOven: 5, maxStaff: 5, multi: 0.633, maxColl: 166000 }, //lv24
+	{ cost: 27_777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 177777 }, //lv25
+	{ cost: 37_777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 177777 }, //lv26
+	{ cost: 50_000000, maxOven: 6, maxStaff: 5, multi: 0.625, maxColl: 400000 }, //lv27
+	{ cost: 100_000000, maxOven: 6, maxStaff: 6, multi: 0.625, maxColl: 777777 }, //lv28
+	{ cost: 166_000000, maxOven: 6, maxStaff: 6, multi: 0.625, maxColl: 777777 }, //lv29
+	{ cost: 198_765432, maxOven: 6, maxStaff: 6, multi: 0.6125, maxColl: 900000 } //lv30
 ];
 const BakeryLevelRequirements: Array<null | {
 	cookie?: { [cookieId: string]: number };
@@ -428,9 +491,9 @@ const BakeryLevelRequirements: Array<null | {
 			"9": 550000,
 			"10": 375000
 		},
-		tot: 7777777
+		tot: 7_777_777
 	}, //19
-	{ cookie: {}, tot: 14777777 }, //19 -> 20
+	{ cookie: {}, tot: 14_777_777 }, //19 -> 20
 	{
 		cookie: {
 			"1": 350000,
@@ -459,10 +522,10 @@ const BakeryLevelRequirements: Array<null | {
 	}, //22
 	{
 		cookie: { "1": 950000, "2": 900000, "9": 850000, "10": 525000, "11": 700000, "12": 288000 },
-		tot: 22777777
+		tot: 22_777_777
 	}, //23
 	{
-		cookie: { "1": 999999, "2": 999999, "3": 99999, "11": 1000000, [RARE_ID]: 2777 }
+		cookie: { "1": 999999, "2": 999999, "3": 99999, "11": 1000000, [RARE_ID]: 2500 }
 	}, //24
 	{
 		cookie: {
@@ -478,8 +541,39 @@ const BakeryLevelRequirements: Array<null | {
 	}, //25
 	{
 		cookie: { "12": 1000000, [RARE_ID]: 4777 },
-		tot: 4777777
-	} // 26
+		tot: 44_777_777
+	}, // 26
+	{
+		cookie: { "10": 1750000, "11": 1500000, "12": 1250000 }
+	}, // 27
+	{
+		cookie: { "1": 9999999, "2": 1999999, "9": 1000000, "12": 1777000, [RARE_ID]: 7777, [RARE_BUNDLE_ID]: 3 },
+		tot: 60_000_000
+	}, // 28
+	{
+		cookie: { "1": 19999999, "2": 1999999, "9": 1000000, "12": 2500000, [RARE_BUNDLE_ID]: 8 },
+		tot: 60_000_000
+	}, // 29
+	{
+		cookie: {
+			"1": 1,
+			"2": 1,
+			"3": 1,
+			"4": 1,
+			"5": 1,
+			"6": 1,
+			"7": 1,
+			"8": 1,
+			"9": 1,
+			"10": 1,
+			"11": 1,
+			"12": 1,
+			"13": 1,
+			[RARE_ID]: 1,
+			[RARE_BUNDLE_ID]: 1
+		},
+		tot: 77_000_077
+	} // 29 -> 30
 ];
 
 function sendNoBakeryMessage(msg: okbot.Message, user?: User) {
@@ -546,6 +640,7 @@ function showOvenList(lv: number) {
 		curLv = oven.lv;
 
 		const idText = `\`${("#" + i).padStart(3, " ")}\``;
+		const cookiesText = "cookie" + (oven.cookie.length == 1 ? "" : "s");
 		const bakedCookiesText =
 			oven.cookie.length > 1 && areValuesConsecutive(oven.cookie)
 				? `#${oven.cookie[0]} - #${oven.cookie[oven.cookie.length - 1]}`
@@ -556,7 +651,7 @@ function showOvenList(lv: number) {
 				(oven.costRare ? ` + ${oven.costRare} ${showItemName(BakeryCookies[RARE_ID], false)}` : "");
 
 		text += `${idText} **${oven.nam}** (${costText})
--# Bakes cookies ${bakedCookiesText}
+-# Bakes ${cookiesText} ${bakedCookiesText}
 -# **${Math.round((1 / oven.multi) * 100) / 100}**x speed | ${Math.round(oven.rare * 10_000_000) / 100_000}% rare cookie chance\n`;
 	}
 
@@ -569,7 +664,7 @@ function showStaffList(lv: number, hasPerfectGenome = false) {
 	let curLv = 0;
 
 	for (const i in BakeryStaff) {
-		if (!hasPerfectGenome && i >= SPECIAL_WORKER_CUT_OFF_ID) continue; // don't display special workers if locked
+		if (!hasPerfectGenome && i >= SPECIAL_WORKERS_THRESHOLD_ID) continue; // don't display special workers if locked
 
 		if (BakeryStaff[i].lv > lv) {
 			if (overLevel && BakeryStaff[i].lv > curLv) continue; // skip locked staff but don't break loop (allow unsorted objects + special employee)
@@ -580,7 +675,7 @@ function showStaffList(lv: number, hasPerfectGenome = false) {
 
 		const idText = `\`${("#" + i).padStart(3, " ")}\``;
 		const costText =
-			i >= SPECIAL_WORKER_CUT_OFF_ID
+			i >= SPECIAL_WORKERS_THRESHOLD_ID
 				? "special worker"
 				: overLevel
 					? "unlocks at level " + curLv
@@ -673,19 +768,26 @@ function checkBakeryLevelRequirements(monLv: number, bakery?: okbot.Bakery) {
 	return { met, string };
 }
 
+// TODO?: This would be nicer with pagination instead of two bulky embeds...
 function showLevels() {
-	const msge = new EmbedBuilder().setColor(Colors.White).setTitle("Bakery upgrades ✨");
+	const levelsHalfway = Math.ceil(BakeryLevels.length / 2);
+	const msge1 = new EmbedBuilder().setColor(Colors.White).setTitle("Bakery upgrades ✨");
+	const msge2 = new EmbedBuilder().setColor(Colors.White);
 
-	let text = "";
+	let text1 = "",
+		text2 = "";
 	for (const i in BakeryLevels) {
 		const stat = BakeryLevels[i];
-		text += `**Level ${Number(i) + 1}**
-			\`${formatNumber(stat.cost).padStart(10, " ")}\` 💵 **|** max ovens: **${stat.maxOven}** ● max staff: **${stat.maxStaff}** ● **${
+		const index = Number(i);
+		const levelDescription = `**Level ${index + 1}**
+			\`${formatNumber(stat.cost).padStart(11, " ")}\` 💵 **|** max ovens: **${stat.maxOven}** ● max staff: **${stat.maxStaff}** ● **${
 				Math.round((1 / stat.multi) * 100) / 100
 			}**x speed multiplier\n\n`;
+
+		index >= levelsHalfway ? (text2 += levelDescription) : (text1 += levelDescription);
 	}
 
-	return msge.setDescription(text);
+	return [msge1.setDescription(text1), msge2.setDescription(text2)];
 }
 
 function showUpgradeStats(lv: number, money: number, reqString: string) {
@@ -807,7 +909,7 @@ Use 'bakery edit' to manage your staff and ovens`
 }
 
 // returns a bakery with set cookies and stats
-export function bake(bakery: okbot.Bakery, now = Math.round(new Date().getTime() / 1000)) {
+export function bake(bakery: okbot.Bakery, now = nowSeconds()) {
 	const elapsedSeconds = now - bakery.lastColl;
 	const invSpace = bakery.maxColl - bakery.toCollTot;
 	const staffMulti = countStaffMulti(bakery);
@@ -863,13 +965,14 @@ export function bake(bakery: okbot.Bakery, now = Math.round(new Date().getTime()
 	}
 
 	const rareBundles = bakeRareBundles(bakery.toColl[RARE_ID]);
-	bakery.toColl[RARE_ID] -= rareBundles;
+	const rares = (bakery.toColl[RARE_ID] ?? rareBundles) - rareBundles;
 
 	bakery.toColl[RARE_BUNDLE_ID] = (bakery.toColl[RARE_BUNDLE_ID] ?? 0) + rareBundles;
 	bakery.stat[RARE_BUNDLE_ID] = (bakery.stat[RARE_BUNDLE_ID] ?? 0) + rareBundles;
-	bakery.stat[RARE_ID] = (bakery.stat[RARE_ID] ?? 0) + bakery.toColl[RARE_ID];
+	bakery.toColl[RARE_ID] = rares;
+	bakery.stat[RARE_ID] = (bakery.stat[RARE_ID] ?? 0) + rares;
 
-	totalBakedValue += bakery.toColl[RARE_ID] * BakeryCookies[RARE_ID].value;
+	totalBakedValue += rares * BakeryCookies[RARE_ID].value;
 	totalBakedValue += rareBundles * BakeryCookies[RARE_BUNDLE_ID].value;
 
 	bakery.tot += totalBaked;
@@ -1059,7 +1162,7 @@ async function showInventory(usr: User, bakery: okbot.Bakery) {
 		stringValue += `${formatDoler(val, false)}\n`;
 		valTot += val;
 	}
-	if (!stringName) return msge.setDescription("🕸️ There is nothing here...");
+	if (!stringName) return msge.setDescription("🕸️ *Nothing to see here...*");
 
 	msge
 		.addFields(
@@ -1124,7 +1227,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		case "upgrades":
 		case "levels":
 		case "lv": {
-			return msg.reply({ embeds: [showLevels()], allowedMentions: { repliedUser: false } });
+			return msg.reply({ embeds: showLevels(), allowedMentions: { repliedUser: false } });
 		}
 		case "collect":
 		case "pay":
@@ -1275,50 +1378,20 @@ async function executeSell(msg: okbot.Message, args: string[]) {
 	if (!plrdat?.bakery) return sendNoBakeryMessage(msg);
 
 	const amount = getCookiesToSellAmount(msg, args);
-	if (!amount) return;
+	if (amount == null) return;
 	const cookieIdsOrNames = args.join(" ").split(",");
 
 	let tot = 0;
 	let totVal = 0;
-	const toSell: { [cookieId: string]: boolean } = {}; // duplicate cookies check, true if already marked for sale
+	const toSell: { [cookieId: string]: boolean } = {}; // duplicate cookies check, true if already marked for sale (you know, could've used a Set for this)
 
 	const bakery = bake(plrdat.bakery);
 
 	// "all"
-	if (cookieIdsOrNames.length === 1) {
-		const idOrName = cookieIdsOrNames[0].toLowerCase();
-
-		if (idOrName === "all") {
-			for (const i in bakery.inv) {
-				const cookieInInv = bakery.inv[i];
-				if (!cookieInInv || i == RARE_ID) continue; // skip if 0 cookies or rare cookie
-
-				if (amount && cookieInInv < amount)
-					return sendSimpleMessage<okbot.Message>(
-						msg,
-						`You have **${formatNumber(cookieInInv)}** ${showItemName(BakeryCookies[i], false)} cookie${cookieInInv == 1 ? "" : "s"} but requested to sell ${formatNumber(amount)} of them.\nRemove the amount argument to sell all cookies of that type in your inventory.`
-					);
-				if (!cookieInInv) continue;
-
-				const cookieAmount = amount || cookieInInv; // sell all if no amount provided
-
-				bakery.inv[i] -= cookieAmount;
-				tot += cookieAmount;
-				totVal += BakeryCookies[i].value * cookieAmount;
-			}
-
-			if (!tot) return sendSimpleMessage<okbot.Message>(msg, "No cookies to sell!", Colors.DarkOrange);
-		}
-	}
-
-	// explicitly given cookies
-	if (!tot) {
-		for (const i in cookieIdsOrNames) {
-			const cookieId = getCookieIdByIdOrName(msg, cookieIdsOrNames[i]);
-			if (cookieId == null) return;
-
-			const cookieInInv = bakery.inv[cookieId];
-			if (!cookieInInv || toSell[cookieId]) continue; // don't count the same cookie twice
+	if (cookieIdsOrNames.length == 1 && cookieIdsOrNames[0].toLowerCase() == "all") {
+		for (const i in bakery.inv) {
+			const cookieInInv = bakery.inv[i];
+			if (!cookieInInv || i == RARE_ID || i == RARE_BUNDLE_ID) continue; // skip if 0 cookies or rare cookie
 
 			if (amount && cookieInInv < amount)
 				return sendSimpleMessage<okbot.Message>(
@@ -1328,6 +1401,31 @@ async function executeSell(msg: okbot.Message, args: string[]) {
 			if (!cookieInInv) continue;
 
 			const cookieAmount = amount || cookieInInv; // sell all if no amount provided
+
+			bakery.inv[i] -= cookieAmount;
+			tot += cookieAmount;
+			totVal += BakeryCookies[i].value * cookieAmount;
+		}
+
+		if (!tot) return sendSimpleMessage<okbot.Message>(msg, "No cookies to sell!", Colors.DarkOrange);
+	}
+	// explicitly given cookies
+	else {
+		for (const i in cookieIdsOrNames) {
+			const cookieId = getCookieIdByIdOrName(msg, cookieIdsOrNames[i]);
+			if (cookieId == null) return;
+
+			const cookiesInInv = bakery.inv[cookieId];
+			if (!cookiesInInv || toSell[cookieId]) continue; // don't count the same cookie twice
+
+			if (amount && cookiesInInv < amount)
+				return sendSimpleMessage<okbot.Message>(
+					msg,
+					`You only have **${formatNumber(cookiesInInv)}** ${showItemName(BakeryCookies[cookieId], false)} cookie${cookiesInInv == 1 ? "" : "s"} but requested to sell **${formatNumber(amount)}**.\n-# Remove the amount argument to sell all cookies of that type in your inventory.`
+				);
+			if (!cookiesInInv) continue;
+
+			const cookieAmount = amount || cookiesInInv; // sell all if no amount provided
 
 			toSell[cookieId] = true;
 			bakery.inv[cookieId] -= cookieAmount;
@@ -1631,9 +1729,9 @@ async function executeEdit(msg: okbot.Message, args: string[]) {
 				);
 
 			// special collectors employee
-			if (toHireId >= Number(SPECIAL_WORKER_CUT_OFF_ID)) {
+			if (toHireId >= Number(SPECIAL_WORKERS_THRESHOLD_ID)) {
 				const maxSpecialWorkers = plrdat.fishCol?.["Perfect genome"]?.fin ?? 0;
-				const curSpecialWorkers = bakery.staff.filter(a => a && a >= SPECIAL_WORKER_CUT_OFF_ID).length;
+				const curSpecialWorkers = bakery.staff.filter(a => a && a >= SPECIAL_WORKERS_THRESHOLD_ID).length;
 				if (curSpecialWorkers >= maxSpecialWorkers) {
 					const msgContent =
 						(maxSpecialWorkers ? `You can only hire **${maxSpecialWorkers}**` : "You can't hire any") +
