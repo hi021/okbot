@@ -5,6 +5,7 @@ import { bot } from "../okbot.js";
 import { SET } from "../settings.js";
 import { Casino_tops } from "../volatile.js";
 import { db_store_init } from "./store.js";
+import { formatNumber } from "../utils.js";
 dotenv.config();
 
 let _db: MongoClient;
@@ -456,37 +457,71 @@ export async function db_fix_pond_levels(
 		cost?: number;
 	}>
 ) {
-	const allPlr = await db_get("plr")
+	const allPlayers = await db_get("plr")
 		.find({ pond: { $exists: true } })
 		.toArray();
 
-	for (const i of allPlr) {
-		const level = pondLevels[i.pond.lv - 1];
+	for (const plr of allPlayers) {
+		const level = pondLevels[plr.pond.lv - 1];
 		if (!level) {
-			console.error("No level for " + i._id);
+			console.error("No level for " + plr._id);
 			continue;
 		}
 
 		let overBudget = false;
-		if (i.pond.budget > level.budgetMax) {
+		if (plr.pond.budget > level.budgetMax) {
 			overBudget = true;
 			console.log(
-				`${i._id} is ${i.pond.budget - level.budgetMax} over budget (${i.pond.budgetMax} -> ${
+				`${plr._id} is ${plr.pond.budget - level.budgetMax} over budget (${plr.pond.budgetMax} -> ${
 					level.budgetMax
 				}), setting to level.budgetMax`
 			);
 		}
 
 		await db_get("plr").updateOne(
-			{ _id: i._id },
+			{ _id: plr._id },
 			{
 				$set: {
 					"pond.budgetMax": level.budgetMax,
 					"pond.fishMax": level.fishMax,
 					"pond.interval": level.interval,
-					"pond.budget": overBudget ? level.budgetMax : i.pond.budget
+					"pond.budget": overBudget ? level.budgetMax : plr.pond.budget
 				}
 			}
 		);
 	}
+}
+
+export async function db_recalc_bakery_total_value(cookies: { [cookieId: string]: okbot.BakeryCookie }) {
+	const playersToUpdate: Array<{
+		updateOne: { filter: { _id: any }; update: { $set: { "bakery.totVal": number } } };
+	}> = [];
+	const allPlayers = (await db_get("plr")
+		.find({ bakery: { $ne: null } })
+		.toArray()) as unknown as okbot.User[];
+
+	for (const plr of allPlayers) {
+		const currentValue = plr.bakery!.totVal;
+		let newValue = 0;
+
+		for (const cookieId in plr.bakery!.stat) {
+			const cookieCount = plr.bakery!.stat[cookieId];
+			const cookieValue = cookies[cookieId].value;
+			newValue += cookieCount * cookieValue;
+		}
+
+		const difference = newValue - currentValue;
+		if (difference)
+			playersToUpdate.push({
+				updateOne: { filter: { _id: plr._id as string }, update: { $set: { "bakery.totVal": newValue } } }
+			});
+		console.log(`Bakery value recalc: ${formatNumber(difference)}\t\tdifference for player\t${plr._id}`);
+	}
+
+	if (!playersToUpdate.length) {
+		console.log("No players to update.");
+		return;
+	}
+
+	await db_get("plr").bulkWrite(playersToUpdate);
 }
