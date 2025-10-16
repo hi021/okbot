@@ -15,7 +15,7 @@ export function displayAllCommands(
 ) {
 	const bot = msg.client as okbot.Client<true>;
 
-	const commandHelp = `❔ Use \`${prefix}${name} <command name>\` to view command details.\n`;
+	const commandHelp = `❔ Use \`${prefix}${name} <command name>\` to view any command's details.\n`;
 	const ownerHelp = SET.BOT_OWNER?.[0]
 		? `🔧 Shout at ${userMention(SET.BOT_OWNER[0])} if I break something!\n`
 		: "";

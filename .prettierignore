@@ -1,0 +1,4 @@
+pnpm-*
+.env*
+img
+target

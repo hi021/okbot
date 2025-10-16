@@ -4,7 +4,7 @@ import { e_blank } from "../../utils.js";
 
 export const name = "slotwins";
 export const alias = ["slotodds"];
-export const description = "💰 Peek at the potential winnings";
+export const description = "💰 Indulge in gambler's fallacy";
 //TODO?: move to slot.ts
 
 export function execute(msg: okbot.Message, _args: string[]) {

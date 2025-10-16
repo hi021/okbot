@@ -1,4 +1,4 @@
-import { Colors } from "discord.js";
+import { Colors, userMention } from "discord.js";
 import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -66,7 +66,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const desc =
 		usr.id === bot.user?.id
 			? `♂️${e_blank}Oh! Uh... thank you...`
-			: `♂️${e_blank}You've raped <@${usr.id}> why would you do that...`;
+			: `♂️${e_blank}You raped ${userMention(usr.id)} why would you do that...`;
 	const msge = createSimpleMessage(desc, "#226699");
 	msge.setFooter({ text: `You have raped ${am} times in total` });
 	return msg.reply({ embeds: [msge] });

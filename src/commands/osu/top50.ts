@@ -264,7 +264,7 @@ async function sendT50(msg: okbot.Message, id: string | number) {
 						inline: true
 					},
 					{
-						name: "Most gained in a day",
+						name: "Highest gains in a single day",
 						value: stats.gained1Day,
 						inline: true
 					}
@@ -374,7 +374,7 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 				.addFields([
 					{
 						name: `🔴 ${stats1.info.nam} - ${formatNumber(stats1.info.t50)}`.replace(/ /g, "\u00A0"),
-						value: `🌍 #${stats1.info.pos}, :flag_${stats1.info.cntr.toLowerCase()}: #${stats1.info.cntrPos}`,
+						value: `🌍 #${stats1.info.pos} :flag_${stats1.info.cntr.toLowerCase()}: #${stats1.info.cntrPos}`,
 						inline: true
 					},
 					{
@@ -384,7 +384,7 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 					},
 					{
 						name: `🔵 ${stats2.info.nam} - ${formatNumber(stats2.info.t50)}`.replace(/ /g, "\u00A0"),
-						value: `🌍 #${stats2.info.pos}, :flag_${stats2.info.cntr.toLowerCase()}: #${stats2.info.cntrPos}`,
+						value: `🌍 #${stats2.info.pos} :flag_${stats2.info.cntr.toLowerCase()}: #${stats2.info.cntrPos}`,
 						inline: true
 					},
 					{

@@ -1,7 +1,7 @@
 import { randomInt } from "../../utils.js";
 
 export const name = "roll";
-export const description = "🎲 Roll a numbe (this is a very old command shush)";
+export const description = "🎲 Roll a numbey (this is a very old command shush)";
 export const usage = "<Min> <Max> <Repetitions>";
 
 export function execute(msg: okbot.Message, args: string[]) {

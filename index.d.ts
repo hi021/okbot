@@ -1,24 +1,26 @@
 declare namespace okbot {
-    type Message = import('discord.js').OmitPartialGroupDMChannel<import('discord.js').Message>;
-    type MessageOrInteraction<T> = T extends import('discord.js').ButtonInteraction ? import('discord.js').ButtonInteraction : okbot.Message;
-    type TextChannel = import('discord.js').SendableChannels & import('discord.js').TextBasedChannel;
-    type Client<boolean> = import('discord.js').Client<boolean> & {
-        commands: import('discord.js').Collection<string, okbot.Command>;
-        commands_mod: import('discord.js').Collection<string, okbot.Command>;
-    };
-
-    type CooldownActivity = 'slot' | 'fish' | 'ok';
-    type CooldownActivitySettingName = `${Uppercase<CooldownActivity>}_COOLDOWN`
-
-    type ErrorWithMessageResponse = {error: string};
-
-    type UserExpense = UserIncome & { shop?: number; pond?: number };
-	type UserIncome = {
-        [game in EstateActivity]?: number;
+	type Message = import("discord.js").OmitPartialGroupDMChannel<import("discord.js").Message>;
+	type MessageOrInteraction<T> = T extends import("discord.js").ButtonInteraction
+		? import("discord.js").ButtonInteraction
+		: okbot.Message;
+	type TextChannel = import("discord.js").SendableChannels & import("discord.js").TextBasedChannel;
+	type Client<boolean> = import("discord.js").Client<boolean> & {
+		commands: import("discord.js").Collection<string, okbot.Command>;
+		commands_mod: import("discord.js").Collection<string, okbot.Command>;
 	};
 
-    type EstateActivity = CasinoGame | 'fish' | 'aqua' | 'bakery' | 'bank'
-    type CasinoGame = 'slot' | 'flip' | 'jackpot' | 'bingo' | 'bj' | 'rl' | 'dice' | 'poker';
+	type CooldownActivity = "slot" | "fish" | "ok";
+	type CooldownActivitySettingName = `${Uppercase<CooldownActivity>}_COOLDOWN`;
+
+	type ErrorWithMessageResponse = { error: string };
+
+	type UserExpense = UserIncome & { shop?: number; pond?: number };
+	type UserIncome = {
+		[game in EstateActivity]?: number;
+	};
+
+	type EstateActivity = CasinoGame | "fish" | "aqua" | "bakery" | "bank";
+	type CasinoGame = "slot" | "flip" | "jackpot" | "bingo" | "bj" | "rl" | "dice" | "poker";
 	type CasinoStatDefault = {
 		am: number;
 		win?: number;
@@ -28,7 +30,11 @@ declare namespace okbot {
 	type CasinoStatDefaultWithDraw = CasinoStatDefault & { draw?: number };
 	type CasinoStat = {
 		bingo?: CasinoStatDefault;
-		bj?: CasinoStatDefaultWithDraw & { bj?: number /*perfect 21 score count*/; double?: number /*times doubled*/; doubleWin?: number /*times won double*/ };
+		bj?: CasinoStatDefaultWithDraw & {
+			bj?: number /*perfect 21 score count*/;
+			double?: number /*times doubled*/;
+			doubleWin?: number /*times won double*/;
+		};
 		dice?: CasinoStatDefaultWithDraw & { totalScore?: number };
 		flip?: CasinoStatDefault;
 		jackpot?: CasinoStatDefault;
@@ -41,8 +47,8 @@ declare namespace okbot {
 			greenWin?: number;
 		};
 		slot?: CasinoStatDefaultWithDraw & { bigWin?: number }; // bigWin is wins at 10x payout or higher, draw when payout is 1x
-	    poker?: undefined;
-    };
+		poker?: undefined;
+	};
 
 	type CasinoTopStat = { _id: string; usernameDiscrim: string; bet: number; won: number; date: number }; //for highest wins rankings
 
@@ -67,7 +73,7 @@ declare namespace okbot {
 			v?: number; //daily amount
 			am?: number; //times claimed
 			streak?: number; //current days on streak, 5 to get bonus
-            streakAm?: number; //times streak bonus claimed
+			streakAm?: number; //times streak bonus claimed
 		};
 		stimLast?: number; //stimulus: last time claimed
 		stimAm?: number; //stimulus: times claimed
@@ -119,7 +125,7 @@ declare namespace okbot {
 	type TimedBooster = { start: number; time: number; v: any; name: string }; //start also works as lastUsed timestamp for cooldowns
 	type ExpiredBooster = { start: number; name: string; cooldownRemaining: number }; //cooldownRemaining can be undefined if there's no cooldown:)
 
-	type AquariumTankSize = 'huge' | 'big' | 'med' | 'small';
+	type AquariumTankSize = "huge" | "big" | "med" | "small";
 	interface Aquarium {
 		nam?: string;
 		lv: number; //upgrade level
@@ -196,8 +202,8 @@ declare namespace okbot {
 		fin?: number;
 	};
 
-	type MineEquipmentItemType = 'sword' | 'pick' | 'ring' | 'armor' | 'collar';
-	type MineAnyItemType = MineEquipmentItemType | 'mineral' | 'enemy';
+	type MineEquipmentItemType = "sword" | "pick" | "ring" | "armor" | "collar";
+	type MineAnyItemType = MineEquipmentItemType | "mineral" | "enemy";
 	type MineEquipmentTier =
 		| 1
 		| 2
@@ -236,16 +242,17 @@ declare namespace okbot {
 		emoji: string;
 		dmg: number;
 		hp: number;
-		drops?: Array<{ type: MineEquipmentItemType | 'mineral'; id: number; am: number[] } | undefined>;
+		drops?: Array<{ type: MineEquipmentItemType | "mineral"; id: number; am: number[] } | undefined>;
 	}
 
-	// artifical interface to allow for string indexing
+	// artificial interface to allow string indexing
 	interface RankingUser extends User {
 		nam?: string;
-		'rep.v'?: number;
-		'rep.am'?: number;
-		'aqua.collTot'?: number;
-		'pond.fishTot'?: number;
+		"rep.v"?: number;
+		"rep.am"?: number;
+		"day.am"?: number;
+		"aqua.collTot"?: number;
+		"pond.fishTot"?: number;
 	}
 
 	interface RankingGuild {
@@ -255,15 +262,16 @@ declare namespace okbot {
 	}
 
 	type RankingField =
-		| 'monTot'
-		| 'okTot'
-		| 'gay'
-		| 'bottom'
-		| 'rep.v'
-		| 'rep.am'
-		| 'aqua.collTot'
-		| 'pond.fishTot'
-		| 'fishTotC';
+		| "monTot"
+		| "okTot"
+		| "gay"
+		| "bottom"
+		| "rep.v"
+		| "rep.am"
+		| "day.am"
+		| "aqua.collTot"
+		| "pond.fishTot"
+		| "fishTotC";
 
 	interface OsuTrackSettings {
 		chn: string; //channel id to send notif to
@@ -301,7 +309,7 @@ declare namespace okbot {
 		nam: string;
 		emoji: string;
 	}
-	type FishRarity = 'stinky' | 'ok' | 'cool' | 'rare' | 'collectors' | 'collectors+';
+	type FishRarity = "stinky" | "ok" | "cool" | "rare" | "collectors" | "collectors+";
 	type FishAquarium = FishBasic & { aq: number /*money generated*/ };
 	interface Fish {
 		emoji: string;
@@ -331,7 +339,7 @@ declare namespace okbot {
 	interface PokerPlayer {
 		id: string;
 		bet: number; //round bet
-		playing: 'yes' | 'idle' | 'folded' | 'max'; //either still in the game, folded (force folded by idling), or already bet table max
+		playing: "yes" | "idle" | "folded" | "max"; //either still in the game, folded (force folded by idling), or already bet table max
 		cards: Card[]; //2 hole cards
 	}
 	interface PokerGame {
@@ -363,9 +371,9 @@ declare namespace okbot {
 		time?: NodeJS.Timeout; //timeout if the host doesn't start
 	}
 
-    type RouletteColor = 'red' | 'black' | 'green';
-	type CardValue = '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K' | 'A';
-	type CardColor = '♣️' | '♠️' | '♥️' | '♦️';
+	type RouletteColor = "red" | "black" | "green";
+	type CardValue = "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "J" | "Q" | "K" | "A";
+	type CardColor = "♣️" | "♠️" | "♥️" | "♦️";
 	interface Card {
 		num: number; //numeric value
 		val: CardValue;
@@ -425,21 +433,21 @@ declare namespace okbot {
 		points: { [plrId: string]: number };
 		roundTime: number; // ms
 		roundStartTime: number; // s
-        gameStartTime: number; // ms
+		gameStartTime: number; // ms
 		time?: NodeJS.Timeout;
 		channel: TextChannel;
-        flagMsg: okbot.Message; // current flag round message
+		flagMsg: okbot.Message; // current flag round message
 	}
 
 	interface Country extends CountryState {
-		region?: import('./src/countries').CountryRegion;
+		region?: import("./src/countries").CountryRegion;
 		regionDetail?: string;
 		capital?: string[];
-		type: import('./src/countries').CountryType;
+		type: import("./src/countries").CountryType;
 	}
-    type CountryState = {nam: string[];}
+	type CountryState = { nam: string[] };
 
-	type CommandPermission = undefined | 'EVERYONE' | 'GUILD_ADMIN' | 'BOT_ADMIN' | 'BOT_OWNER'; // undefined defaults to EVERYONE
+	type CommandPermission = undefined | "EVERYONE" | "GUILD_ADMIN" | "BOT_ADMIN" | "BOT_OWNER"; // undefined defaults to EVERYONE
 	interface Command {
 		name: string;
 		category: string; // directory name the source file is in
@@ -450,6 +458,6 @@ declare namespace okbot {
 		hidden?: boolean;
 		restrict: CommandPermission;
 		execute: (msg: Message, args: string[]) => void;
-        [additional: string]: any;
+		[additional: string]: any;
 	}
 }

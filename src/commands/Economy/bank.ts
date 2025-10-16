@@ -26,7 +26,7 @@ import {
 } from "../../utils.js";
 
 export const name = "bank";
-export const description = "🏦 What gold reserves?";
+export const description = "🏦 What reserves?";
 export const usage = '<"Withdraw" OR "Deposit"> [Amount OR "All"]\n<"Upgrade" OR "Levels" OR "Stats">';
 
 bot.on("interactionCreate", async interaction => {

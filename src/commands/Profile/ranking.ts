@@ -5,7 +5,7 @@ import { createSimpleMessage, formatNumber, getUserFromMsg, sendSimpleMessage } 
 import { RARE_ID } from "../Business/bakery.js";
 
 const categories =
-	"- total_money\n- ok\n- ok_guild\n- rep\n- rep_given\n- fish\n- aquarium_income\n- pond_caught\n- flags\n- bakery_value\n- baked\n- bakery_rares\n- gay\n- bottom";
+	"- total_money\n- ok\n- ok_guild\n- rep\n- rep_given\n- dailies\n- fish\n- aquarium\n- pond\n- flags\n- bakery_value\n- bakery_cookies\n- bakery_rares\n- gay\n- bottom";
 const perPage = 20;
 export const name = "ranking";
 export const alias = ["top", "leaderboard"];
@@ -82,11 +82,11 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 
 	switch (category.toLowerCase()) {
 		case "montot":
+		case "money":
 		case "totalmoney":
 		case "total_money":
 		case "moneytotal":
 		case "money_total":
-		case "":
 			category = "monTot";
 			categoryTitle = "💵 Highest total money earned";
 			valueFormatter = (val: string | number) => `$${formatNumber(val)}`;
@@ -98,7 +98,7 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 		case "rape":
 		case "rapes":
 			category = "rep.v";
-			categoryTitle = "♂️ Most frequently raped";
+			categoryTitle = "♂️ Most easily raped";
 			break;
 		case "rep.am":
 		case "rep_given":
@@ -107,20 +107,28 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 		case "given_rep":
 		case "givenrep":
 			category = "rep.am";
-			categoryTitle = "♂️ Most frequent raper";
+			categoryTitle = "♂️ Most notorious raper";
+			break;
+		case "day.am":
+		case "dailies":
+		case "daily":
+			category = "day.am";
+			categoryTitle = "💲 Most times bailed out by the government";
 			break;
 		case "fishtotc":
 		case "fish":
 		case "fish_total":
+		case "total_fish":
 			category = "fishTotC";
 			categoryTitle = "🎣 Biggest baiters";
 			break;
 		case "gay":
 			category = "gay";
-			categoryTitle = "🐸 Gayest people";
+			categoryTitle = "🐸 Freakiest people";
 			break;
 		case "oktot":
 		case "ok":
+		case "oks":
 		case "okays":
 			category = "okTot";
 			categoryTitle = "🆗 Most okay people";
@@ -130,6 +138,7 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 		case "okserver":
 		case "ok_server":
 		case "server_ok":
+		case "guild_ok":
 			category = "okGuild";
 			categoryTitle = "🆗 Most okay servers";
 			usr = guild;
@@ -146,10 +155,12 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 			break;
 		case "pond.fishtot":
 		case "pond_caught":
+		case "pond_fish":
 		case "pond":
 			category = "pond.fishTot";
 			categoryTitle = "🎣 Biggest threats to fish populace";
 			break;
+		case "bottoms":
 		case "bottom":
 			category = "bottom";
 			categoryTitle = "👉👈 Biggest bottoms";
@@ -162,7 +173,9 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 			break;
 		case "bakery.tot":
 		case "bake":
+		case "bake_cookies":
 		case "bakery":
+		case "bakery_cookies":
 		case "baked":
 		case "cookies":
 			category = "bakery.tot";
@@ -173,18 +186,19 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 		case "bakeryval":
 		case "bakery_value":
 		case "bake_val":
+		case "bake_value":
 		case "bakeval":
 			category = "bakery.totVal";
 			categoryTitle = "🍪 Most dough earned";
 			valueFormatter = (val: string | number) => `$${formatNumber(val)}`;
 			break;
-		case "bakery.stat.99":
+		case `bakery.stat.${RARE_ID}`:
 		case "bakery_rare":
 		case "bakery_rares":
 		case "bake_rare":
 		case "bake_rares":
 		case "bakerare":
-			category = "bakery.stat.99";
+			category = `bakery.stat.${RARE_ID}`;
 			categoryTitle = "<:adam:1007621226379886652> Most RNG luck";
 			break;
 		default:
@@ -200,6 +214,8 @@ function getFieldValue(category: string, userRanking: okbot.RankingUser) {
 			return userRanking.rep?.am;
 		case "rep.v":
 			return userRanking.rep?.v;
+		case "day.am":
+			return userRanking.day?.am;
 		case "aqua.collTot":
 			return userRanking.aqua?.collTot;
 		case "pond.fishTot":
@@ -247,8 +263,8 @@ function createRankingEmbed(
 		.setColor(Colors.Aqua)
 		.setTitle(categoryTitle)
 		.addFields(
-			{ name: "User", value: rankingStringUser, inline: true },
-			{ name: "Value", value: rankingStringVal, inline: true }
+			{ name: "", value: rankingStringUser, inline: true },
+			{ name: "", value: rankingStringVal, inline: true }
 		);
 }
 
@@ -270,7 +286,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		if (!usr) usr = msg.author;
 	}
 
-	if (!category) category = "montot";
+	if (!category) category = "monTot";
 	const setCat = getCategoryFormat(category, usr, msg.guild);
 	if (!setCat?.categoryTitle)
 		return msg.reply({

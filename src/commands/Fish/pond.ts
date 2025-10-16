@@ -27,7 +27,7 @@ import {
 import { Fish, getRarityEmoji } from "./fish.js";
 
 export const name = "pond";
-export const description = "🎣 Make others catch fish for you";
+export const description = "🎣 Force others to catch fish and reap the profits";
 export const usage = `<"Collect" OR "Upgrade" OR "Sell" OR "Stats" OR "Set" OR "Levels"> <Username OR Mention>
 - <"Budget"> [New budget (prepend with + to increase, - to decrease, no sign to set, "Max" to set to maximum)]
 - <"Name"> <New pond name (blank to reset)>`;

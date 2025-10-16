@@ -189,13 +189,13 @@ export async function top50_chart_generate(
 				.datum(data[i])
 				.attr("d", area(data[i] as unknown as any))
 				.attr("fill", clr)
-				.attr("opacity", 0.3);
+				.attr("opacity", 0.5);
 			svg
 				.append("path")
 				.datum(data[i])
 				.attr("d", line(data[i] as unknown as any))
 				.attr("stroke", clr)
-				.attr("stroke-width", 1)
+				.attr("stroke-width", 2)
 				.attr("stroke-linejoin", "round")
 				.attr("stroke-linecap", "round")
 				.attr("fill", "none");

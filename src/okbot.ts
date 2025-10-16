@@ -123,7 +123,7 @@ bot.login(process.env.TOKEN);
 importCmds("commands");
 importCmds("commands_mod");
 
-bot.on("ready", async () => {
+bot.on("clientReady", async () => {
 	if (!bot.user) {
 		console.error("Invalid bot user.");
 		return;
