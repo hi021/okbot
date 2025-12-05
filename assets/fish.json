@@ -151,14 +151,6 @@
 		"rare": 9000,
 		"aq": 1
 	},
-	"Adam": {
-		"emoji": "<:adam:1007621226379886652>",
-		"type": "rare",
-		"sort": 1,
-		"price": 50,
-		"rare": 2000,
-		"aq": 2
-	},
 	"Turtle": {
 		"emoji": "🐢",
 		"type": "rare",
