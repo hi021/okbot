@@ -3,14 +3,15 @@ import dotenv from "dotenv";
 import { Collection, Db, MongoClient } from "mongodb";
 import { bot } from "../okbot.js";
 import { SET } from "../settings.js";
-import { Casino_tops } from "../volatile.js";
-import { db_store_init } from "./store.js";
 import { formatNumber } from "../utils.js";
+import { Casino_tops } from "../volatile.js";
+import { db_gay_init } from "./gay.js";
+import { db_store_init } from "./store.js";
 dotenv.config();
 
 let _db: MongoClient;
 
-export async function db_init(initStore = true) {
+export async function db_init(initStore = true, initGay = true) {
 	if (_db) {
 		console.warn("Trying to init a previously initialized DB!");
 		return _db;
@@ -19,12 +20,13 @@ export async function db_init(initStore = true) {
 	try {
 		if (!process.env.DB_URL) throw new Error("No DB URI provided.");
 
-		const db = await MongoClient.connect(process.env.DB_URL);
-		_db = db;
+		_db = await MongoClient.connect(process.env.DB_URL);
+		// TODO: Promise.All?
 		if (initStore) await db_store_init();
+		if (initGay) await db_gay_init();
 		console.log("DB initialized.");
 
-		return db;
+		return _db;
 	} catch (e) {
 		console.error("Failed to initialize database:\n", e);
 		return null;
@@ -52,12 +54,8 @@ export function db_ok_add(ok: string, guildId = "0") {
 	const $inc = { all: 1, [ok]: 1 };
 
 	db_get("ok").bulkWrite([
-		{
-			updateOne: { filter: { _id: guildId as any }, update: { $inc }, upsert: true }
-		},
-		{
-			updateOne: { filter: { _id: "_GLOBAL" as any }, update: { $inc }, upsert: true }
-		}
+		{updateOne: { filter: { _id: guildId as any }, update: { $inc }, upsert: true }},
+		{updateOne: { filter: { _id: "_GLOBAL" as any }, update: { $inc }, upsert: true }}
 	]);
 }
 
@@ -86,7 +84,7 @@ export async function db_ok_prune(server = "_GLOBAL") {
 	await db_get("ok").deleteOne({ _id: server as any });
 }
 
-////PLAYER
+//// PLAYER
 export async function db_plr_set(plr: okbot.User) {
 	const _id = plr._id;
 	if (!_id) return null;

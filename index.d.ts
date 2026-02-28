@@ -447,6 +447,16 @@ declare namespace okbot {
 	}
 	type CountryState = { nam: string[] };
 
+	type GayType = "Girls" | "Silly"
+	interface GayObject {
+		_id: number;
+		url: string;
+		source?: string | null; // author, only for Girls
+		upvotes: number;
+		downvotes: number;
+		impressions: number;
+	}
+
 	type CommandPermission = undefined | "EVERYONE" | "GUILD_ADMIN" | "BOT_ADMIN" | "BOT_OWNER"; // undefined defaults to EVERYONE
 	interface Command {
 		name: string;

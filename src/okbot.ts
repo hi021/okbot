@@ -30,7 +30,7 @@ export async function loadBot() {
 	if (SET_INIT()) console.log("Loaded settings.");
 
 	if (!process.env.DB_URL) console.log("No DB_URL provided - initializing without database access.");
-	else await db_init(process.env.INIT_STORE == "true");
+	else await db_init(process.env.INIT_STORE == "true", process.env.INIT_GAY == "true");
 
 	if (bot.commands.get("fish")?.fishInit()) console.log("Loaded fish.");
 	if (process.env.DB_URL && bot.commands.get("store")?.loadStoreItems()) console.log("Loaded store items.");
@@ -101,18 +101,12 @@ async function executeCommandOrAction(msg: OmitPartialGroupDMChannel<Message<tru
 
 	if (cmd.restrict && cmd.restrict !== "EVERYONE") {
 		if (cmd.restrict === "GUILD_ADMIN") {
-			if (
-				!(await msg.guild.members.fetch(msg.author.id)).permissions.has(PermissionsBitField.Flags.ManageGuild)
-			) {
-				msg.reply("You do not have the required permissions to use this command (GUILD_ADMIN).");
-				return;
-			}
+			if (!(await msg.guild.members.fetch(msg.author.id)).permissions.has(PermissionsBitField.Flags.ManageGuild))
+			return msg.reply("You do not have the required permissions to use this command (`GUILD_ADMIN`).");
 		} else {
 			const permArray = SET[cmd.restrict as "BOT_OWNER" | "BOT_ADMIN"];
-			if (!permArray?.includes(msg.author.id)) {
-				msg.reply(`You do not have the required permissions to use this command (${cmd.restrict}).`);
-				return;
-			}
+			if (!permArray?.includes(msg.author.id))
+				return msg.reply(`You do not have the required permissions to use this command (\`${cmd.restrict}\`).`);
 		}
 	}
 
@@ -124,12 +118,10 @@ importCmds("commands");
 importCmds("commands_mod");
 
 bot.on("clientReady", async () => {
-	if (!bot.user) {
-		console.error("Invalid bot user.");
-		return;
-	}
+	if (!bot.user)
+		return console.error("Invalid client user.");
 
-	console.log("Logged in as " + bot.user.tag);
+	console.log(`Logged in as ${bot.user.tag}`);
 	await loadBot();
 
 	bot.on("messageCreate", async msg => {
@@ -147,9 +139,9 @@ bot.on("clientReady", async () => {
 				`Hi! My prefix here is \`${prefix}\`.\nYou can use \`${prefix}help\` to view my commands.`
 			);
 
-		countOk(msg);
-
-		try {
+			
+			try {
+			countOk(msg);
 			executeCommandOrAction(msg, prefix);
 		} catch (e) {
 			console.error(`Exception when executing action '${msg.content.split(" ")[0]}':`, e);
