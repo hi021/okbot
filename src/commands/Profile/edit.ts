@@ -17,12 +17,7 @@ function listEditable() {
 	return msge;
 }
 
-const defaultEditFunction = async (
-	usr: User,
-	fieldValue: string,
-	fieldName: string,
-	fieldIdSchema: string
-) => {
+const defaultEditFunction = async (usr: User, fieldValue: string, fieldName: string, fieldIdSchema: string) => {
 	if (!fieldValue) {
 		db_plr_set({
 			_id: usr.id,

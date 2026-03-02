@@ -58,8 +58,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		}
 		fields.push({ name: cat ? "\u200b" : i, value: s });
 	}
-	if (total <= 0)
-		return sendSimpleMessage(msg, `\`${usr.displayName}\` has no \`${cat}\` items in inventory.`);
+	if (total <= 0) return sendSimpleMessage(msg, `\`${usr.displayName}\` has no \`${cat}\` items in inventory.`);
 
 	const msge = new EmbedBuilder()
 		.setAuthor({

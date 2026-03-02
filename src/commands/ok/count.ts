@@ -35,12 +35,13 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		countColumn += formatNumber(ok.count) + "\n";
 	}
 
+	// TODO pagination
 	msge
 		.setTitle(title)
 		.addFields(
-			{ name: "\u200b", value: typeColumn, inline: true },
-			{ name: "\u200b", value: countColumn, inline: true },
-			{ name: "\u200b", value: "\u200b", inline: true },
+			{ name: "", value: typeColumn, inline: true },
+			{ name: "", value: countColumn, inline: true },
+			{ name: "", value: "\u200b", inline: true },
 			{ name: "Unique", value: typeCount.toString(), inline: true },
 			{ name: "Total", value: formatNumber(okarr.total), inline: true }
 		);

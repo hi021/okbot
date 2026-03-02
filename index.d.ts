@@ -204,26 +204,7 @@ declare namespace okbot {
 
 	type MineEquipmentItemType = "sword" | "pick" | "ring" | "armor" | "collar";
 	type MineAnyItemType = MineEquipmentItemType | "mineral" | "enemy";
-	type MineEquipmentTier =
-		| 1
-		| 2
-		| 3
-		| 4
-		| 5
-		| 6
-		| 7
-		| 8
-		| 9
-		| 10
-		| 11
-		| 12
-		| 13
-		| 14
-		| 15
-		| 16
-		| 17
-		| 18
-		| 19;
+	type MineEquipmentTier = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19;
 	interface MineEquipmentItem {
 		name: string;
 		tier: MineEquipmentTier;
@@ -447,11 +428,13 @@ declare namespace okbot {
 	}
 	type CountryState = { nam: string[] };
 
-	type GayType = "Girls" | "Silly"
-	interface GayObject {
+	type GayType = "Girls" | "Silly";
+	interface GayObjectPlain {
 		_id: number;
 		url: string;
 		source?: string | null; // author, only for Girls
+	}
+	interface GayObject extends GayObjectPlain {
 		upvotes: number;
 		downvotes: number;
 		impressions: number;

@@ -79,10 +79,7 @@ export async function db_guild_delete_reaction(reaction: string, response: strin
 		} else {
 			//delete only one of the responses otherwise
 			Guilds[guildId].cr![reaction] = Guilds[guildId].cr![reaction].filter(a => a !== response);
-			return await db_get("guilds").updateOne(
-				{ _id: guildId as any },
-				{ $pull: { [field]: response as any } }
-			);
+			return await db_get("guilds").updateOne({ _id: guildId as any }, { $pull: { [field]: response as any } });
 		}
 	} catch (err) {
 		console.error(err);

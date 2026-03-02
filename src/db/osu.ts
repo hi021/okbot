@@ -17,11 +17,7 @@ export async function db_osu_get_players(ids: number[], projection?: any) {
 
 export async function db_osu_find_players(filter: any, projection?: any) {
 	try {
-		return await db_get_client()
-			.db("ranking-static")
-			.collection("players")
-			.find(filter, { projection })
-			.toArray();
+		return await db_get_client().db("ranking-static").collection("players").find(filter, { projection }).toArray();
 	} catch (e) {
 		console.error("Failed to find osu players:\n", e);
 		return null;

@@ -48,8 +48,7 @@ export function uniqueArray<T>(array: Array<T>): Array<T> {
 	return [...new Set(array.map(obj => JSON.stringify(obj)))].map(str => JSON.parse(str));
 }
 
-export const capitalizeFirstLetter = (str?: string) =>
-	str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : "";
+export const capitalizeFirstLetter = (str?: string) => (str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : "");
 
 export const isVowel = (letter: string) => ["a", "e", "i", "o", "u", "y"].includes(letter.toLowerCase());
 
@@ -155,12 +154,7 @@ export function monthToShortString(month: number) {
 	}
 }
 
-export function formatDate(
-	dat: Date,
-	format: "user" | "alphabetical" = "user",
-	compareToday?: string,
-	time?: boolean
-) {
+export function formatDate(dat: Date, format: "user" | "alphabetical" = "user", compareToday?: string, time?: boolean) {
 	let formatted;
 	if (format === "user") {
 		formatted = `${dat.getUTCDate()} ${monthToShortString(dat.getUTCMonth())}, ${dat.getUTCFullYear()}`;
@@ -300,11 +294,7 @@ export function createUserMsgEmbed(user?: User, color?: ColorResolvable) {
 	return msg;
 }
 
-export function createSimpleMessage(
-	description: string,
-	color: ColorResolvable = Colors.Red,
-	title?: string
-) {
+export function createSimpleMessage(description: string, color: ColorResolvable = Colors.Red, title?: string) {
 	const msge = new EmbedBuilder().setColor(color).setDescription(description);
 	if (title) msge.setTitle(title);
 	return msge;
@@ -410,8 +400,7 @@ export async function addCasinoStat(
 			(stat as any).doubleWin == undefined ? ((stat as any).doubleWin = 1) : (stat as any).doubleWin++;
 	}
 
-	if (additional?.slotIsBigWin)
-		(stat as any).bigWin == undefined ? ((stat as any).bigWin = 1) : (stat as any).bigWin++;
+	if (additional?.slotIsBigWin) (stat as any).bigWin == undefined ? ((stat as any).bigWin = 1) : (stat as any).bigWin++;
 	if (additional?.diceScore)
 		(stat as any).totalScore == undefined
 			? ((stat as any).totalScore = additional.diceScore)

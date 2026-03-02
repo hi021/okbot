@@ -1,12 +1,6 @@
 import { Colors, userMention } from "discord.js";
 import { db_plr_set } from "../../db/db.js";
-import {
-	createSimpleMessage,
-	formatDoler,
-	getUserFromMsg,
-	parseNumberSuffix,
-	sendSimpleMessage
-} from "../../utils.js";
+import { createSimpleMessage, formatDoler, getUserFromMsg, parseNumberSuffix, sendSimpleMessage } from "../../utils.js";
 
 export const name = "setmoney";
 export const alias = ["mon"];
@@ -23,9 +17,6 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (!usr) return sendSimpleMessage(msg, "User not found.");
 
 	await db_plr_set({ _id: usr.id, mon });
-	const msge = createSimpleMessage(
-		`Set ${userMention(usr.id)}'s money to ${formatDoler(mon)}.`,
-		Colors.DarkGreen
-	);
+	const msge = createSimpleMessage(`Set ${userMention(usr.id)}'s money to ${formatDoler(mon)}.`, Colors.DarkGreen);
 	msg.reply({ embeds: [msge] });
 }

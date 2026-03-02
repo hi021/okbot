@@ -71,10 +71,7 @@ bot.on("interactionCreate", async interaction => {
 		const cost = BakeryLevels[lv].cost;
 		const mon = plrdat?.mon ?? 0;
 		if (cost > mon)
-			return sendEphemeralReply(
-				interaction,
-				`You need ${formatDoler(cost - mon)} more to afford this upgrade.`
-			);
+			return sendEphemeralReply(interaction, `You need ${formatDoler(cost - mon)} more to afford this upgrade.`);
 
 		const now = nowSeconds();
 		if (!plrdat?.bakery) {
@@ -151,10 +148,7 @@ bot.on("interactionCreate", async interaction => {
 	}
 	if (split[0] === "bake_collect") {
 		if (id !== interaction.user.id)
-			return sendEphemeralReply(
-				interaction,
-				`Don't try to steal others' cookies, ${interaction.user.displayName}!`
-			);
+			return sendEphemeralReply(interaction, `Don't try to steal others' cookies, ${interaction.user.displayName}!`);
 
 		const plrdat = await db_plr_get({ _id: interaction.user.id, bakery: 1 });
 		if (!plrdat?.bakery) return;
@@ -712,8 +706,7 @@ function showCookieList(bakery: okbot.Bakery) {
 
 		text += `${idText} ${showItemName(BakeryCookies[i])}
 		**${BakeryCookies[i].time}**s to bake | valued at ${formatDoler(BakeryCookies[i].value)}`;
-		if (ovens.length)
-			text += `\n-# Can be baked in oven${ovens.length === 1 ? "" : "s"} \`#${ovens.join(", ")}\``;
+		if (ovens.length) text += `\n-# Can be baked in oven${ovens.length === 1 ? "" : "s"} \`#${ovens.join(", ")}\``;
 
 		if (baked) text += `\n-# Baked **${formatNumber(baked)}** so far `;
 		if (req) {
@@ -1073,8 +1066,7 @@ Use 'bakery explain' to view a detailed breakdown of your cookies' bake time`
 	const ovensC = bakery.ovens.length;
 	const staff = showStaff(bakery.staff);
 	const staffC = bakery.staff.length;
-	const staffMultiString =
-		staffMulti.base === 1 ? "" : ` (${Math.round((1 / staffMulti.base) * 100) / 100}x speed)`;
+	const staffMultiString = staffMulti.base === 1 ? "" : ` (${Math.round((1 / staffMulti.base) * 100) / 100}x speed)`;
 	const invBar = drawProgressBar(Math.round((bakery.toCollTot / bakery.maxColl) * 10), 10, "🟨");
 	const invString = `**${formatNumber(bakery.toCollTot)}**/${formatNumber(bakery.maxColl)} 🍪`;
 
@@ -1094,10 +1086,7 @@ Use 'bakery explain' to view a detailed breakdown of your cookies' bake time`
 	const components = bakery.toCollTot
 		? [
 				new ActionRowBuilder<ButtonBuilder>().addComponents(
-					new ButtonBuilder()
-						.setCustomId(`bake_collect-${user.id}`)
-						.setStyle(ButtonStyle.Primary)
-						.setLabel("Collect")
+					new ButtonBuilder().setCustomId(`bake_collect-${user.id}`).setStyle(ButtonStyle.Primary).setLabel("Collect")
 				)
 			]
 		: [];
@@ -1124,9 +1113,7 @@ async function showStats(usr: User, bakery: okbot.Bakery) {
 		stringAmount += `x**${formatNumber(bakery.stat[i])}**${e_blank}\n`;
 	}
 
-	msge.setDescription(
-		`Opened <t:${bakery.created}:D>\nLevel **${bakery.lv}** achieved <t:${bakery.lvTime}:R>.`
-	);
+	msge.setDescription(`Opened <t:${bakery.created}:D>\nLevel **${bakery.lv}** achieved <t:${bakery.lvTime}:R>.`);
 	msge.addFields(
 		{ name: "\u200b", value: stringName, inline: true },
 		{ name: "\u200b", value: stringAmount, inline: true },
@@ -1312,8 +1299,7 @@ async function executeUpgrade(msg: okbot.Message) {
 	const plrdat = await db_plr_get({ _id: id, bakery: 1, mon: 1, monLv: 1 });
 	const bakery = plrdat?.bakery ? bake(plrdat?.bakery) : undefined;
 	const lv = bakery?.lv ?? 0;
-	if (!BakeryLevels[lv])
-		return sendSimpleMessage<okbot.Message>(msg, "Your bakery is already at the maximum level!");
+	if (!BakeryLevels[lv]) return sendSimpleMessage<okbot.Message>(msg, "Your bakery is already at the maximum level!");
 
 	const requirements = checkBakeryLevelRequirements(plrdat?.monLv ?? 0, bakery);
 	const mon = plrdat?.mon ?? 0;
@@ -1321,14 +1307,8 @@ async function executeUpgrade(msg: okbot.Message) {
 		mon >= BakeryLevels[lv].cost && requirements.met
 			? [
 					new ActionRowBuilder<ButtonBuilder>().addComponents(
-						new ButtonBuilder()
-							.setCustomId(`bake_up_confirm-${id}`)
-							.setStyle(ButtonStyle.Success)
-							.setLabel("Upgrade"),
-						new ButtonBuilder()
-							.setCustomId(`bake_up_cancel-${id}`)
-							.setStyle(ButtonStyle.Danger)
-							.setLabel("Cancel")
+						new ButtonBuilder().setCustomId(`bake_up_confirm-${id}`).setStyle(ButtonStyle.Success).setLabel("Upgrade"),
+						new ButtonBuilder().setCustomId(`bake_up_cancel-${id}`).setStyle(ButtonStyle.Danger).setLabel("Cancel")
 					)
 				]
 			: [];
@@ -1463,11 +1443,7 @@ async function executeEdit(msg: okbot.Message, args: string[]) {
 		//set name
 		const nam = args.join(" ").slice(0, 96);
 		await db_plr_set({ _id: msg.author.id, "bakery.nam": nam } as any);
-		return sendSimpleMessage<okbot.Message>(
-			msg,
-			"Set your bakery's name to `" + nam + "`.",
-			Colors.DarkGreen
-		);
+		return sendSimpleMessage<okbot.Message>(msg, "Set your bakery's name to `" + nam + "`.", Colors.DarkGreen);
 	}
 
 	if (args.length < 2) return sendSimpleMessage<okbot.Message>(msg, usageEdit, Colors.White);
@@ -1492,10 +1468,7 @@ async function executeEdit(msg: okbot.Message, args: string[]) {
 
 		if (action === "sell") {
 			if (!ovenObject)
-				return sendSimpleMessage<okbot.Message>(
-					msg,
-					"You don't have any oven to sell at spot `#" + index + "`!"
-				);
+				return sendSimpleMessage<okbot.Message>(msg, "You don't have any oven to sell at spot `#" + index + "`!");
 
 			bakery.ovens[index - 1] = null;
 
@@ -1598,10 +1571,7 @@ async function executeEdit(msg: okbot.Message, args: string[]) {
 					"Please provide the name (e.g. Plain) or index (e.g. 1) of the cookie you wish to bake!"
 				);
 			if (!ovenObject)
-				return sendSimpleMessage<okbot.Message>(
-					msg,
-					"You don't have any oven to bake with at spot `#" + index + "`!"
-				);
+				return sendSimpleMessage<okbot.Message>(msg, "You don't have any oven to bake with at spot `#" + index + "`!");
 
 			let cookie;
 			let cookieId = parseInt(args[0]);
@@ -1668,10 +1638,7 @@ async function executeEdit(msg: okbot.Message, args: string[]) {
 
 		if (action === "fire" || action === "sell") {
 			if (!staffObject)
-				return sendSimpleMessage<okbot.Message>(
-					msg,
-					"You don't have any worker to fire from spot `#" + index + "`!"
-				);
+				return sendSimpleMessage<okbot.Message>(msg, "You don't have any worker to fire from spot `#" + index + "`!");
 
 			bakery.staff[index - 1] = null;
 			await db_plr_set({ _id: msg.author.id, bakery });

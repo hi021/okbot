@@ -33,8 +33,7 @@ export const usage = `<"Collect" OR "Upgrade" OR "Sell" OR "Stats" OR "Set" OR "
 - <"Name"> <New pond name (blank to reset)>`;
 export const usageDetail =
 	"Will catch fish as long as there's storage space and the budget is at least 10 💵 - casting still costs.\nWon't find collectors' type items.";
-const usageBudget =
-	"budget [(+ to increase, - to decrease, no sign to set) Amount OR \"Max\"]\ne.g. 'budget +250'";
+const usageBudget = "budget [(+ to increase, - to decrease, no sign to set) Amount OR \"Max\"]\ne.g. 'budget +250'";
 
 bot.on("interactionCreate", async interaction => {
 	if (!interaction.isButton()) return;
@@ -49,24 +48,17 @@ bot.on("interactionCreate", async interaction => {
 
 	const id = split[1];
 	if (id !== interaction.user.id)
-		return sendEphemeralReply(
-			interaction,
-			"Sorry, you cannot make managerial decisions on behalf of other users."
-		);
+		return sendEphemeralReply(interaction, "Sorry, you cannot make managerial decisions on behalf of other users.");
 
 	if (split[0] === "pond_up_confirm") {
 		const plrdat = await db_plr_get({ _id: id, mon: 1, pond: 1 });
 		const lv = plrdat?.pond?.lv ?? 0;
-		if (lv >= PondLevels.length)
-			return sendEphemeralReply(interaction, "Your pond is already at the maximum level!");
+		if (lv >= PondLevels.length) return sendEphemeralReply(interaction, "Your pond is already at the maximum level!");
 
 		const cost = PondLevels[lv].cost;
 		const mon = plrdat?.mon ?? 0;
 		if (cost > mon)
-			return sendEphemeralReply(
-				interaction,
-				`You need ${formatDoler(cost - mon)} more to afford this upgrade.`
-			);
+			return sendEphemeralReply(interaction, `You need ${formatDoler(cost - mon)} more to afford this upgrade.`);
 
 		const now = Math.round(new Date().getTime() / 1000);
 		let pond;
@@ -107,11 +99,7 @@ bot.on("interactionCreate", async interaction => {
 		let value = 0;
 		for (const i in pondAfterCatch.fish) value += Fish.f[i].price * pondAfterCatch.fish[i];
 
-		const monLv = calcMoneyLevelsGain<Interaction>(
-			plrdat?.monLv ?? 0,
-			(plrdat?.monTot ?? 0) + value,
-			interaction
-		);
+		const monLv = calcMoneyLevelsGain<Interaction>(plrdat?.monLv ?? 0, (plrdat?.monTot ?? 0) + value, interaction);
 		await db_plr_add({ _id: id, mon: value, monTot: value, monLv: monLv, income: { fish: value } });
 		await db_plr_set({ _id: id, pond: { ...pondAfterCatch, fish: {}, fishNum: 0 } });
 
@@ -314,11 +302,7 @@ export function pondUpdateFish(pond: okbot.Pond, now?: number) {
 	if (!now) now = Math.round(new Date().getTime() / 1000);
 	const fishCost = SET.FISH_COST_POND ?? 1;
 	const caughtTime = (now - pond.col) / pond.interval;
-	const toCatch = Math.min(
-		Math.floor(caughtTime),
-		pond.fishMax - pond.fishNum,
-		Math.floor(pond.budget / fishCost)
-	);
+	const toCatch = Math.min(Math.floor(caughtTime), pond.fishMax - pond.fishNum, Math.floor(pond.budget / fishCost));
 
 	pond.col = Math.round(now - pond.interval * (caughtTime % 1)); // don't reset next fish' catch timer
 	if (toCatch <= 0) return pond;
@@ -342,9 +326,7 @@ function displayLevels() {
 	for (const i in PondLevels) {
 		const stat = PondLevels[i];
 		const time =
-			stat.interval >= 60
-				? `${Math.round(Math.round(stat.interval * 100) / 60) / 100} m`
-				: `${stat.interval} s`;
+			stat.interval >= 60 ? `${Math.round(Math.round(stat.interval * 100) / 60) / 100} m` : `${stat.interval} s`;
 		msge.addFields({
 			name: `Level ${Number(i) + 1}`,
 			value: `\`${formatNumber(stat.cost).padStart(7, " ")}\` 💵 | Holds **${formatNumber(stat.fishMax)}** fish ● Catch every **${time}**`
@@ -356,9 +338,7 @@ function displayLevels() {
 
 // lv is current pond level; returns EmbedBuilder with upgrade confirmation; need to check if the level isn't max beforehand
 function displayUpgradeStats(lv: number, money: number) {
-	const msge = new EmbedBuilder()
-		.setColor(Colors.White)
-		.setDescription(showUpgradeCost(PondLevels[lv].cost, money));
+	const msge = new EmbedBuilder().setColor(Colors.White).setDescription(showUpgradeCost(PondLevels[lv].cost, money));
 
 	if (lv === 0)
 		return msge
@@ -512,8 +492,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		case "up": {
 			const plrdat = await db_plr_get({ _id: usr.id, pond: 1, mon: 1 });
 			const lv = plrdat?.pond?.lv ?? 0;
-			if (lv >= PondLevels.length)
-				return sendSimpleMessage(msg, "Your pond is already at the maximum level!");
+			if (lv >= PondLevels.length) return sendSimpleMessage(msg, "Your pond is already at the maximum level!");
 
 			const cost = PondLevels[lv].cost;
 			const mon = plrdat?.mon ?? 0;
@@ -541,8 +520,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			if (!plrdat?.pond) return sendNoPondMessage(msg);
 
 			const pondAfterCatch = pondUpdateFish(plrdat.pond);
-			if (!pondAfterCatch.fishNum)
-				return sendSimpleMessage(msg, "🕸️ *There are no fish stored in your pond...*");
+			if (!pondAfterCatch.fishNum) return sendSimpleMessage(msg, "🕸️ *There are no fish stored in your pond...*");
 
 			const collected = getFishToCollect(pondAfterCatch);
 
@@ -559,8 +537,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			if (!plrdat?.pond) return sendNoPondMessage(msg);
 
 			const pondAfterCatch = pondUpdateFish(plrdat.pond);
-			if (!pondAfterCatch.fishNum)
-				return sendSimpleMessage(msg, "🕸️ *There are no fish stored in your pond...*");
+			if (!pondAfterCatch.fishNum) return sendSimpleMessage(msg, "🕸️ *There are no fish stored in your pond...*");
 
 			let value = 0;
 			for (const i in pondAfterCatch.fish) value += Fish.f[i].price * pondAfterCatch.fish[i];
@@ -575,10 +552,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 					.setCustomId(`pond_sell_confirm-${usr.id}`)
 					.setLabel("Confirm")
 					.setStyle(ButtonStyle.Success),
-				new ButtonBuilder()
-					.setCustomId(`pond_sell_cancel-${usr.id}`)
-					.setLabel("Cancel")
-					.setStyle(ButtonStyle.Danger)
+				new ButtonBuilder().setCustomId(`pond_sell_cancel-${usr.id}`).setLabel("Cancel").setStyle(ButtonStyle.Danger)
 			);
 
 			return await msg.reply({ embeds: [msge], components: [row] });
@@ -608,10 +582,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				);
 
 			if (newBudget < 0)
-				return sendSimpleMessage(
-					msg,
-					`There's only ${formatDoler(pondAfterCatch.budget)} in the current budget.`
-				);
+				return sendSimpleMessage(msg, `There's only ${formatDoler(pondAfterCatch.budget)} in the current budget.`);
 			if (newBudget > pondAfterCatch.budgetMax)
 				return sendSimpleMessage(
 					msg,
@@ -679,8 +650,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			// assume user wants to display someone's pond
 			args.unshift(action);
 			const usr = await getUserFromMsg(msg, args);
-			if (!usr)
-				return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
+			if (!usr) return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
 
 			const plrdat = await db_plr_get({ _id: usr.id, pond: 1 });
 			if (!plrdat?.pond) return sendNoPondMessage(msg, usr);

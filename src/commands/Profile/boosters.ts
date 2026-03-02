@@ -25,8 +25,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	for (const i in plrdat.boosters) {
 		const valid = checkBoosterValidity(plrdat, i);
 		if (!valid) continue;
-		if ((valid as okbot.ExpiredBooster).cooldownRemaining > 0)
-			boostersOnCooldown.push(valid as okbot.ExpiredBooster);
+		if ((valid as okbot.ExpiredBooster).cooldownRemaining > 0) boostersOnCooldown.push(valid as okbot.ExpiredBooster);
 		else if ((valid as okbot.TimedBooster).time)
 			boostersActive.push(valid as okbot.TimedBooster & { timeRemaining: number });
 	}
@@ -42,8 +41,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		const timeRatio = Math.round((boostersActive[i].timeRemaining / boostersActive[i].time) * 10);
 		msge.addFields({
 			name: boostersActive[i].name,
-			value:
-				drawProgressBar(timeRatio, 10) + "\n`" + formatMilliseconds(boostersActive[i].timeRemaining) + "` ⏰"
+			value: drawProgressBar(timeRatio, 10) + "\n`" + formatMilliseconds(boostersActive[i].timeRemaining) + "` ⏰"
 		});
 	}
 	const cooldown = (SET.BOOSTER_COOLDOWN || 57600) - (plrdat.boosterCd ?? 0);

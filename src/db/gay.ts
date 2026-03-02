@@ -1,39 +1,79 @@
 import fs from "fs";
+import { AnyBulkWriteOperation, Collection } from "mongodb";
+import path from "path";
 import { db_get } from "./db.js";
-import { Collection } from "mongodb";
 
 const assetPath = "../assets/gay/";
 
-// TODO
 export async function db_gay_init() {
 	try {
-		const col = db_get("gay");
+		const girlsCol = db_get("gay_girls");
+		const sillyCol = db_get("gay_silly");
 
-		const gay: okbot.Item[] = [];
-		fs.readdirSync(assetPath).forEach(f => {
-			const items: okbot.Item[] = JSON.parse(fs.readFileSync(assetPath + f, { encoding: "utf-8" }));
-			for (const i in items) {
-				gay.push(items[i]);
-			}
-		});
+		// TODO: Promise.all?
+		const girlsGay = await db_gay_parse("girls.json");
+		const sillyGay = await db_gay_parse("silly.json");
 
-		await col.insertMany(gay as any);
-		await col.createIndex({ cat: "text" });
-		console.log("Gay DB initialized.");
+		await db_gay_update_and_upsert(girlsCol, girlsGay);
+		await db_gay_update_and_upsert(sillyCol, sillyGay);
+
+		if (girlsGay.length && sillyGay.length) console.log("Gay DB initialized.");
 	} catch (err) {
 		console.warn("Failed to initialize gay DB:", err);
 	}
 }
 
 export async function db_get_gay(type: okbot.GayType, id?: number) {
-	const col = db_get(`gay_${type.toLowerCase}`);
-	return id ? db_get_gay_from_collection_by_id(col, id) : db_get_gay_from_collection(col);
+	const coll = db_get(`gay_${type.toLowerCase()}`);
+	return id ? db_get_gay_from_collection_by_id(coll, id) : db_get_gay_from_collection(coll);
 }
 
-async function db_get_gay_from_collection(col: Collection) {
-	return await col.aggregate([{ $sample: { size: 1 } }]).next() as null | okbot.GayObject;
+async function db_gay_parse(filename: string) {
+	const filePath = path.join(assetPath, filename);
+	try {
+		if (filename == "silly.json") return db_gay_parse_url_array(filePath);
+		return JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" })) as okbot.GayObjectPlain[];
+	} catch (e) {
+		console.warn(`Failed to open or parse '${filePath}'. Continuing gayless.`);
+		return [];
+	}
 }
 
-async function db_get_gay_from_collection_by_id(col: Collection, id: number) {
-	return await col.findOne({_id: id as any}) as null | okbot.GayObject;
+async function db_gay_parse_url_array(filePath: string) {
+	const urls = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" })) as string[];
+	const gay = new Array<okbot.GayObjectPlain>(urls.length);
+	for (let i = 1; i <= urls.length; ++i) gay[i - 1] = { url: urls[i - 1], _id: i };
+
+	return gay;
+}
+
+async function db_gay_update_and_upsert(coll: Collection, gay: okbot.GayObjectPlain[]) {
+	const operations = new Array<AnyBulkWriteOperation<any>>(gay.length);
+	for (let i = 0; i < gay.length; ++i)
+		operations[i] = {
+			updateOne: {
+				filter: { _id: gay[i]._id as any },
+				update: { $set: gay[i] },
+				upsert: true
+			}
+		};
+
+	await coll.bulkWrite(operations, { ordered: false });
+}
+
+async function db_get_gay_from_collection(coll: Collection) {
+	return (await coll.aggregate([{ $sample: { size: 1 } }]).next()) as null | okbot.GayObject;
+}
+
+async function db_get_gay_from_collection_by_id(coll: Collection, id: number) {
+	return (await coll.findOne({ _id: id as any })) as null | okbot.GayObject;
+}
+
+export async function db_gay_add(gay: okbot.GayObject, type: okbot.GayType) {
+	const _id = gay._id;
+	if (!_id) return;
+	delete (gay as any)._id;
+
+	const coll = db_get(`gay_${type.toLowerCase()}`);
+	await coll.updateOne({ _id: _id as any }, { $inc: gay as any });
 }

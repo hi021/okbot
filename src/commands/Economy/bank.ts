@@ -1,12 +1,4 @@
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	Snowflake,
-	User
-} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Snowflake, User } from "discord.js";
 import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -46,10 +38,7 @@ bot.on("interactionCreate", async interaction => {
 		const cost = BankMemberships[lv].cost;
 		const mon = plrdat?.mon ?? 0;
 		if (cost > mon)
-			return sendEphemeralReply(
-				interaction,
-				`You need ${formatDoler(cost - mon)} more to afford this upgrade.`
-			);
+			return sendEphemeralReply(interaction, `You need ${formatDoler(cost - mon)} more to afford this upgrade.`);
 
 		const now = nowSeconds();
 		await db_plr_set({
@@ -107,12 +96,7 @@ export const BankMemberships = [
 ];
 
 // plr = {bank, monTot, monLv}, pass a message to sendMessage to inform about potential level up
-export async function bankInterest(
-	plr: okbot.User,
-	user: User,
-	now = nowSeconds(),
-	sendMessage?: okbot.Message
-) {
+export async function bankInterest(plr: okbot.User, user: User, now = nowSeconds(), sendMessage?: okbot.Message) {
 	let bank = plr.bank;
 	if (bank?.balance == null) {
 		bank = { ...bank, balance: bank?.balance ?? 0 };
@@ -220,8 +204,7 @@ function showStats(bank: okbot.Bank, user: User) {
 		name: `${user.displayName}'s bank stats`,
 		iconURL: user.displayAvatarURL({ forceStatic: true, size: 32 })
 	});
-	if (!bank.lastInterest || bank.totDeposit == null)
-		return msge.setDescription("🕸️ *There are no stats to show...*");
+	if (!bank.lastInterest || bank.totDeposit == null) return msge.setDescription("🕸️ *There are no stats to show...*");
 
 	const now = nowSeconds();
 	const lastWithdraw = getLastWithdraw(bank, now);
@@ -232,9 +215,7 @@ function showStats(bank: okbot.Bank, user: User) {
 			name: "Last withdrawn",
 			value: bank.lastWithdraw
 				? `<t:${bank.lastWithdraw}:R>${
-						lastWithdraw.withdrawFee
-							? `\nCan withdraw again <t:${now + lastWithdraw.untilCanWithdraw}:R>`
-							: ""
+						lastWithdraw.withdrawFee ? `\nCan withdraw again <t:${now + lastWithdraw.untilCanWithdraw}:R>` : ""
 					}`
 				: "Never"
 		},
@@ -242,9 +223,7 @@ function showStats(bank: okbot.Bank, user: User) {
 			name: "Last interest payment",
 			value:
 				(bank.lastInterest ? `<t:${bank.lastInterest}:R>` : "Never") +
-				(untilNextInterest <= 0
-					? "\nNext payment due now! ✨"
-					: `\nNext payment <t:${now + untilNextInterest}:R>`)
+				(untilNextInterest <= 0 ? "\nNext payment due now! ✨" : `\nNext payment <t:${now + untilNextInterest}:R>`)
 		},
 		{ name: "Total deposited", value: formatDoler(bank.totDeposit, false) }
 	);
@@ -253,8 +232,7 @@ function showStats(bank: okbot.Bank, user: User) {
 }
 
 async function withdraw(am: number, msg: okbot.Message, bank: okbot.Bank, id: Snowflake) {
-	if (bank.balance < am)
-		return sendSimpleMessage(msg, `There is only ${formatDoler(bank.balance)} in your account.`);
+	if (bank.balance < am) return sendSimpleMessage(msg, `There is only ${formatDoler(bank.balance)} in your account.`);
 
 	const now = nowSeconds();
 	const lastWithdraw = getLastWithdraw(bank, now);
@@ -411,10 +389,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 									.setCustomId(`bank_up_confirm-${id}`)
 									.setStyle(ButtonStyle.Success)
 									.setLabel("Upgrade"),
-								new ButtonBuilder()
-									.setCustomId(`bank_up_cancel-${id}`)
-									.setStyle(ButtonStyle.Danger)
-									.setLabel("Cancel")
+								new ButtonBuilder().setCustomId(`bank_up_cancel-${id}`).setStyle(ButtonStyle.Danger).setLabel("Cancel")
 							)
 						]
 					: [];

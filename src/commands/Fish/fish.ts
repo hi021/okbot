@@ -161,9 +161,7 @@ async function fish(msg: okbot.Message) {
 			rarestSort = Fish.f[i].sort;
 		}
 		desc +=
-			fishCaught[i].am > 1
-				? `${fishCaught[i].am}x ${Fish.f[i].emoji} **${i}**, `
-				: `${Fish.f[i].emoji} **${i}**, `;
+			fishCaught[i].am > 1 ? `${fishCaught[i].am}x ${Fish.f[i].emoji} **${i}**, ` : `${Fish.f[i].emoji} **${i}**, `;
 
 		if (Fish.f[i].type === "rare") raresCaught += fishCaught[i].am;
 		if (fishCaught[i].am >= 3 && sameFishCaught < fishCaught[i].am) sameFishCaught = fishCaught[i].am;
@@ -176,8 +174,7 @@ async function fish(msg: okbot.Message) {
 	);
 
 	let description;
-	if (collectorsPartGlobal)
-		description = `> **Extremely rare collection piece - part ${collectorsPartGlobal}/5!**`;
+	if (collectorsPartGlobal) description = `> **Extremely rare collection piece - part ${collectorsPartGlobal}/5!**`;
 	else if (raresCaught >= 2) description = `> Caught **${raresCaught}** rare fish at once!`;
 	if (sameFishCaught) {
 		if (description) description += "\n> ";
@@ -458,10 +455,7 @@ function fishlist(msg: okbot.Message, type?: okbot.FishRarity) {
 
 	const msge = new EmbedBuilder()
 		.setAuthor({ name: `${type ? type + " f" : "F"}ish details` })
-		.addFields(
-			{ name: "\u200b", value: namstring, inline: true },
-			{ name: "\u200b", value: coststring, inline: true }
-		)
+		.addFields({ name: "\u200b", value: namstring, inline: true }, { name: "\u200b", value: coststring, inline: true })
 		.setColor(Colors.White);
 
 	msg.reply({ embeds: [msge], allowedMentions: { repliedUser: false } });
@@ -506,14 +500,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		case "details":
 			args.shift();
 			let type: string | undefined = args[0]?.toLowerCase();
-			if (
-				type &&
-				type != "stinky" &&
-				type != "ok" &&
-				type != "cool" &&
-				type != "rare" &&
-				type != "collectors"
-			)
+			if (type && type != "stinky" && type != "ok" && type != "cool" && type != "rare" && type != "collectors")
 				type = undefined;
 
 			return fishlist(msg, type as okbot.FishRarity | undefined);

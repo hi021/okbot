@@ -199,8 +199,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	const gameAuthor = msg.author;
 	if (Dice_games[gameAuthor.id]) return sendSimpleMessage(msg, "You're already hosting a dice duel!");
-	if (args.length < 2)
-		return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
+	if (args.length < 2) return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
 	const betArg = args.pop();
 	const gameRecipient = await getUserFromMsg(msg, args);
 
@@ -241,10 +240,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		.setTitle(`Dueling ${gameRecipient.displayName} for ${formatDoler(bet)}`)
 		.setFooter({ text: "The game will time out in 3 minutes if the recipient doesn't accept." });
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-		new ButtonBuilder()
-			.setCustomId(`dice_accept-${gameAuthor.id}`)
-			.setLabel("Accept")
-			.setStyle(ButtonStyle.Success),
+		new ButtonBuilder().setCustomId(`dice_accept-${gameAuthor.id}`).setLabel("Accept").setStyle(ButtonStyle.Success),
 		new ButtonBuilder()
 			.setCustomId(`dice_cancel-${gameAuthor.id}`)
 			.setLabel("Cancel/Reject")

@@ -20,8 +20,7 @@ bot.on("interactionCreate", async interaction => {
 	const guildId = split[2];
 	const usrId = split[3];
 
-	if (interaction.user.id !== usrId)
-		return sendEphemeralReply(interaction, "I'm asking someone else, sorry...");
+	if (interaction.user.id !== usrId) return sendEphemeralReply(interaction, "I'm asking someone else, sorry...");
 
 	if (action === "confirm") {
 		await db_guild_clear_reactions(guildId);
@@ -50,12 +49,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const reactions = Guilds[guildId]?.cr;
 	const numReactions = Object.keys(reactions || {}).length;
 	if (!numReactions)
-		return sendSimpleMessage(
-			msg,
-			"🕸️ One step ahead! No custom reactions in this guild.",
-			Colors.DarkOrange,
-			false
-		);
+		return sendSimpleMessage(msg, "🕸️ One step ahead! No custom reactions in this guild.", Colors.DarkOrange, false);
 
 	const guildString = guildId == "_GLOBAL" ? "global" : "guild";
 	const reactionString = `reaction${numReactions == 1 ? "" : "s"}`;

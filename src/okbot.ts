@@ -102,7 +102,7 @@ async function executeCommandOrAction(msg: OmitPartialGroupDMChannel<Message<tru
 	if (cmd.restrict && cmd.restrict !== "EVERYONE") {
 		if (cmd.restrict === "GUILD_ADMIN") {
 			if (!(await msg.guild.members.fetch(msg.author.id)).permissions.has(PermissionsBitField.Flags.ManageGuild))
-			return msg.reply("You do not have the required permissions to use this command (`GUILD_ADMIN`).");
+				return msg.reply("You do not have the required permissions to use this command (`GUILD_ADMIN`).");
 		} else {
 			const permArray = SET[cmd.restrict as "BOT_OWNER" | "BOT_ADMIN"];
 			if (!permArray?.includes(msg.author.id))
@@ -118,8 +118,7 @@ importCmds("commands");
 importCmds("commands_mod");
 
 bot.on("clientReady", async () => {
-	if (!bot.user)
-		return console.error("Invalid client user.");
+	if (!bot.user) return console.error("Invalid client user.");
 
 	console.log(`Logged in as ${bot.user.tag}`);
 	await loadBot();
@@ -129,18 +128,14 @@ bot.on("clientReady", async () => {
 		// DM channel
 		if (!msg.inGuild()) return msg.channel.send("What are you doing in here, silly?");
 		// ignore blacklisted channels
-		if (!msg.content.startsWith(SET.PREFIX_MOD) && Guilds[msg.guild.id]?.blacklist?.includes(msg.channel.id))
-			return;
+		if (!msg.content.startsWith(SET.PREFIX_MOD) && Guilds[msg.guild.id]?.blacklist?.includes(msg.channel.id)) return;
 
 		const prefix = getGuildPrefix(msg.guild.id);
 
 		if (msg.content === `<@${bot.user!.id}>`)
-			return msg.reply(
-				`Hi! My prefix here is \`${prefix}\`.\nYou can use \`${prefix}help\` to view my commands.`
-			);
+			return msg.reply(`Hi! My prefix here is \`${prefix}\`.\nYou can use \`${prefix}help\` to view my commands.`);
 
-			
-			try {
+		try {
 			countOk(msg);
 			executeCommandOrAction(msg, prefix);
 		} catch (e) {

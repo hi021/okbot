@@ -174,10 +174,7 @@ async function joinGame(msg: okbot.Message, bet: number, mon: number) {
 			if (bet <= 0) return await sendSimpleMessage(msg, `You can't bet more than ${formatDoler(MAX_BET)}!`);
 
 			game.plr[msg.author.id] += bet;
-			const msge = createSimpleMessage(
-				`<@${msg.author.id}> has increased their jackpot bet!`,
-				Colors.DarkGreen
-			);
+			const msge = createSimpleMessage(`<@${msg.author.id}> has increased their jackpot bet!`, Colors.DarkGreen);
 			msg.channel.send({ embeds: [msge] });
 			await msg.delete();
 		} catch (e) {
@@ -192,8 +189,7 @@ async function joinGame(msg: okbot.Message, bet: number, mon: number) {
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!msg.guild) return;
-	if (!args.length)
-		return sendSimpleMessage(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
+	if (!args.length) return sendSimpleMessage(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
 
 	const action = args[0].toLowerCase();
 	if (action === "top")
@@ -208,10 +204,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	const bet = betRaw == "all" ? Math.min(MAX_BET, mon) : parseNumberSuffix(betRaw);
 	if (bet == null || isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
-		return sendSimpleMessage(
-			msg,
-			`Your bet must be between ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}!`
-		);
+		return sendSimpleMessage(msg, `Your bet must be between ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}!`);
 
 	if (action == "start" || action == "new") {
 		createGame(msg, bet, mon);

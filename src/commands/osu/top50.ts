@@ -138,8 +138,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 			const players = await db_osu_find_players({ $or: positions, cur: true }, { _id: 1 });
 
-			if (!players || argsParsed.nicks.length > players.length)
-				return sendSimpleMessage(msg, msgNotEnoughUsr);
+			if (!players || argsParsed.nicks.length > players.length) return sendSimpleMessage(msg, msgNotEnoughUsr);
 
 			ids = new Array(players.length);
 			for (const i in players) ids[i] = players[i]._id;
@@ -220,15 +219,13 @@ async function sendT50(msg: okbot.Message, id: string | number) {
 	if (!msg.channel.isSendable()) return;
 	msg.channel.sendTyping();
 	const stats = formatPlayerData(await osu_getT50(id));
-	if (!stats)
-		return sendSimpleMessage(msg, `> No stats for player with id \`${id}\` (or the database went bobo).`);
+	if (!stats) return sendSimpleMessage(msg, `> No stats for player with id \`${id}\` (or the database went bobo).`);
 
 	const av = getOsuAvatar(id);
 	const filename = `${id}_${stats.date}.png`;
 	//check if chart already exists, generate if doesn't
 	let chart = top50_chart_get(filename);
-	if (!chart && stats.t503Weeks?.length)
-		chart = await top50_chart_generate([stats.t503Weeks], [clr1], filename);
+	if (!chart && stats.t503Weeks?.length) chart = await top50_chart_generate([stats.t503Weeks], [clr1], filename);
 	const chartFile = chart && new AttachmentBuilder(chart);
 	const files = chartFile ? [chartFile] : [];
 

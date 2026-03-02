@@ -16,8 +16,7 @@ function generateNoise(ctx: canvasModule.CanvasRenderingContext2D, noiseThreshol
 	}
 
 	for (let i = 0; i < len; i += skip) {
-		if (Math.random() < noiseThreshold)
-			imgData.data[i] = imgData.data[i + 1] = imgData.data[i + 2] = noiseColor;
+		if (Math.random() < noiseThreshold) imgData.data[i] = imgData.data[i + 1] = imgData.data[i + 2] = noiseColor;
 	}
 
 	ctx.putImageData(imgData, 0, 0);
@@ -36,8 +35,7 @@ function applyThreshold(ctx: canvasModule.CanvasRenderingContext2D, threshold = 
 }
 
 export const name = "pinkify";
-export const description =
-	"<:color_lightPink:1008342282153513020> Makes images ridiculously pink (or any other color)";
+export const description = "<:color_lightPink:1008342282153513020> Makes images ridiculously pink (or any other color)";
 export const alias = ["twinkify", "sandpaper"];
 export const usage =
 	"[Image OR Image URL OR Mention OR Username (spaces replaced with _)] <Threshold (0-255)> <Max dimensions (WxH)> <Noise threshold (0-1)> <#Hex color>";

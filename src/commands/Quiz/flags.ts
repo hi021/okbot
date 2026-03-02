@@ -1,20 +1,8 @@
 import { Colors, EmbedBuilder, Snowflake, userMention } from "discord.js";
-import {
-	countries,
-	countries_common,
-	countries_us_states,
-	CountryRegion,
-	CountryType
-} from "../../countries.js";
+import { countries, countries_common, countries_us_states, CountryRegion, CountryType } from "../../countries.js";
 import { db_plr_add } from "../../db/db.js";
 import { SET } from "../../settings.js";
-import {
-	formatMilliseconds,
-	formatTimer,
-	nowSeconds,
-	randomFromArray,
-	sendSimpleMessage
-} from "../../utils.js";
+import { formatMilliseconds, formatTimer, nowSeconds, randomFromArray, sendSimpleMessage } from "../../utils.js";
 import { Flag_games } from "../../volatile.js";
 
 export const name = "flags";
@@ -22,8 +10,7 @@ export const alias = ["flag", "flagquiz"];
 export const description = "🏳️ Boast your highly sought after geography skills";
 export const usage =
 	'<Flag Category> <"Territories" (Only includes sovereign countries by default)> <Rounds (2-50, limited by category)> <Round Time (3-60 seconds)> <"Cancel">';
-const categories =
-	"- All (default)\n- Common\n- Europe\n- Asia\n- Americas\n- Africa\n- Oceania\n- US_States";
+const categories = "- All (default)\n- Common\n- Europe\n- Asia\n- Americas\n- Africa\n- Oceania\n- US_States";
 export const usageDetail = "Categories:\n" + categories;
 
 type FlagArguments = {
@@ -88,12 +75,7 @@ function roundFinish(channelId: string) {
 		const country = gameCountries[game.curFlag];
 		stopFlagEmbedTimer(game);
 
-		sendSimpleMessage<okbot.Message>(
-			game.flagMsg,
-			`The answer was **${country.nam[0]}**!`,
-			Colors.DarkOrange,
-			false
-		);
+		sendSimpleMessage<okbot.Message>(game.flagMsg, `The answer was **${country.nam[0]}**!`, Colors.DarkOrange, false);
 	}
 	if (game.round >= game.rounds) {
 		gameEnd(channelId);
@@ -159,8 +141,7 @@ const normalizeCountryName = (name: string) =>
 		.trim()
 		.toLowerCase();
 
-const isAnswerCorrect = (name: string, answer: string) =>
-	normalizeCountryName(name) == normalizeCountryName(answer);
+const isAnswerCorrect = (name: string, answer: string) => normalizeCountryName(name) == normalizeCountryName(answer);
 
 export function roundAnswer(channelId: string, answer: string, userId: string) {
 	const game = Flag_games[channelId];
@@ -254,10 +235,7 @@ function setCategory(regionQuery: string, countriesOnly: boolean) {
 		case "american":
 		case "americas": {
 			categoryName = "American";
-			countryCodes = findCountryCodes(
-				[CountryRegion.NORTH_AMERICA, CountryRegion.SOUTH_AMERICA],
-				countriesOnly
-			);
+			countryCodes = findCountryCodes([CountryRegion.NORTH_AMERICA, CountryRegion.SOUTH_AMERICA], countriesOnly);
 			break;
 		}
 		default: {
@@ -327,13 +305,11 @@ function parseArguments(args: string[]): FlagArguments | okbot.ErrorWithMessageR
 				//if argument is numeric
 				if (roundsSet) {
 					//rounds + roundTime [4]
-					if (argNum < 3 || argNum > 60)
-						return { error: "Round time must be between **3** and **60** seconds." };
+					if (argNum < 3 || argNum > 60) return { error: "Round time must be between **3** and **60** seconds." };
 					roundTime = argNum * 1000;
 				} else {
 					//chosen category or !countriesOnly + rounds [3]
-					if (argNum < 2 || argNum > 50)
-						return { error: "Number of rounds must be between **2** and **50**." };
+					if (argNum < 2 || argNum > 50) return { error: "Number of rounds must be between **2** and **50**." };
 					rounds = Math.min(argNum, countryCodes.size);
 					roundsSet = true;
 				}
@@ -383,8 +359,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const arg1 = args[0]?.toLowerCase();
 	if (arg1 === "cancel" || arg1 === "stop") return gameEnd(channelId);
 	if (!msg.channel.isTextBased()) return sendSimpleMessage(msg, "Must start game in a text-based channel!");
-	if (Flag_games[channelId])
-		return sendSimpleMessage(msg, "There's already a game in progress in this channel!");
+	if (Flag_games[channelId]) return sendSimpleMessage(msg, "There's already a game in progress in this channel!");
 
 	const parsedArgs = parseArguments(args);
 	if (isErrorResponse(parsedArgs)) return sendSimpleMessage(msg, parsedArgs.error);
@@ -397,9 +372,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 - **${rounds}** rounds,
 - Up to **${formatMilliseconds(roundTime)}** per round,
 - ${
-			countriesOnly
-				? "Only regions recognized as **countries**"
-				: "**All regions**, including dependent territories,"
+			countriesOnly ? "Only regions recognized as **countries**" : "**All regions**, including dependent territories,"
 		} in play.
 
         Use \`${name} cancel\` to stop the game at any time.`,

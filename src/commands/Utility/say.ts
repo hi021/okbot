@@ -8,11 +8,7 @@ export const usage = "(_e) [Message]";
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!args?.length) return;
 
-	if (
-		msg.guild?.members?.me
-			?.permissionsIn(msg.channel as TextChannel)
-			.has(PermissionsBitField.Flags.ManageMessages)
-	)
+	if (msg.guild?.members?.me?.permissionsIn(msg.channel as TextChannel).has(PermissionsBitField.Flags.ManageMessages))
 		msg.delete();
 
 	if (args[0].toLowerCase() === "_e" && args.length > 1) {

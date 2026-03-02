@@ -15,9 +15,7 @@ export function execute(msg: okbot.Message, _args: string[]) {
 			.padStart(4, " ")}\`\n`;
 
 	msg.reply({
-		embeds: [
-			new EmbedBuilder().setColor(Colors.White).setTitle("Bet multipliers for each symbol").setDescription(d)
-		],
+		embeds: [new EmbedBuilder().setColor(Colors.White).setTitle("Bet multipliers for each symbol").setDescription(d)],
 		allowedMentions: {
 			repliedUser: false
 		}

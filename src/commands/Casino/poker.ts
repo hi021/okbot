@@ -1,11 +1,4 @@
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	SendableChannels
-} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, SendableChannels } from "discord.js";
 import { db_plr_add, db_plr_get } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import {
@@ -41,8 +34,7 @@ bot.on("interactionCreate", async interaction => {
 			return;
 		}
 
-		if (interaction.user.id != game.host)
-			return sendEphemeralReply(interaction, "Only the host may start the game.");
+		if (interaction.user.id != game.host) return sendEphemeralReply(interaction, "Only the host may start the game.");
 		if (game.queuePlr.length < 2)
 			return sendEphemeralReply(interaction, "At least two players are necessary to start.");
 
@@ -99,8 +91,7 @@ bot.on("interactionCreate", async interaction => {
 		}
 
 		const plr = game.plr[plrId];
-		if (interaction.user.id !== plr?.id)
-			return sendEphemeralReply(interaction, "This isn't your decision to make...");
+		if (interaction.user.id !== plr?.id) return sendEphemeralReply(interaction, "This isn't your decision to make...");
 
 		const cards = `${plr.cards[0].clr} **${plr.cards[0].val}**${e_blank}${plr.cards[1].clr} **${plr.cards[1].val}**`;
 		return sendEphemeralReply(interaction, "Your hand is\n" + cards, Colors.Blue);
@@ -113,8 +104,7 @@ bot.on("interactionCreate", async interaction => {
 		}
 
 		const plr = game.plr[plrId];
-		if (interaction.user.id !== plr?.id)
-			return sendEphemeralReply(interaction, "This isn't your decision to make...");
+		if (interaction.user.id !== plr?.id) return sendEphemeralReply(interaction, "This isn't your decision to make...");
 
 		//
 		return;
@@ -127,8 +117,7 @@ bot.on("interactionCreate", async interaction => {
 		}
 
 		const plr = game.plr[plrId];
-		if (interaction.user.id !== plr?.id)
-			return sendEphemeralReply(interaction, "This isn't your decision to make...");
+		if (interaction.user.id !== plr?.id) return sendEphemeralReply(interaction, "This isn't your decision to make...");
 
 		const msge = createSimpleMessage(`<@${plr.id}> has folded!`);
 		plr.playing = "folded";
@@ -319,10 +308,7 @@ async function createGame(
 
 	const components = [
 		new ActionRowBuilder<ButtonBuilder>().setComponents(
-			new ButtonBuilder()
-				.setCustomId(`poker_start-${guildId}`)
-				.setStyle(ButtonStyle.Success)
-				.setLabel("Start game"),
+			new ButtonBuilder().setCustomId(`poker_start-${guildId}`).setStyle(ButtonStyle.Success).setLabel("Start game"),
 			new ButtonBuilder().setCustomId(`poker_join-${guildId}`).setStyle(ButtonStyle.Primary).setLabel("Join"),
 			new ButtonBuilder()
 				.setCustomId(`poker_leave-${guildId}`)

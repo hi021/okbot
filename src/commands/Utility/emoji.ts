@@ -28,8 +28,7 @@ function listEmoji() {
 export const name = "emoji";
 export const description = "<:adam:1007621226379886652> No nitro abuser";
 export const alias = ["e"];
-export const usage =
-	"<Any number of preset emoji names (use this command with no arguments to view full list)>";
+export const usage = "<Any number of preset emoji names (use this command with no arguments to view full list)>";
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!args?.length) return msg.reply({ embeds: [listEmoji()], allowedMentions: { repliedUser: false } });

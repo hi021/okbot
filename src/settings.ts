@@ -47,15 +47,23 @@ export function SET_INIT() {
 		if (process.env.PREFIX) SET.PREFIX = process.env.PREFIX;
 		if (process.env.PREFIX_MOD) SET.PREFIX_MOD = process.env.PREFIX_MOD;
 
-		if(!SET.PREFIX)
-			console.warn("No command prefix set, this may cause unexpected behavior!\nSet it by adding \"PREFIX\": \"k!\" to settings.json.")
-if(!SET.PREFIX_MOD)
-			console.warn("No mod command prefix set, this will make it impossible to configure the bot at runtime!\nSet it by adding \"PREFIX_MOD\": \"k@\" to settings.json.")
+		if (!SET.PREFIX)
+			console.warn(
+				'No command prefix set, this may cause unexpected behavior!\nSet it by adding "PREFIX": "k!" to settings.json.'
+			);
+		if (!SET.PREFIX_MOD)
+			console.warn(
+				'No mod command prefix set, this will make it impossible to configure the bot at runtime!\nSet it by adding "PREFIX_MOD": "k@" to settings.json.'
+			);
 
-if(SET.BOT_OWNER.length == 1 && !SET.BOT_OWNER[0])
-			console.warn("No bot owner set, this will prevent usage of restricted commands. Set owners in the .env file according to .env.example.")
-if(SET.BOT_ADMIN.length == 1 && !SET.BOT_ADMIN[0])
-			console.warn("No bot admin set, this will prevent usage of restricted commands. Set admins in the .env file according to .env.example.")
+		if (SET.BOT_OWNER.length == 1 && !SET.BOT_OWNER[0])
+			console.warn(
+				"No bot owner set, this will prevent usage of restricted commands. Set owners in the .env file according to .env.example."
+			);
+		if (SET.BOT_ADMIN.length == 1 && !SET.BOT_ADMIN[0])
+			console.warn(
+				"No bot admin set, this will prevent usage of restricted commands. Set admins in the .env file according to .env.example."
+			);
 
 		return SET;
 	} catch (e) {

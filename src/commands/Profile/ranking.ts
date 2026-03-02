@@ -150,8 +150,7 @@ function getCategoryFormat(category: string, usr?: User | Guild | null, guild?: 
 		case "aqua":
 			category = "aqua.collTot";
 			categoryTitle = "💰 Aquariums closest to holding monopoly";
-			valueFormatter = (val: string | number) =>
-				`$${formatNumber(Math.round((val as number) * 100) / 100)}/h`;
+			valueFormatter = (val: string | number) => `$${formatNumber(Math.round((val as number) * 100) / 100)}/h`;
 			break;
 		case "pond.fishtot":
 		case "pond_caught":
@@ -290,13 +289,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const setCat = getCategoryFormat(category, usr, msg.guild);
 	if (!setCat?.categoryTitle)
 		return msg.reply({
-			embeds: [
-				createSimpleMessage(
-					"Must be one of the following:\n" + categories,
-					Colors.Red,
-					"Invalid ranking field"
-				)
-			]
+			embeds: [createSimpleMessage("Must be one of the following:\n" + categories, Colors.Red, "Invalid ranking field")]
 		});
 
 	category = setCat.category;
@@ -310,8 +303,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			? await db_ranking_get_guild_ok(rankStart - 1, perPage, true)
 			: await db_ranking_get(category as okbot.RankingField, rankStart - 1, perPage, true);
 
-	if (!ranking?.length)
-		return sendSimpleMessage(msg, "🕸️ *No matches for the given criteria...*", Colors.DarkOrange);
+	if (!ranking?.length) return sendSimpleMessage(msg, "🕸️ *No matches for the given criteria...*", Colors.DarkOrange);
 
 	const nextPageAvailable = ranking.length > perPage;
 	if (nextPageAvailable) ranking.pop(); // will get one more result that wouldn't fit on the page to check for next page

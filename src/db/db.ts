@@ -54,8 +54,8 @@ export function db_ok_add(ok: string, guildId = "0") {
 	const $inc = { all: 1, [ok]: 1 };
 
 	db_get("ok").bulkWrite([
-		{updateOne: { filter: { _id: guildId as any }, update: { $inc }, upsert: true }},
-		{updateOne: { filter: { _id: "_GLOBAL" as any }, update: { $inc }, upsert: true }}
+		{ updateOne: { filter: { _id: guildId as any }, update: { $inc }, upsert: true } },
+		{ updateOne: { filter: { _id: "_GLOBAL" as any }, update: { $inc }, upsert: true } }
 	]);
 }
 
@@ -163,13 +163,7 @@ export async function db_plr_get(plr: okbot.User | any) {
  * @returns records from `min` to `max+1` to know whether there are further pages, splice the array removing the last element later
  * @TODO add user lookup
  */
-export async function db_ranking_get(
-	field: okbot.RankingField,
-	min = 0,
-	max = 0,
-	setUsername = true,
-	usrId?: string
-) {
+export async function db_ranking_get(field: okbot.RankingField, min = 0, max = 0, setUsername = true, usrId?: string) {
 	try {
 		let ranking: Array<okbot.RankingUser>;
 		const cursor = db_get("plr")
@@ -437,10 +431,7 @@ export async function db_fix_pond() {
 			}
 		}
 
-		await db_get("plr").updateOne(
-			{ _id: allPlr[i]._id },
-			{ $set: { "pond.fish": fish, "pond.stats": stats } }
-		);
+		await db_get("plr").updateOne({ _id: allPlr[i]._id }, { $set: { "pond.fish": fish, "pond.stats": stats } });
 	}
 }
 

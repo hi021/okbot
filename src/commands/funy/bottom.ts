@@ -30,11 +30,7 @@ function getBottomDescription(bottomRange: number) {
 			btmEmoji = "😤";
 			break;
 		case 2:
-			btmTitle = randomFromArray([
-				"would beat you at arm wrestling",
-				"is not a bottom...",
-				"will play with your hair"
-			]);
+			btmTitle = randomFromArray(["would beat you at arm wrestling", "is not a bottom...", "will play with your hair"]);
 			btmEmoji = "🙄";
 			break;
 		case 3:
@@ -46,11 +42,7 @@ function getBottomDescription(bottomRange: number) {
 			btmEmoji = ":relaxed:";
 			break;
 		case 4:
-			btmTitle = randomFromArray([
-				"would cling to you",
-				"doesn't want you to leave",
-				"likes all kinds of pats"
-			]);
+			btmTitle = randomFromArray(["would cling to you", "doesn't want you to leave", "likes all kinds of pats"]);
 			btmEmoji = "😳";
 			break;
 		case 5:

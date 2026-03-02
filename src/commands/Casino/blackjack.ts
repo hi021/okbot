@@ -34,8 +34,7 @@ bot.on("interactionCreate", async interaction => {
 	if (split[0] !== "bj_hit" && split[0] !== "bj_stand" && split[0] !== "bj_double") return;
 
 	const id = split[1];
-	if (id != interaction.user.id)
-		return sendEphemeralReply(interaction, "This is someone else's game, please leave...");
+	if (id != interaction.user.id) return sendEphemeralReply(interaction, "This is someone else's game, please leave...");
 
 	const game = Blackjack_games[id];
 	if (!game) return sendEphemeralReply(interaction, "This game has already ended.");
@@ -146,11 +145,7 @@ async function checkWinConditions(game: okbot.BlackjackGame, plrId: string, inte
 		endGame(plrId, "Dealer busted!");
 
 		const plrdat = await db_plr_get({ _id: plrId, monTot: 1, monLv: 1 });
-		const monLv = calcMoneyLevelsGain<Interaction>(
-			plrdat?.monLv ?? 0,
-			(plrdat?.monTot ?? 0) + bet,
-			interaction
-		);
+		const monLv = calcMoneyLevelsGain<Interaction>(plrdat?.monLv ?? 0, (plrdat?.monTot ?? 0) + bet, interaction);
 
 		await db_plr_add({ _id: plrId, mon: bet * 2, monLv, monTot: bet, income: { bj: bet * 2 } });
 		await addCasinoStat(plrId, "bj", "win", bet, bet, {
@@ -187,11 +182,7 @@ async function checkWinConditions(game: okbot.BlackjackGame, plrId: string, inte
 		endGame(plrId, "You win!");
 
 		const plrdat = await db_plr_get({ _id: plrId, monTot: 1, monLv: 1 });
-		const monLv = calcMoneyLevelsGain<Interaction>(
-			plrdat?.monLv ?? 0,
-			(plrdat?.monTot ?? 0) + bet,
-			interaction
-		);
+		const monLv = calcMoneyLevelsGain<Interaction>(plrdat?.monLv ?? 0, (plrdat?.monTot ?? 0) + bet, interaction);
 
 		await db_plr_add({ _id: plrId, mon: bet * 2, monLv, monTot: bet, income: { bj: bet * 2 } });
 		await addCasinoStat(plrId, "bj", "win", bet, bet, {
@@ -292,11 +283,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const id = msg.author.id;
 	if (Blackjack_games[id]) return sendSimpleMessage<okbot.Message>(msg, "You're already in a game!");
 	if (!args.length)
-		return sendSimpleMessage<okbot.Message>(
-			msg,
-			"The usage for this command is:\n`" + usage + "`",
-			Colors.White
-		);
+		return sendSimpleMessage<okbot.Message>(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
 
 	const plrdat = await db_plr_get({ _id: id, mon: 1, itms: 1 });
 	const mon = plrdat?.mon ?? 0;

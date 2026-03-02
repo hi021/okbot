@@ -62,10 +62,5 @@ export async function execute(msg: okbot.Message) {
 		stimLast: Math.floor(now)
 	});
 
-	return sendSimpleMessage(
-		msg,
-		`Received ${formatDoler(stim)} of taxpayers' money.`,
-		Colors.DarkGreen,
-		false
-	);
+	return sendSimpleMessage(msg, `Received ${formatDoler(stim)} of taxpayers' money.`, Colors.DarkGreen, false);
 }

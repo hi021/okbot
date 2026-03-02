@@ -8,17 +8,11 @@ export const description = "he needs some milk but moderation";
 export const usage = "<Command Name>";
 export const hidden = true;
 
-export function displayAllCommands(
-	commandType: "commands" | "commands_mod",
-	prefix: string,
-	msg: okbot.Message
-) {
+export function displayAllCommands(commandType: "commands" | "commands_mod", prefix: string, msg: okbot.Message) {
 	const bot = msg.client as okbot.Client<true>;
 
 	const commandHelp = `❔ Use \`${prefix}${name} <command name>\` to view any command's details.\n`;
-	const ownerHelp = SET.BOT_OWNER?.[0]
-		? `🔧 Shout at ${userMention(SET.BOT_OWNER[0])} if I break something!\n`
-		: "";
+	const ownerHelp = SET.BOT_OWNER?.[0] ? `🔧 Shout at ${userMention(SET.BOT_OWNER[0])} if I break something!\n` : "";
 	const repositoryHelp = SET.REPOSITORY_URL ? `🐱 My [GitHub repository](${SET.REPOSITORY_URL})` : "";
 	const msge = new EmbedBuilder()
 		.setColor(Colors.LightGrey)

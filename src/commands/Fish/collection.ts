@@ -1,12 +1,4 @@
-import {
-	ActionRowBuilder,
-	APIEmbedField,
-	ButtonBuilder,
-	ButtonStyle,
-	Colors,
-	EmbedBuilder,
-	User
-} from "discord.js";
+import { ActionRowBuilder, APIEmbedField, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, User } from "discord.js";
 import { db_fish_add, db_plr_add, db_plr_get } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -108,20 +100,14 @@ async function forgeItem(user: User, item: string) {
 	const collItem = plrdat?.fishCol?.[item];
 	if (!collItem || !collItem[1] || !collItem[2] || !collItem[3] || !collItem[4] || !collItem[5])
 		return {
-			msge: createSimpleMessage(
-				"You don't have all five collection parts required to forge this item!",
-				Colors.DarkRed
-			)
+			msge: createSimpleMessage("You don't have all five collection parts required to forge this item!", Colors.DarkRed)
 		};
 
 	const cost = SET.COLLECTION_FORGE_COST ?? 1000000;
 	const mon = plrdat?.mon ?? 0;
 	if (cost > mon)
 		return {
-			msge: createSimpleMessage(
-				`You need ${formatDoler(cost - mon)} more to forge this item.`,
-				Colors.DarkRed
-			)
+			msge: createSimpleMessage(`You need ${formatDoler(cost - mon)} more to forge this item.`, Colors.DarkRed)
 		};
 
 	const msge = new EmbedBuilder()
@@ -195,8 +181,7 @@ async function confirmForgeItem(user: User, item: string, msg: okbot.Message) {
 
 	const cost = SET.COLLECTION_FORGE_COST ?? 1000000;
 	const mon = plrdat?.mon ?? 0;
-	if (cost > mon)
-		return sendSimpleMessage(msg, `You need ${formatDoler(cost - mon)} more to forge this item.`);
+	if (cost > mon) return sendSimpleMessage(msg, `You need ${formatDoler(cost - mon)} more to forge this item.`);
 
 	// add rewards and remove parts from inventory
 	let reward = "";
@@ -231,8 +216,7 @@ async function confirmForgeItem(user: User, item: string, msg: okbot.Message) {
 					_id: user.id,
 					fishCol: { [item]: { fin: 1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1 } }
 				});
-				reward =
-					"- 1x " + showItemName({ nam: BakeryStaff["90"].nam, emoji: BakeryStaff["90"].emoji }, false);
+				reward = "- 1x " + showItemName({ nam: BakeryStaff["90"].nam, emoji: BakeryStaff["90"].emoji }, false);
 			}
 			break;
 		}
@@ -265,17 +249,12 @@ async function confirmForgeItem(user: User, item: string, msg: okbot.Message) {
 	}
 
 	await db_plr_add({ _id: user.id, mon: -cost, expense: { fish: cost } });
-	return sendSimpleMessage(
-		msg,
-		"Congratulations! 🎊\nYour rewards have been delivered:\n" + reward,
-		Colors.Blue
-	);
+	return sendSimpleMessage(msg, "Congratulations! 🎊\nYour rewards have been delivered:\n" + reward, Colors.Blue);
 }
 
 const isCollectionItemVisible = (item: okbot.CollectionItem) =>
 	item[1] || item[2] || item[3] || item[4] || item[5] || item.fin;
-const isCollectionItemForgeable = (item: okbot.CollectionItem) =>
-	item[1] && item[2] && item[3] && item[4] && item[5];
+const isCollectionItemForgeable = (item: okbot.CollectionItem) => item[1] && item[2] && item[3] && item[4] && item[5];
 const getCollectionItemPartCount = (item: okbot.CollectionItem) =>
 	(item[1] ?? 0) + (item[2] ?? 0) + (item[3] ?? 0) + (item[4] ?? 0) + (item[5] ?? 0);
 

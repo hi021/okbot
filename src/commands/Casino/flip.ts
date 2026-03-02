@@ -16,12 +16,7 @@ import { Players_in_collector } from "../../volatile.js";
 const BET_RANGES = { def: { min: 0, max: 10000000 }, vip: { min: 0, max: 50000000 } }; // min bet doesn't do anything - allow for no bet rolling
 const BIG_BET_PERCENT = 0.45; // need confirmation from user if bet amount is at least this fraction of user's money
 
-async function runFlip(
-	msg: okbot.Message,
-	odds: number,
-	bet: number,
-	plrdat: { monLv?: number; monTot?: number }
-) {
+async function runFlip(msg: okbot.Message, odds: number, bet: number, plrdat: { monLv?: number; monTot?: number }) {
 	const res = randomInt(1, 100);
 	let msgR;
 

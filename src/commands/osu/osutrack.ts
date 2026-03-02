@@ -200,11 +200,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 					plr[i] = Number(plr[i]);
 				}
 
-				const res = await addPlayersID(
-					msg.guild.id,
-					otrack || { chn: msg.channel.id, plr: [] },
-					plr as number[]
-				);
+				const res = await addPlayersID(msg.guild.id, otrack || { chn: msg.channel.id, plr: [] }, plr as number[]);
 
 				const msge = new EmbedBuilder()
 					.setColor(Colors.DarkGreen)
@@ -230,13 +226,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				if (!removed) {
 					msge
 						.setColor(Colors.DarkRed)
-						.setDescription(
-							`failed to stop tracking given player${args[1].split(",").length == 1 ? "" : "s"}`
-						);
+						.setDescription(`failed to stop tracking given player${args[1].split(",").length == 1 ? "" : "s"}`);
 				} else {
-					msge
-						.setColor(Colors.DarkGreen)
-						.setDescription(`removed ${removed} player${removed == 1 ? "" : "s"}`);
+					msge.setColor(Colors.DarkGreen).setDescription(`removed ${removed} player${removed == 1 ? "" : "s"}`);
 				}
 
 				return msg.reply({

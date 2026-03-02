@@ -2,13 +2,7 @@ import { Colors, userMention } from "discord.js";
 import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
-import {
-	createSimpleMessage,
-	e_blank,
-	formatMilliseconds,
-	getUserFromMsg,
-	sendSimpleMessage
-} from "../../utils.js";
+import { createSimpleMessage, e_blank, formatMilliseconds, getUserFromMsg, sendSimpleMessage } from "../../utils.js";
 
 export const name = "rep";
 export const alias = ["rape"];
@@ -26,12 +20,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				msg,
 				`You have to wait \`${formatMilliseconds((cooldown - sinceLast) * 1000)}\` before raping again.`
 			);
-		return sendSimpleMessage(
-			msg,
-			"You can rape someone right now, just mention them!",
-			Colors.DarkGreen,
-			false
-		);
+		return sendSimpleMessage(msg, "You can rape someone right now, just mention them!", Colors.DarkGreen, false);
 	}
 
 	let am = 1;

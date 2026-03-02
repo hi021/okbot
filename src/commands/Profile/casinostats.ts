@@ -293,12 +293,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			statMsg = showFlip(plrdat.casinoStat, statMsg, plrdat.income?.flip ?? 0, plrdat.expense?.flip ?? 0);
 			break;
 		case "jackpot":
-			statMsg = showJackpot(
-				plrdat.casinoStat,
-				statMsg,
-				plrdat.income?.jackpot ?? 0,
-				plrdat.expense?.jackpot ?? 0
-			);
+			statMsg = showJackpot(plrdat.casinoStat, statMsg, plrdat.income?.jackpot ?? 0, plrdat.expense?.jackpot ?? 0);
 			break;
 		case "rl":
 		case "roulette":

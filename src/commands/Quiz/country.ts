@@ -30,8 +30,7 @@ function getCountryAndCode(query: string) {
 }
 
 export function execute(msg: okbot.Message, args: string[]) {
-	if (!args.length)
-		return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
+	if (!args.length) return sendSimpleMessage(msg, "The usage for this command is:\n`" + usage + "`", Colors.White);
 
 	const { country, code } = getCountryAndCode(args.join(" ").toLowerCase());
 	if (!country) return sendSimpleMessage(msg, "Country not found.");

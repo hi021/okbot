@@ -15,8 +15,7 @@ export const name = "roulette";
 export const alias = ["rl"];
 export const description = "🟥 Makes you wish you played the russian kind instead";
 export const usage = '[Bet color (red, black, or green) OR "Top"] [Bet amount (10-10M/50M 💵 OR "All")]';
-export const usageDetail =
-	"Winning on a red or black field multiplies your bet 2-fold, green multiplies it 14-fold.";
+export const usageDetail = "Winning on a red or black field multiplies your bet 2-fold, green multiplies it 14-fold.";
 
 type BetArguments = { bet: number };
 
@@ -133,8 +132,7 @@ async function parseArguments(msg: okbot.Message, args: string[]) {
 
 function parseColor(input: string) {
 	const color = input.toLowerCase();
-	if (color === "red" || color === "black")
-		return { color, multi: 2 } as { color: okbot.RouletteColor; multi: number };
+	if (color === "red" || color === "black") return { color, multi: 2 } as { color: okbot.RouletteColor; multi: number };
 	else if (color === "green") return { color, multi: 14 } as { color: okbot.RouletteColor; multi: number };
 	else return null;
 }

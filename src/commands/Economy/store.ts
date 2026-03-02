@@ -13,12 +13,7 @@ import {
 	User
 } from "discord.js";
 import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
-import {
-	db_store_get_all,
-	db_store_get_categories,
-	db_store_get_category,
-	db_store_get_item
-} from "../../db/store.js";
+import { db_store_get_all, db_store_get_categories, db_store_get_category, db_store_get_item } from "../../db/store.js";
 import { bot } from "../../okbot.js";
 import {
 	checkBoosterValidity,
@@ -405,12 +400,7 @@ function addSingleItemToMsgEmbed(msge: EmbedBuilder, item: okbot.Item, owned: nu
 }
 
 // for showing all items
-function addItemsToMsgEmbed(
-	msge: EmbedBuilder,
-	items: okbot.Item[],
-	playerItems: { [_id: string]: number },
-	page = 1
-) {
+function addItemsToMsgEmbed(msge: EmbedBuilder, items: okbot.Item[], playerItems: { [_id: string]: number }, page = 1) {
 	msge.setFooter({ text: `Page ${page}\nUse 'store <item name>' to view details about said item` });
 
 	for (let i = perPage * (page - 1); i < perPage * page; i++) {
@@ -449,8 +439,7 @@ function addCategoryItemsToMsgEmbed(
 		const maxOwned = item.maxQ == Infinity || item.timed ? Infinity : item.maxQ ? item.maxQ : 1;
 		const ownedString = owned >= maxOwned ? "✅ " : "";
 		const itemNumber = `\`${(i + 1).toString().padStart(2, " ")}\``;
-		const desc =
-			itmPriceDesc(item.price) + " " + (item.desc || "") + `${item.showV ? "\n" + "`" + item.v + "`" : ""}`;
+		const desc = itmPriceDesc(item.price) + " " + (item.desc || "") + `${item.showV ? "\n" + "`" + item.v + "`" : ""}`;
 		msge.addFields({
 			name: `${itemNumber} ${showItemName(item, false)}`,
 			value: ownedString ? `${ownedString} ~~${desc}~~` : desc
@@ -560,8 +549,7 @@ function createPurchaseCollector(
 
 			const amount = parseInt(amounts[i]) || 1;
 			purchaseOrders.push({ itm, am: amount <= 0 ? 1 : amount });
-			if (process.env.VERBOSE)
-				console.log(`buying ${amount}x ${itm.nam};${confirmed ? " preconfirmed" : ""}`);
+			if (process.env.VERBOSE) console.log(`buying ${amount}x ${itm.nam};${confirmed ? " preconfirmed" : ""}`);
 		}
 
 		itemCollector.resetTimer();

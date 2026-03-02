@@ -27,18 +27,17 @@ export const usageDetail =
 const MIN_BET = 0;
 const MAX_BET = 2000000;
 const allNumbers = [
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-	29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
-	56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
-	83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+	32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+	61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+	90, 91, 92, 93, 94, 95, 96, 97, 98, 99
 ];
 
 bot.on("interactionCreate", interaction => {
 	if (!interaction.isButton() || !interaction.inGuild() || interaction.customId !== "show_board") return;
 
 	const game = Bingo_games[interaction.guildId];
-	if (!game?.plr?.[interaction.user.id])
-		return sendEphemeralReply(interaction, "You aren't a part of this game!");
+	if (!game?.plr?.[interaction.user.id]) return sendEphemeralReply(interaction, "You aren't a part of this game!");
 
 	return sendEphemeralReply(interaction, visualizeBoard(game.plr[interaction.user.id].board), Colors.Blue);
 });
@@ -59,15 +58,13 @@ function generateRandomBoard() {
 
 function parseNumbers(num: string[]) {
 	if (!num?.length) return { board: generateRandomBoard(), e: null };
-	if (num.length != 16)
-		return { board: null, e: `Please input exactly **16** numbers instead of **${num.length}**.` };
+	if (num.length != 16) return { board: null, e: `Please input exactly **16** numbers instead of **${num.length}**.` };
 
 	const set = new Set<number>();
 	for (let i = 0; i < 16; i++) {
 		const previousSize = set.size;
 		let n = Number(num[i]);
-		if (isNaN(n) || n < 0 || n > 99)
-			return { board: null, e: "All numbers must be between **0** and **99**." };
+		if (isNaN(n) || n < 0 || n > 99) return { board: null, e: "All numbers must be between **0** and **99**." };
 
 		n = Math.floor(n);
 		set.add(n);
@@ -126,9 +123,7 @@ function rollNumber(guildId: string) {
 	if (!game) return;
 
 	if (!game.num.size) {
-		const msge = new EmbedBuilder()
-			.setColor(Colors.Orange)
-			.setDescription(`No one got bingo after 100 rounds...`);
+		const msge = new EmbedBuilder().setColor(Colors.Orange).setDescription(`No one got bingo after 100 rounds...`);
 		game.msg.channel.send({ embeds: [msge] });
 
 		removeTimeouts(Bingo_games[guildId]);
@@ -225,8 +220,7 @@ export async function sayBingo(msg: okbot.Message) {
 			iconURL: msg.author.displayAvatarURL({ forceStatic: true, size: 32 })
 		})
 		.setDescription(
-			(missedChance ? missedChance + "missed their chance...\n" : "") +
-				visualizeBoard(game.plr[msg.author.id].board)
+			(missedChance ? missedChance + "missed their chance...\n" : "") + visualizeBoard(game.plr[msg.author.id].board)
 		);
 
 	const winningsMonTot = winnings - bet;
@@ -316,11 +310,7 @@ async function addGame(msg: okbot.Message, boardNumbers: string[], bet: number) 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!msg.inGuild()) return;
 	if (!args.length)
-		return sendSimpleMessage<okbot.Message>(
-			msg,
-			"The usage for this command is\n`" + usage + "`",
-			Colors.White
-		);
+		return sendSimpleMessage<okbot.Message>(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
 
 	const game = Bingo_games[msg.guildId];
 
@@ -398,8 +388,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	// no action
 	if (!game) return await addGame(msg, args, bet);
-	if (game.int)
-		return sendSimpleMessage<okbot.Message>(msg, "There is an ongoing game in this server already.");
+	if (game.int) return sendSimpleMessage<okbot.Message>(msg, "There is an ongoing game in this server already.");
 	// TODO?: update player instead
 	if (game.plr?.[msg.author.id])
 		return sendSimpleMessage<okbot.Message>(msg, "You're already participating in a game in this server.");

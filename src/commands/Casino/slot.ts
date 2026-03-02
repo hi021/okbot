@@ -84,9 +84,7 @@ function runSlot(msg: okbot.Message, bet: number) {
 	const rowbot = `${randomFromArray(otherPossible)} ${randomFromArray(otherPossible)} ${randomFromArray(otherPossible)}`;
 
 	const msge = new EmbedBuilder()
-		.setDescription(
-			`${separator}\n${rowtop}\n\n${row[0]} ${row[1]} ${row[2]} **<**\n\n${rowbot}\n${separator}`
-		)
+		.setDescription(`${separator}\n${rowtop}\n\n${row[0]} ${row[1]} ${row[2]} **<**\n\n${rowbot}\n${separator}`)
 		.addFields({ name: `Won ${formatDoler(win, false)}`, value: `${num}x ${element}` })
 		.setFooter({ text: `bet ${formatDoler(bet, false)}` });
 	if (pay >= 15) msge.setColor(Colors.Gold);
@@ -129,8 +127,7 @@ function finalizeSlot(msg: okbot.Message, bet: number, plrdat: any) {
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (Players_in_collector[msg.author.id])
 		return sendSimpleMessage(msg, "A different activity requires your attention first!");
-	if (!args?.length)
-		return sendSimpleMessage(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
+	if (!args?.length) return sendSimpleMessage(msg, "The usage for this command is\n`" + usage + "`", Colors.White);
 	if (isOnCooldown("slot", msg.author.id, msg, "before gambling again.")) return;
 
 	const action = args[0].toLowerCase();
@@ -156,10 +153,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	else bet = parseNumberSuffix(args[0]) ?? 0;
 
 	if (bet == null || isNaN(bet) || bet < MIN_BET || bet > MAX_BET)
-		return sendSimpleMessage(
-			msg,
-			`Bet amount must be within ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}.`
-		);
+		return sendSimpleMessage(msg, `Bet amount must be within ${formatDoler(MIN_BET)} and ${formatDoler(MAX_BET)}.`);
 	if (bet > mon) return sendSimpleMessage(msg, `You only have ${formatDoler(mon)}.`);
 
 	const betPercent = bet / mon;

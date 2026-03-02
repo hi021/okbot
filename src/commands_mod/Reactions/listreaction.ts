@@ -112,9 +112,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	if (!reactionEntries?.length)
 		return sendSimpleMessage(
 			msg,
-			guildId == "_GLOBAL"
-				? "🕸️ *No global custom reactions...*"
-				: "🕸️ *No custom reactions in this guild...*",
+			guildId == "_GLOBAL" ? "🕸️ *No global custom reactions...*" : "🕸️ *No custom reactions in this guild...*",
 			Colors.DarkOrange,
 			false
 		);

@@ -112,8 +112,7 @@ function addReactionsToMsgEmbed(msge: EmbedBuilder, reactionEntries: FormattedRe
 
 export async function execute(msg: okbot.Message, args: string[]) {
 	if (!msg.inGuild()) return;
-	if (Players_in_collector[msg.author.id])
-		return msg.reply("A different activity requires your attention first!");
+	if (Players_in_collector[msg.author.id]) return msg.reply("A different activity requires your attention first!");
 
 	let guildId = msg.guildId;
 	const arg0 = args.shift()?.toLowerCase();
@@ -186,17 +185,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 						.setTitle("Removed reaction")
 						.addFields({
 							name: "Message",
-							value:
-								reactionsFormatted[n].rea.length > 1024
-									? "`<Too long to display>`"
-									: reactionsFormatted[n].rea
+							value: reactionsFormatted[n].rea.length > 1024 ? "`<Too long to display>`" : reactionsFormatted[n].rea
 						})
 						.addFields({
 							name: "Response",
-							value:
-								reactionsFormatted[n].res.length > 1024
-									? "`<Too long to display>`"
-									: reactionsFormatted[n].res
+							value: reactionsFormatted[n].res.length > 1024 ? "`<Too long to display>`" : reactionsFormatted[n].res
 						})
 				],
 				allowedMentions: {

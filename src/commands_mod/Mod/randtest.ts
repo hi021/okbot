@@ -14,8 +14,6 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	const t0 = Date.now();
 	for (let i = 0; i < reps; i++) addToRes(randomInt(0, 500));
 
-	const initialMessage = await msg.channel.send(
-		`Took \`${Date.now() - t0}\` ms.\n\`\`\`${res.slice(0, 250)}\`\`\``
-	);
+	const initialMessage = await msg.channel.send(`Took \`${Date.now() - t0}\` ms.\n\`\`\`${res.slice(0, 250)}\`\`\``);
 	initialMessage.reply(`\`\`\`${res.slice(250)}\`\`\``);
 }

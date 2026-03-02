@@ -7,8 +7,7 @@ export const name = "changelog";
 export const alias = ["changes", "update"];
 export const description = "📋 View the bot's changelog";
 export const usage = "<Version string>";
-export const usageDetail =
-	"Version strings look like '0.17.2', '1.2.3', etc.\nTracked since 0.10.2 (June 2022).";
+export const usageDetail = "Version strings look like '0.17.2', '1.2.3', etc.\nTracked since 0.10.2 (June 2022).";
 const perPage = 7;
 
 // pagination
@@ -25,6 +24,7 @@ bot.on("interactionCreate", async interaction => {
 });
 
 const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
+	"1.12.0": "2026-03-16",
 	"1.11.3": "2025-10-16",
 	"1.11.2": "2025-06-22",
 	"1.11.1": "2025-06-07",
@@ -99,6 +99,7 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 });
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
+	"1.12.0": [""],
 	"1.11.3": ["Added claimed dailies ranking", "Added more gay", "Minor tweaks", "Updated dependencies"],
 	"1.11.2": ["Added more 'bakery' levels up to 30", "Fixed multiple important 'bakery' related bugs"],
 	"1.11.1": [

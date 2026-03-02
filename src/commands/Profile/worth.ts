@@ -2,14 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import { db_plr_get, db_plr_set } from "../../db/db.js";
 import { db_store_get_item } from "../../db/store.js";
 import { formatDoler, getUserFromMsg, sendSimpleMessage } from "../../utils.js";
-import {
-	bake,
-	BakeryCookies,
-	BakeryLevels,
-	BakeryOvens,
-	BakeryStaff,
-	getBakeryToCollect
-} from "../Business/bakery.js";
+import { bake, BakeryCookies, BakeryLevels, BakeryOvens, BakeryStaff, getBakeryToCollect } from "../Business/bakery.js";
 import { bankInterest, BankMemberships } from "../Economy/bank.js";
 import { AquaLevels, calculateAquaIncome } from "../Fish/aquarium.js";
 import { Fish } from "../Fish/fish.js";
@@ -198,11 +191,9 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	else if (total > 50000) title = "The Blue-collar";
 	else if (total > 7500) title = "The Scraper-by";
 
-	msge
-		.addFields({ name: "\u200b", value: "\u200b" }, { name: "total", value: formatDoler(total, false) })
-		.setAuthor({
-			name: `${usr.displayName} - ${title}`,
-			iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })
-		});
+	msge.addFields({ name: "\u200b", value: "\u200b" }, { name: "total", value: formatDoler(total, false) }).setAuthor({
+		name: `${usr.displayName} - ${title}`,
+		iconURL: usr.displayAvatarURL({ forceStatic: true, size: 32 })
+	});
 	return msg.reply({ embeds: [msge] });
 }

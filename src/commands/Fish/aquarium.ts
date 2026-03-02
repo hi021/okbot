@@ -50,10 +50,7 @@ bot.on("interactionCreate", async interaction => {
 		const cost = AquaLevels[lv].upCost;
 		const mon = plrdat?.mon ?? 0;
 		if (cost > mon)
-			return sendEphemeralReply(
-				interaction,
-				`You need ${formatDoler(cost - mon)} more to afford this upgrade.`
-			);
+			return sendEphemeralReply(interaction, `You need ${formatDoler(cost - mon)} more to afford this upgrade.`);
 
 		if (!plrdat?.aqua?.lv) {
 			// open new
@@ -73,11 +70,7 @@ bot.on("interactionCreate", async interaction => {
 				}
 			});
 			await db_plr_add({ _id: id, mon: -cost, expense: { aqua: cost } });
-			sendSimpleMessage(
-				interaction.message as okbot.Message,
-				"Successfully opened your aquarium!",
-				Colors.DarkGreen
-			);
+			sendSimpleMessage(interaction.message as okbot.Message, "Successfully opened your aquarium!", Colors.DarkGreen);
 		} else {
 			// upgrade existing
 			plrdat.aqua.huge.length = AquaLevels[lv].huge;
@@ -202,8 +195,7 @@ function displayAquarium(aq: okbot.Aquarium, user: User, collect?: boolean) {
 	}
 	if (aq.med?.length) {
 		let s = "";
-		for (let i = 0; i < aq.med.length; i++)
-			s += displayMedTank(aq.med[i]) + `${i != aq.med.length - 1 ? "-" : ""}`;
+		for (let i = 0; i < aq.med.length; i++) s += displayMedTank(aq.med[i]) + `${i != aq.med.length - 1 ? "-" : ""}`;
 		msge.addFields({ name: `${aq.med.length} medium tank${aq.med.length == 1 ? "" : "s"} (x1.1)`, value: s });
 	}
 	let s = "";
@@ -330,13 +322,10 @@ function displayLevels() {
 
 //lv is current pond level; returns EmbedBuilder with upgrade confirmation; need to check if the level isn't max beforehand
 function displayUpgradeStats(lv: number, money: number) {
-	const statOld =
-		lv === 0 ? { small: 0, med: 0, big: 0, huge: 0, collMul: 1, maxColl: 0 } : AquaLevels[lv - 1];
+	const statOld = lv === 0 ? { small: 0, med: 0, big: 0, huge: 0, collMul: 1, maxColl: 0 } : AquaLevels[lv - 1];
 	const statNew = AquaLevels[lv];
 
-	const msge = new EmbedBuilder()
-		.setColor(Colors.White)
-		.setDescription(showUpgradeCost(statNew.upCost, money));
+	const msge = new EmbedBuilder().setColor(Colors.White).setDescription(showUpgradeCost(statNew.upCost, money));
 
 	if (lv === 0)
 		return msge
@@ -346,9 +335,7 @@ function displayUpgradeStats(lv: number, money: number) {
 	let tanks = `${statOld.small != statNew.small ? `${formatNumber(statOld.small)} → ${formatNumber(statNew.small)} small ● ` : ""}${
 		statOld.med != statNew.med ? `${formatNumber(statOld.med)} → ${formatNumber(statNew.med)} medium ● ` : ""
 	}${statOld.big != statNew.big ? `${formatNumber(statOld.big)} → ${formatNumber(statNew.big)} big ● ` : ""}${
-		statOld.huge != statNew.huge
-			? `${formatNumber(statOld.huge)} → ${formatNumber(statNew.huge)} huge ● `
-			: ""
+		statOld.huge != statNew.huge ? `${formatNumber(statOld.huge)} → ${formatNumber(statNew.huge)} huge ● ` : ""
 	}`;
 	if (tanks.length) tanks = tanks.slice(0, -3);
 	else tanks = "";
@@ -385,10 +372,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 									.setCustomId(`aq_up_confirm-${id}`)
 									.setStyle(ButtonStyle.Success)
 									.setLabel("Upgrade"),
-								new ButtonBuilder()
-									.setCustomId(`aq_up_cancel-${id}`)
-									.setStyle(ButtonStyle.Danger)
-									.setLabel("Cancel")
+								new ButtonBuilder().setCustomId(`aq_up_cancel-${id}`).setStyle(ButtonStyle.Danger).setLabel("Cancel")
 							)
 						]
 					: [];
@@ -421,13 +405,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				return sendSimpleMessage(msg, "Set your aquarium's name to `" + nam + "`", Colors.DarkGreen);
 			}
 
-			if (
-				tankSize != "huge" &&
-				tankSize != "big" &&
-				tankSize != "medium" &&
-				tankSize != "med" &&
-				tankSize != "small"
-			)
+			if (tankSize != "huge" && tankSize != "big" && tankSize != "medium" && tankSize != "med" && tankSize != "small")
 				return sendSimpleMessage(msg, "Invalid tank size. Must be `small`, `medium`, `big`, or `huge`.");
 			if (!args.length) return sendSimpleMessage(msg, usageEdit, Colors.White);
 			if (tankSize == "medium") tankSize = "med";
@@ -452,8 +430,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				if (!fis) return sendSimpleMessage(msg, "No fish with the given name was found.");
 				if (!plrdat.fish?.[fisNam])
 					return sendSimpleMessage(msg, `You don't have any **${fis.emoji} ${fisNam}** in your inventory`);
-				if (fis.aq == null)
-					return sendSimpleMessage(msg, `**${fis.emoji} ${fisNam}** can't be put in an aquarium...`);
+				if (fis.aq == null) return sendSimpleMessage(msg, `**${fis.emoji} ${fisNam}** can't be put in an aquarium...`);
 			}
 
 			const curFish = curTank![tankId - 1];
@@ -485,9 +462,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 				Math.round(newColl * plrdat.aqua.collMul * 100) / 100
 			)}`;
 
-			curTank![tankId - 1] = fis
-				? { emoji: fis.emoji, nam: fisNam as string, aq: fisIncome as number }
-				: undefined;
+			curTank![tankId - 1] = fis ? { emoji: fis.emoji, nam: fisNam as string, aq: fisIncome as number } : undefined;
 
 			const now = Math.floor(new Date().getTime() / 1000);
 			const income = calculateAquaIncome(plrdat.aqua, now);
