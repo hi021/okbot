@@ -35,7 +35,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		countColumn += formatNumber(ok.count) + "\n";
 	}
 
-	// TODO pagination
+	// TODO pagination!!!!!!!!!!!!!
 	msge
 		.setTitle(title)
 		.addFields(

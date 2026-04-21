@@ -20,6 +20,8 @@ const MS_PER_HOUR = 3600000;
 const MS_PER_MINUTE = 60000;
 const MS_PER_SECOND = 1000;
 
+export type PartialExcept<T, K extends keyof T> = Partial<T> & Pick<T, K>;
+
 export const e_blank = "<:blank:986204417512575036>";
 
 //UTIL

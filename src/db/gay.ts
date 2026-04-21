@@ -2,6 +2,7 @@ import fs from "fs";
 import { AnyBulkWriteOperation, Collection } from "mongodb";
 import path from "path";
 import { db_get } from "./db.js";
+import { PartialExcept } from "../utils.js";
 
 const assetPath = "../assets/gay/";
 
@@ -69,11 +70,11 @@ async function db_get_gay_from_collection_by_id(coll: Collection, id: number) {
 	return (await coll.findOne({ _id: id as any })) as null | okbot.GayObject;
 }
 
-export async function db_gay_add(gay: okbot.GayObject, type: okbot.GayType) {
+export async function db_gay_add(gay: PartialExcept<okbot.GayObject, "_id">, type: okbot.GayType) {
 	const _id = gay._id;
 	if (!_id) return;
 	delete (gay as any)._id;
 
 	const coll = db_get(`gay_${type.toLowerCase()}`);
-	await coll.updateOne({ _id: _id as any }, { $inc: gay as any });
+	await coll.updateOne({ _id: _id as any }, { $inc: gay as any }, { upsert: true });
 }
