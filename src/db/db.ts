@@ -65,15 +65,20 @@ export async function db_ok_get(guildId = "_GLOBAL", sort = true) {
 		if (!okObj?.all) return null;
 
 		const total = okObj.all as number;
+		let unique = 0;
 		// @ts-ignore
 		delete okObj._id;
 		delete okObj.all;
 
 		const okArr: Array<{ type: string; count: number }> = [];
-		for (const oktype in okObj) okArr.push({ type: oktype, count: okObj[oktype] });
+		for (const oktype in okObj) {
+			++unique;
+			okArr.push({ type: oktype, count: okObj[oktype] });
+		}
 
+		// TODO delegate to mongodb
 		if (sort) okArr.sort((a, b) => (a.count < b.count ? 1 : -1));
-		return { total, detail: okArr };
+		return { total, unique, detail: okArr };
 	} catch (err) {
 		console.error(err);
 		return null;

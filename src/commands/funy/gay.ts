@@ -6,14 +6,13 @@ import { bot } from "../../okbot.js";
 
 const COLORS: { [type in okbot.GayType]: ColorResolvable } = Object.freeze({ Girls: "#fd8ba8", Silly: "#ca8bfd" });
 const EMOJI: {
-	[k in keyof Pick<okbot.GayObject, "downvotes" | "upvotes" | "impressions">]: { [type in okbot.GayType]: string };
+	[k in keyof Pick<okbot.GayObject, "downvote" | "upvote" | "impressions">]: { [type in okbot.GayType]: string };
 } = Object.freeze({
-	downvotes: { Girls: "🤢", Silly: "😐" },
-	upvotes: { Girls: "💜", Silly: "🙂" },
+	downvote: { Girls: "🤢", Silly: "😐" },
+	upvote: { Girls: "💜", Silly: "🙂" },
 	impressions: { Girls: "👁️", Silly: "👁️" }
 });
 
-// pagination
 bot.on("interactionCreate", async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
@@ -21,8 +20,9 @@ bot.on("interactionCreate", async interaction => {
 
 	const _id = +split[1];
 	const type = split[2] as okbot.GayType;
-	const impressions = +split[3];
+	const impressionId = +split[3];
 	const voteType = split[4];
+	if (voteType !== "upvote" && voteType !== "downvote") return;
 
 	const gay = await db_get_gay(type, _id);
 	if (!gay) return;
@@ -31,12 +31,12 @@ bot.on("interactionCreate", async interaction => {
 	// TODO validate if not upvoted by user already idk how
 	db_gay_add({ _id, [voteType]: 1 }, type);
 
-	let upvotes = gay.upvotes;
-	let downvotes = gay.downvotes;
+	let upvotes = gay.upvote ?? 0;
+	let downvotes = gay.downvote ?? 0;
 	voteType == "upvote" ? ++upvotes : ++downvotes;
 
 	const msge = EmbedBuilder.from(interaction.message.embeds[0]);
-	msge.setFooter({ text: buildFooter(type, impressions, upvotes, downvotes) });
+	msge.setFooter({ text: buildFooter(type, impressionId, upvotes, downvotes) });
 	interaction.update({ embeds: [msge] });
 });
 
@@ -47,7 +47,7 @@ export const usage = '<"Girls" OR "Silly"> <Numeric image id (1-indexed)>';
 
 // TODO maybe only show the score & engagement (like score/impression - idk impressions kinda fake cuz it's 1 per entire channel of people)
 function buildFooter(type: okbot.GayType, impressions?: number, upvotes?: number, downvotes?: number) {
-	return `${EMOJI.impressions[type]} ${impressions}${upvotes ? ` ● ${EMOJI.upvotes[type]} ${upvotes}` : ""}${downvotes ? ` ● ${EMOJI.downvotes[type]} ${downvotes}` : ""}`;
+	return `${EMOJI.impressions[type]} ${impressions}${upvotes ? ` ● ${EMOJI.upvote[type]} ${upvotes}` : ""}${downvotes ? ` ● ${EMOJI.downvote[type]} ${downvotes}` : ""}`;
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
@@ -65,11 +65,11 @@ export async function execute(msg: okbot.Message, args: string[]) {
 	}
 
 	const gay = await db_get_gay(type, id);
-	if (!gay) return sendSimpleMessage(msg, "**No gay found!**\n*You feel the world burst into total despair...*");
+	if (!gay) return sendSimpleMessage(msg, "**No gay found!**\n*You feel the world burst into total despair 🔥...*");
 
 	const impressions = (gay.impressions ?? 0) + 1;
-	const upvotes = gay.upvotes ?? 0;
-	const downvotes = gay.downvotes ?? 0;
+	const upvotes = gay.upvote ?? 0;
+	const downvotes = gay.downvote ?? 0;
 	const msge = new EmbedBuilder()
 		.setTitle(`${type} #${gay._id}`)
 		.setImage(gay.url)
@@ -77,16 +77,16 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		.setFooter({ text: buildFooter(type, impressions, upvotes, downvotes) })
 		.setColor(COLORS[type]);
 
-	const idPrefix = `gay-${id}-${type}-${impressions}-${upvotes}-${downvotes}`;
+	const idPrefix = `gay-${gay._id}-${type}-${impressions}`;
 	const voteButtons = new ActionRowBuilder<ButtonBuilder>().setComponents(
 		new ButtonBuilder()
 			.setCustomId(`${idPrefix}-upvote`)
-			.setEmoji(EMOJI.upvotes[type])
+			.setEmoji(EMOJI.upvote[type])
 			.setLabel("Yee")
 			.setStyle(ButtonStyle.Secondary),
 		new ButtonBuilder()
 			.setCustomId(`${idPrefix}-downvote`)
-			.setEmoji(EMOJI.downvotes[type])
+			.setEmoji(EMOJI.downvote[type])
 			.setLabel("Eww")
 			.setStyle(ButtonStyle.Secondary)
 	);

@@ -1,4 +1,4 @@
-import Discord, { ChannelType, Colors } from "discord.js";
+import { ChannelType, Colors, EmbedBuilder, TextChannel } from "discord.js";
 import io, { Socket } from "socket.io-client";
 import { db_guild_get } from "./db/guild.js";
 import { db_osu_get_players } from "./db/osu.js";
@@ -32,7 +32,7 @@ function socketHandler(resolve: (value: boolean) => void, reject: (reason: strin
 			// scrape guilds to look for channels that track players
 			const guilds = await db_guild_get({ otrack: { $exists: true } }, { _id: 1, otrack: 1 });
 			const plrIds = new Set<number>(); // players to fetch from poggers db
-			const destinationGuilds: Array<Omit<okbot.OsuTrackSettings, "chn"> & { chn: Discord.TextChannel }> = [];
+			const destinationGuilds: Array<Omit<okbot.OsuTrackSettings, "chn"> & { chn: TextChannel }> = [];
 
 			for (const i in guilds) {
 				const trackSettings = guilds[Number(i)].otrack;
@@ -59,7 +59,7 @@ function socketHandler(resolve: (value: boolean) => void, reject: (reason: strin
 
 			// send to text channels
 			for (const trackSettings of destinationGuilds) {
-				const msge = new Discord.EmbedBuilder()
+				const msge = new EmbedBuilder()
 					.setTitle("Tracked top 50s update")
 					.setFooter({
 						text: "poggers.ltd",

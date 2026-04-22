@@ -1,4 +1,4 @@
-import Discord, { ActivityType, Message, OmitPartialGroupDMChannel, PermissionsBitField } from "discord.js";
+import * as Discord from "discord.js";
 import dotenv from "dotenv";
 import fs from "fs";
 import { roundAnswer } from "./commands/Quiz/flags.js";
@@ -35,7 +35,7 @@ export async function loadBot() {
 	if (bot.commands.get("fish")?.fishInit()) console.log("Loaded fish.");
 	if (process.env.DB_URL && bot.commands.get("store")?.loadStoreItems()) console.log("Loaded store items.");
 
-	if (SET.STATUS_TEXT) bot.user!.setActivity(SET.STATUS_TEXT, { type: ActivityType.Custom });
+	if (SET.STATUS_TEXT) bot.user!.setActivity(SET.STATUS_TEXT, { type: Discord.ActivityType.Custom });
 
 	if (process.env.DB_URL && (await db_guild_init(Guilds)))
 		console.log(`Loaded guild preferences (${objLength(Guilds)}).`);
@@ -59,7 +59,7 @@ async function importCmds(directory: "commands" | "commands_mod") {
 	}
 }
 
-function countOk(msg: OmitPartialGroupDMChannel<Message<true>>) {
+function countOk(msg: Discord.OmitPartialGroupDMChannel<Discord.Message<true>>) {
 	// matches only the first ok, will not match unseparated okays e.g. "okok" :(
 	const okArr = msg.content.match(/(^|\W+)(o*(okie?dokie?|ok[ae]ys?|oki[es]?|ok[es]?)[yesik]*)(\W+|$)/im);
 	const ok = okArr?.[3];
@@ -69,7 +69,7 @@ function countOk(msg: OmitPartialGroupDMChannel<Message<true>>) {
 	db_plr_add({ _id: msg.author.id, okTot: 1 });
 }
 
-async function executeCommandOrAction(msg: OmitPartialGroupDMChannel<Message<true>>, prefix: string) {
+async function executeCommandOrAction(msg: Discord.OmitPartialGroupDMChannel<Discord.Message<true>>, prefix: string) {
 	let collection: "commands" | "commands_mod", prefixLength;
 
 	if (msg.content.startsWith(prefix)) {
@@ -101,7 +101,9 @@ async function executeCommandOrAction(msg: OmitPartialGroupDMChannel<Message<tru
 
 	if (cmd.restrict && cmd.restrict !== "EVERYONE") {
 		if (cmd.restrict === "GUILD_ADMIN") {
-			if (!(await msg.guild.members.fetch(msg.author.id)).permissions.has(PermissionsBitField.Flags.ManageGuild))
+			if (
+				!(await msg.guild.members.fetch(msg.author.id)).permissions.has(Discord.PermissionsBitField.Flags.ManageGuild)
+			)
 				return msg.reply("You do not have the required permissions to use this command (`GUILD_ADMIN`).");
 		} else {
 			const permArray = SET[cmd.restrict as "BOT_OWNER" | "BOT_ADMIN"];

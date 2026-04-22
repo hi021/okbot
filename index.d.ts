@@ -435,8 +435,8 @@ declare namespace okbot {
 		source?: string | null; // author, only for Girls
 	}
 	interface GayObject extends GayObjectPlain {
-		upvotes: number;
-		downvotes: number;
+		upvote: number;
+		downvote: number;
 		impressions: number;
 	}
 
