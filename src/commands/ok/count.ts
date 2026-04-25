@@ -51,7 +51,7 @@ function buildOkCountEmbed(
 	}
 
 	let typeColumn = "",
-		countColumn = ""
+		countColumn = "";
 	for (const ok of pageItems) {
 		typeColumn += `**${ok.type}**\n`;
 		countColumn += formatNumber(ok.count) + "\n";
@@ -67,20 +67,23 @@ function buildOkCountEmbed(
 			{ name: "Total", value: formatNumber(okStats.total), inline: true }
 		);
 
-	const components = totalPages > 1 ? [
-		new ActionRowBuilder<ButtonBuilder>().setComponents(
-			new ButtonBuilder()
-				.setCustomId(`okcount_prev-${safePage - 1}-${guildId}`)
-				.setEmoji("⬅️")
-				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(safePage <= 1),
-			new ButtonBuilder()
-				.setCustomId(`okcount_next-${safePage + 1}-${guildId}`)
-				.setEmoji("➡️")
-				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(safePage >= totalPages)
-		)
-	] : [];
+	const components =
+		totalPages > 1
+			? [
+					new ActionRowBuilder<ButtonBuilder>().setComponents(
+						new ButtonBuilder()
+							.setCustomId(`okcount_prev-${safePage - 1}-${guildId}`)
+							.setEmoji("⬅️")
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(safePage <= 1),
+						new ButtonBuilder()
+							.setCustomId(`okcount_next-${safePage + 1}-${guildId}`)
+							.setEmoji("➡️")
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(safePage >= totalPages)
+					)
+				]
+			: [];
 
 	return { msge, components };
 }

@@ -434,11 +434,12 @@ declare namespace okbot {
 		url: string;
 		source?: string | null; // author, only for Girls
 	}
-	interface GayObject extends GayObjectPlain {
-		upvote: number;
+	interface GayObjectStats {
+				upvote: number;
 		downvote: number;
 		impressions: number;
 	}
+type GayObject = GayObjectPlain & GayObjectStats;
 
 	type CommandPermission = undefined | "EVERYONE" | "GUILD_ADMIN" | "BOT_ADMIN" | "BOT_OWNER"; // undefined defaults to EVERYONE
 	interface Command {

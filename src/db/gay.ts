@@ -2,7 +2,7 @@ import fs from "fs";
 import { AnyBulkWriteOperation, Collection } from "mongodb";
 import path from "path";
 import { db_get } from "./db.js";
-import { PartialExcept } from "../utils.js";
+import { DbLeastOrMost, PartialExcept } from "../utils.js";
 
 const assetPath = "../assets/gay/";
 
@@ -14,7 +14,6 @@ export async function db_gay_init() {
 		// TODO: Promise.all?
 		const girlsGay = await db_gay_parse("girls.json");
 		const sillyGay = await db_gay_parse("silly.json");
-
 		await db_gay_update_and_upsert(girlsCol, girlsGay);
 		await db_gay_update_and_upsert(sillyCol, sillyGay);
 
@@ -26,7 +25,9 @@ export async function db_gay_init() {
 
 export async function db_get_gay(type: okbot.GayType, id?: number) {
 	const coll = db_get(`gay_${type.toLowerCase()}`);
-	return id ? db_get_gay_from_collection_by_id(coll, id) : db_get_gay_from_collection(coll);
+	return id
+		? db_get_gay_from_collection_by_id(coll, id)
+		: db_get_gay_from_collection_by_field(coll, "impressions", "least");
 }
 
 async function db_gay_parse(filename: string) {
@@ -62,12 +63,43 @@ async function db_gay_update_and_upsert(coll: Collection, gay: okbot.GayObjectPl
 	await coll.bulkWrite(operations, { ordered: false });
 }
 
-async function db_get_gay_from_collection(coll: Collection) {
+export async function db_get_gay_from_collection(coll: Collection) {
 	return (await coll.aggregate([{ $sample: { size: 1 } }]).next()) as null | okbot.GayObject;
 }
 
 async function db_get_gay_from_collection_by_id(coll: Collection, id: number) {
 	return (await coll.findOne({ _id: id as any })) as null | okbot.GayObject;
+}
+
+export async function db_get_gay_from_collection_by_field(
+	coll: Collection,
+	field: keyof okbot.GayObject,
+	leastOrMostMode: DbLeastOrMost,
+	leastOrMostCount = 32
+) {
+	const aggregate: Array<Record<string, unknown>> = [
+		{ $sort: { [field]: leastOrMostMode === "least" ? 1 : -1 } },
+		{ $limit: Math.max(1, leastOrMostCount) },
+		{ $sample: { size: 1 } }
+	];
+
+	return (await coll.aggregate(aggregate).next()) as null | okbot.GayObject;
+}
+
+export async function db_get_gays_from_collection_by_field(
+	coll: Collection,
+	field: keyof okbot.GayObject,
+	leastOrMostMode: DbLeastOrMost,
+	leastOrMostCount = 15,
+	ignoreNull = true
+) {
+	const aggregate: Array<Record<string, unknown>> = [
+		{ $sort: { [field]: leastOrMostMode === "least" ? 1 : -1 } },
+		{ $limit: Math.max(1, leastOrMostCount) }
+	];
+	if (ignoreNull) aggregate.unshift({ $match: { [field]: { $ne: null } } });
+
+	return (await coll.aggregate(aggregate).toArray()) as okbot.GayObject[];
 }
 
 export async function db_gay_add(gay: PartialExcept<okbot.GayObject, "_id">, type: okbot.GayType) {
