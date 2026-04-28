@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ColorResolvable, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ColorResolvable, EmbedBuilder, Events } from "discord.js";
 import { db_gay_add, db_get_gay, db_get_gays_from_collection_by_field } from "../../db/gay.js";
 import { createSimpleMessage, DbLeastOrMost, sendSimpleMessage } from "../../utils.js";
 import { db_get, db_plr_add } from "../../db/db.js";
@@ -14,7 +14,7 @@ const EMOJI: {
 	score: { Girls: "🏆", Silly: "🏆", top: "scored" } // TODO: add top score, though should probably say Highest/Lowest instead of Most/Least
 });
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "gay") return;

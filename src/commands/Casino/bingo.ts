@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageType, Colors, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageType, Colors, EmbedBuilder, Events } from "discord.js";
 import { db_add_casino_top, db_plr_add, db_plr_get } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -33,7 +33,7 @@ const allNumbers = [
 	90, 91, 92, 93, 94, 95, 96, 97, 98, 99
 ];
 
-bot.on("interactionCreate", interaction => {
+bot.on(Events.InteractionCreate, interaction => {
 	if (!interaction.isButton() || !interaction.inGuild() || interaction.customId !== "show_board") return;
 
 	const game = Bingo_games[interaction.guildId];

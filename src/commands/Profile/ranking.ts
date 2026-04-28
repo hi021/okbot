@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Guild, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events, Guild, User } from "discord.js";
 import { db_ranking_get, db_ranking_get_guild_ok } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { createSimpleMessage, formatNumber, getUserFromMsg, sendSimpleMessage } from "../../utils.js";
@@ -14,7 +14,7 @@ export const usage = "<Category> <Page number> <Username OR Mention>";
 export const usageDetail = "Categories:\n" + categories;
 
 // pagination
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "ranking_prev" && split[0] !== "ranking_next") return;

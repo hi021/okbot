@@ -1,4 +1,13 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, GuildMember, User } from "discord.js";
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	Events,
+	GuildMember,
+	User
+} from "discord.js";
 import { bot } from "../../okbot.js";
 import { getUserFromMsg, sendSimpleMessage } from "../../utils.js";
 
@@ -7,7 +16,7 @@ export const alias = ["av"];
 export const description = "🧑 Get your avatar (or someone else's!)";
 export const usage = "<Username OR Mention>";
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "av") return;

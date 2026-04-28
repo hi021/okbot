@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events, User } from "discord.js";
 import { db_bakery_get_stats, db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import {
@@ -54,7 +54,7 @@ OR \`["All"]\`
 
 -# Use 'bakery inventory' to view all your stored cookies.`;
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton() || !interaction.guild) return;
 	const split = interaction.customId.split("-");
 	const id = split[1];
@@ -169,6 +169,56 @@ bot.on("interactionCreate", async interaction => {
 		return;
 	}
 });
+// TODO TEST lol
+bot.on(Events.InteractionCreate, async interaction => {
+	if (!interaction.isButton()) return;
+	const split = interaction.customId.split("-");
+	if (split[0] !== "bakerylvl_prev" && split[0] !== "bakerylvl_next") return;
+
+	const page = parseInt(split[1]);
+	if (page <= 0) return interaction.update({});
+
+	const result = buildBakeryLevelsPage(page);
+	interaction.update({ embeds: result.embeds, components: result.components });
+});
+
+function buildBakeryLevelsPage(page = 1) {
+	const perPage = 15;
+	const totalPages = Math.max(1, Math.ceil(BakeryLevels.length / perPage));
+	const safePage = Math.min(Math.max(1, page), totalPages);
+	const startIndex = (safePage - 1) * perPage;
+	const endIndex = Math.min(startIndex + perPage, BakeryLevels.length);
+
+	const msge = new EmbedBuilder().setColor(Colors.White).setTitle("Bakery upgrades ✨");
+
+	let text = "";
+	for (let i = startIndex; i < endIndex; i++) {
+		const stat = BakeryLevels[i];
+		const levelNum = i + 1;
+		const levelDescription = `**Level ${levelNum}**
+			\`${formatNumber(stat.cost).padStart(11, " ")}\` 💵 **|** max ovens: **${stat.maxOven}** ● max staff: **${stat.maxStaff}** ● **${Math.round((1 / stat.multi) * 100) / 100}**x speed multiplier\n\n`;
+		text += levelDescription;
+	}
+
+	msge.setDescription(text).setFooter({ text: `Page ${safePage} / ${totalPages}` });
+
+	const components = [
+		new ActionRowBuilder<ButtonBuilder>().addComponents(
+			new ButtonBuilder()
+				.setCustomId(`bakerylvl_prev-${safePage - 1}`)
+				.setEmoji("⬅️")
+				.setStyle(ButtonStyle.Secondary)
+				.setDisabled(safePage <= 1),
+			new ButtonBuilder()
+				.setCustomId(`bakerylvl_next-${safePage + 1}`)
+				.setEmoji("➡️")
+				.setStyle(ButtonStyle.Primary)
+				.setDisabled(safePage >= totalPages)
+		)
+	];
+
+	return { embeds: [msge], components };
+}
 
 export const RARE_ID = "99";
 export const RARE_BUNDLE_ID = "100";
@@ -185,7 +235,7 @@ export const BakeryCookies: { [cookieId: string]: okbot.BakeryCookie } = {
 	"10": { nam: "Oat", value: 25, emoji: "<:cookie_plain:1067061379737059328>", time: 100 }, //15  | lv16
 	"11": { nam: "Strawberry", value: 40, emoji: "<:cookie_strawberry:1130602583229206549>", time: 120 }, //20  | lv19
 	"12": { nam: "Bread", value: 55, emoji: ":flatbread:", time: 120 }, //22.5 | lv22
-	"13": { nam: "Infinity", value: 144, emoji: "<:cookie_infinity:1130602580821692468>", time: 256 }, //33.75 | lv28?
+	"13": { nam: "Infinity", value: 144, emoji: "<:cookie_infinity:1130602580821692468>", time: 256 }, //33.75 | lv29
 	[RARE_ID]: { nam: "Rare", value: 900, emoji: "<:adam:1007621226379886652>", time: 900 },
 	[RARE_BUNDLE_ID]: {
 		nam: "Rare Bundle",
@@ -384,10 +434,10 @@ export const BakeryLevels = [
 	{ cost: 17_777777, maxOven: 5, maxStaff: 5, multi: 0.633, maxColl: 166000 }, //lv24
 	{ cost: 27_777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 177777 }, //lv25
 	{ cost: 37_777777, maxOven: 6, maxStaff: 5, multi: 0.633, maxColl: 177777 }, //lv26
-	{ cost: 50_000000, maxOven: 6, maxStaff: 5, multi: 0.625, maxColl: 400000 }, //lv27
-	{ cost: 100_000000, maxOven: 6, maxStaff: 6, multi: 0.625, maxColl: 777777 }, //lv28
-	{ cost: 166_000000, maxOven: 6, maxStaff: 6, multi: 0.625, maxColl: 777777 }, //lv29
-	{ cost: 198_765432, maxOven: 6, maxStaff: 6, multi: 0.6125, maxColl: 900000 } //lv30
+	{ cost: 55_000000, maxOven: 6, maxStaff: 5, multi: 0.625, maxColl: 400000 }, //lv27
+	{ cost: 123_000000, maxOven: 6, maxStaff: 6, multi: 0.625, maxColl: 777777 }, //lv28
+	{ cost: 298_765432, maxOven: 6, maxStaff: 6, multi: 0.625, maxColl: 777777 }, //lv29
+	{ cost: 456_000000, maxOven: 6, maxStaff: 6, multi: 0.6125, maxColl: 900000 } //lv30
 ];
 const BakeryLevelRequirements: Array<null | {
 	cookie?: { [cookieId: string]: number };
@@ -545,7 +595,7 @@ const BakeryLevelRequirements: Array<null | {
 		tot: 60_000_000
 	}, // 28
 	{
-		cookie: { "1": 19999999, "2": 1999999, "9": 1000000, "12": 2500000, [RARE_BUNDLE_ID]: 8 },
+		cookie: { "1": 19999999, "2": 1999999, "9": 1000000, "12": 4000000, [RARE_BUNDLE_ID]: 24 },
 		tot: 60_000_000
 	}, // 29
 	{
@@ -566,7 +616,7 @@ const BakeryLevelRequirements: Array<null | {
 			[RARE_ID]: 1,
 			[RARE_BUNDLE_ID]: 1
 		},
-		tot: 77_000_077
+		tot: 111_111_111
 	} // 29 -> 30
 ];
 
@@ -760,7 +810,6 @@ function checkBakeryLevelRequirements(monLv: number, bakery?: okbot.Bakery) {
 
 	return { met, string };
 }
-
 // TODO?: This would be nicer with pagination instead of two bulky embeds...
 function showLevels() {
 	const levelsHalfway = Math.ceil(BakeryLevels.length / 2);
@@ -1214,7 +1263,12 @@ export async function execute(msg: okbot.Message, args: string[]) {
 		case "upgrades":
 		case "levels":
 		case "lv": {
-			return msg.reply({ embeds: showLevels(), allowedMentions: { repliedUser: false } });
+			const result = buildBakeryLevelsPage(1);
+			return msg.reply({
+				embeds: result.embeds,
+				components: result.components,
+				allowedMentions: { repliedUser: false }
+			});
 		}
 		case "collect":
 		case "pay":

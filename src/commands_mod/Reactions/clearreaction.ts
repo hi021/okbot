@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, Events } from "discord.js";
 import { db_guild_clear_reactions } from "../../db/guild.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -11,7 +11,7 @@ export const description = "just delete all reactions";
 export const usage = '<"Global">';
 export const restrict = "GUILD_ADMIN";
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton() || !interaction.inGuild()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "clear_reaction") return;

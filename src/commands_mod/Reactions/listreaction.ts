@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events } from "discord.js";
 import { bot } from "../../okbot.js";
 import { e_blank, sendSimpleMessage } from "../../utils.js";
 import { Guilds } from "../../volatile.js";
@@ -10,7 +10,7 @@ export const usage = '<"Global">';
 const perPage = 20;
 
 // pagination
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (interaction.isButton()) {
 		const split = interaction.customId.split("-");
 		if (split[0] !== "listReaction_prev" && split[0] !== "listReaction_next") return;

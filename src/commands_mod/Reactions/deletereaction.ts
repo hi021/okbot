@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Message } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events, Message } from "discord.js";
 import { db_guild_delete_reaction } from "../../db/guild.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -23,7 +23,7 @@ function formatReactions(reactions: { [reactionText: string]: string[] }) {
 }
 
 // pagination
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "delReaction_prev" && split[0] !== "delReaction_next") return;

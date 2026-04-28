@@ -6,6 +6,7 @@ import {
 	ButtonStyle,
 	Colors,
 	EmbedBuilder,
+	Events,
 	MessageCollector,
 	SelectMenuComponentOptionData,
 	SendableChannels,
@@ -236,7 +237,7 @@ export const usage = '<Category OR Item name OR "All">';
 const perPage = 20;
 
 // pagination, purchasing, and category selection
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	// pagination and purchasing TODO: refactor :)
 	if (interaction.isButton()) {
 		const split = interaction.customId.split("-");

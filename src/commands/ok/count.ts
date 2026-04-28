@@ -1,10 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events } from "discord.js";
 import { bot } from "../../okbot.js";
 import { db_ok_get } from "../../db/db.js";
 import { e_blank, formatNumber, sendSimpleMessage } from "../../utils.js";
 
 // pagination
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "okcount_prev" && split[0] !== "okcount_next") return;

@@ -1,4 +1,13 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Snowflake, User } from "discord.js";
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	Events,
+	Snowflake,
+	User
+} from "discord.js";
 import { db_plr_add, db_plr_get, db_plr_set } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -21,7 +30,7 @@ export const name = "bank";
 export const description = "🏦 What reserves?";
 export const usage = '<"Withdraw" OR "Deposit"> [Amount OR "All"]\n<"Upgrade" OR "Levels" OR "Stats">';
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton() || !interaction.inGuild()) return;
 	const split = interaction.customId.split("-");
 	const id = split[1];

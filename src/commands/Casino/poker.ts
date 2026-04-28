@@ -1,4 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, SendableChannels } from "discord.js";
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	Events,
+	SendableChannels
+} from "discord.js";
 import { db_plr_add, db_plr_get } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import {
@@ -22,7 +30,7 @@ const MIN_BET = 100;
 //k!poker start -> createGame() -> host starts -> startGame() & newRound() -> newTurn()
 // -> player finishes action -> advanceTurn() until newBettingRound()
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	const guildId = split[1];

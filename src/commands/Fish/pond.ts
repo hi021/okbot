@@ -5,6 +5,7 @@ import {
 	ButtonStyle,
 	Colors,
 	EmbedBuilder,
+	Events,
 	Interaction,
 	User
 } from "discord.js";
@@ -35,7 +36,7 @@ export const usageDetail =
 	"Will catch fish as long as there's storage space and the budget is at least 10 💵 - casting still costs.\nWon't find collectors' type items.";
 const usageBudget = "budget [(+ to increase, - to decrease, no sign to set) Amount OR \"Max\"]\ne.g. 'budget +250'";
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (

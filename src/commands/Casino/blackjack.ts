@@ -5,6 +5,7 @@ import {
 	ButtonStyle,
 	Colors,
 	EmbedBuilder,
+	Events,
 	Interaction
 } from "discord.js";
 import { db_add_casino_top, db_plr_add, db_plr_get } from "../../db/db.js";
@@ -28,7 +29,7 @@ export const usage = '[Bet amount (10-10M/33M 💵) OR "All" OR "Top"]';
 
 const BET_RANGES = { def: { min: 10, max: 10000000 }, vip: { min: 50000, max: 33000000 } };
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "bj_hit" && split[0] !== "bj_stand" && split[0] !== "bj_double") return;

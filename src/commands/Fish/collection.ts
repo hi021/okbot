@@ -1,4 +1,13 @@
-import { ActionRowBuilder, APIEmbedField, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, User } from "discord.js";
+import {
+	ActionRowBuilder,
+	APIEmbedField,
+	ButtonBuilder,
+	ButtonStyle,
+	Colors,
+	EmbedBuilder,
+	Events,
+	User
+} from "discord.js";
 import { db_fish_add, db_plr_add, db_plr_get } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -44,7 +53,7 @@ const displayItem = (item: okbot.CollectionItem) => {
 	return itemString;
 };
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	const id = split[1];

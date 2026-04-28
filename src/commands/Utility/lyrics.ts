@@ -1,5 +1,6 @@
-import { ActivityType, Colors, Embed, EmbedBuilder, MessageType } from "discord.js";
+import { ActivityType, Colors, ComponentType, EmbedBuilder, MessageType, Snowflake } from "discord.js";
 import { getSongById, parseSongInfo, searchSongs } from "genius-lyrics-api";
+import { Song } from "genius-lyrics-api/lib/utils.js";
 import { formatNumber, sendSimpleMessage } from "../../utils.js";
 
 export const name = "lyrics";
@@ -8,42 +9,76 @@ export const description = "🎶 For your karaoke nights";
 export const usage =
 	"<Song search query (tries to get song data from presence if none provided)> OR reply to a .fmbot's fm command";
 
-function parseQueryFromBotEmbed(reference: okbot.Message, msge: Embed, args: string[]) {
-	const botId = reference.author.id;
-	// Woozy (song queued message)
-	if (botId === "1014578749393616941" && msge.description) {
-		// embeds look like (Queued:\n<Query>)
-		// get second line and remove bold (**) from beginning and end
-		return msge.description.split("\n")[1].slice(2).slice(0, -2);
+const BOT_EMBED_PARSERS: Record<Snowflake, (msg: okbot.Message) => string | undefined> = Object.freeze({
+	"1014578749393616941": woozyQueryParser,
+	"356268235697553409": fmbotQueryParser,
+	"839937716921565252": mikazukiQueryParser
+});
+
+function woozyQueryParser(msg: okbot.Message) {
+	// Woozy (song queued / now playing / undid message)
+	const msge = msg.embeds[0];
+	if (!msge?.description) return;
+
+	// embeds look like Queued:\n**<Query>**
+	// get second line and remove bold (**) from beginning and end
+	return msge.description.split("\n")[1].slice(2).slice(0, -2);
+}
+
+function fmbotQueryParser(msg: okbot.Message) {
+	// fmbot (.fm command)
+	if (msg.components[0]?.type === ComponentType.Container) {
+		if (msg.components[0].components[0]?.type === ComponentType.Section && msg.components[0].components[0].components[0]?.type === ComponentType.TextDisplay) {
+		// TODO Embed (default) / Embed full: [ContainerComponent]: {[SectionComponent]: {[TextDisplayComponent], ...}}
+
+		// e.g. COMPONENT CONTENT:
+		//'-# Last played <t:1777409242:R> for [hi](<link>) \n' +
+     //   "### [Linda's in Custody](https://www.last.fm/music/Death+Grips/_/Linda%27s+in+Custody)\n" +
+       // '**Death Grips** • *Year of the Snitch*'
+		}
+
+		if (msg.components[0].components[0]?.type === ComponentType.TextDisplay) {
+			// Embed tiny [ContainerComponent]: {[TextDisplayComponent], [SeparatorComponent], [TextDisplayComponent]}
+			const regEmbedTiny = /^\*\*\[(.+)\]\(.*\)\*\*\n\*\*(.*)\*\* • \*(.*)\*$/;
+			const regExecEmbedTiny = regEmbedTiny.exec(msg.components[0].components[0].content);
+			const title = regExecEmbedTiny?.[1];
+			const artist = regExecEmbedTiny?.[2];
+			console.log({ title, artist });
+			if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
+		}
 	}
 
-	// fmbot (.fm, .np command)
-	if (botId === "356268235697553409") {
-		// embeds look like [<Title>](URL)\nBy **<Artist>** | *<Album>*
-		const regTitle = /(\[)(.+)(\])/;
-		const regArtist = /By \*\*(.+)\*\*/;
+	if (!msg.components.length && !msg.embeds.length && msg.content?.length) {
+		console.log(msg.content)
+		// Text single-line: **<Username>** is listening to **<Title>** by **<Artist>**
+		const regText = /^\*\*(?:.+)\*\* is listening to \*\*(.+)\*\* by \*\*(.+)\*\*/;
+		// Text full: *[User]'s last played track:*\n**<Title>**\nBy **<Artist>** | *<Album>*(\nblah blah...)
+		const regTextFull = /^(?:\*(?:.+)'s last played track:\*\n)?\*\*(.+)\*\*\nBy \*\*(.+)\*\* \| \*(.+)\*/;
 
-		let title;
-		let artist;
-		// EmbedMini and EmbedTiny have descriptions, EmbedFull has Current and Previous fields
-		const split = (msge.fields.length ? msge.fields[0].value : (msge.description ?? "")).split("\n");
-
-		title = regTitle.exec(split[0])?.[2];
-		artist = regArtist.exec(split[1])?.[1];
-
+		const regExec = regText.exec(msg.content) ?? regTextFull.exec(msg.content);
+		const title = regExec?.[1];
+		const artist = regExec?.[2];
 		if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
 	}
+}
 
+function mikazukiQueryParser(msg: okbot.Message) {
 	// mikazuki (;rs command)
-	else if (botId === "839937716921565252" && msge.title) {
-		// embeds look like <Artist> – <Title> [Difficulty]
-		const reg = /(.+) – (.+) (\[.+\])/;
-		const regExec = reg.exec(msge.title);
+	const msge = msg.embeds[0];
+	if (!msge?.title) return;
 
-		const artist = regExec?.[1];
-		const title = regExec?.[2];
-		if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
-	}
+	// embeds look like <Artist> – <Title> [Difficulty]
+	const reg = /(.+) – (.+) (\[.+\])/;
+	const regExec = reg.exec(msge.title);
+
+	const artist = regExec?.[1];
+	const title = regExec?.[2];
+	if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
+}
+
+function parseQueryFromBotMessage(reference: okbot.Message) {
+	if (!reference.author.bot) return;
+	return BOT_EMBED_PARSERS[reference.author.id]?.(reference);
 }
 
 function parseQueryFromSpotifyActivity(msg: okbot.Message) {
@@ -56,12 +91,11 @@ function parseQueryFromSpotifyActivity(msg: okbot.Message) {
 	}
 }
 
-// returns query from a woozy 'song queued' embed, fmbot .fm command, message content, or args
 async function parseQuery(msg: okbot.Message, args: string[]) {
 	if (msg.type === MessageType.Reply) {
-		const reference = await msg.fetchReference();
-		const msge = reference?.embeds[0];
-		const queryEmbed = msge ? parseQueryFromBotEmbed(reference, msge, args) : undefined;
+		const reference = (await msg.fetchReference()) as okbot.Message;
+		const queryEmbed = parseQueryFromBotMessage(reference);
+
 		if (queryEmbed) return queryEmbed;
 		if (!args[0] && reference?.content?.length > 1) return reference.content;
 	}
@@ -70,6 +104,21 @@ async function parseQuery(msg: okbot.Message, args: string[]) {
 	const queryActivity = parseQueryFromSpotifyActivity(msg);
 
 	return queryActivity ?? "";
+}
+
+function buildAlbumLabel(song: Song) {
+	let albumLabel = "";
+	if (song.releaseDate) albumLabel = "Released " + song.releaseDate;
+	if (song.albumName) albumLabel += " on " + song.albumName;
+	return albumLabel;
+}
+
+function buildFooterText(song: Song, lyricsTruncated: boolean) {
+	let footerText = "";
+	if (lyricsTruncated) footerText = "Lyrics truncated to fit\n";
+	if (song.views) footerText += formatNumber(song.views) + " views\n";
+	footerText += "provided by genius.com";
+	return footerText;
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {
@@ -108,27 +157,19 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			// remove '*', '_' and '~~' (discord formatting) + bold everything inside [] (usually verse numbering)
 			lyrics = songParsed.lyrics.replace(/[*_]|[~]{2,}/g, "").replace(/(\[[^\]]*\])/g, "**$1**");
 			if (lyrics.length > 4096) {
-				lyrics = lyrics.slice(0, 4091) + " ...";
+				lyrics = lyrics.slice(0, 4094) + "…";
 				lyricsTruncated = true;
 			}
 		}
 
-		let albumText = "";
-		if (songParsed.releaseDate) albumText = "Released " + songParsed.releaseDate;
-		if (songParsed.albumName) albumText += " on " + songParsed.albumName;
-
-		let footerText = "";
-		if (lyricsTruncated) footerText = "Lyrics were truncated to fit\n";
-		if (songParsed.views) footerText += formatNumber(songParsed.views) + " views\n";
-		footerText += "data from genius.com";
-
+		const albumLabel = buildAlbumLabel(songParsed);
 		const msge = new EmbedBuilder()
 			.setColor(Colors.White)
 			.setDescription(lyrics)
 			.setTitle(songParsed.artist + " - " + songParsed.title)
 			.setURL(songParsed.url)
-			.setFooter({ text: footerText });
-		albumText && msge.setAuthor({ name: albumText });
+			.setFooter({ text: buildFooterText(songParsed, lyricsTruncated) });
+		albumLabel && msge.setAuthor({ name: albumLabel });
 		songParsed.thumbnail && msge.setThumbnail(songParsed.thumbnail);
 
 		return msg.reply({ embeds: [msge], allowedMentions: { repliedUser: false } });

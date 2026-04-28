@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events } from "discord.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
 import { sendSimpleMessage } from "../../utils.js";
@@ -11,7 +11,7 @@ export const usageDetail = "Version strings look like '0.17.2', '1.2.3', etc.\nT
 const perPage = 7;
 
 // pagination
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "changelog_prev" && split[0] !== "changelog_next") return;
@@ -99,7 +99,7 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 });
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
-	"1.12.0": ["Remade gay adding a voting system", "Added ok count pagination", "Updated dependencies"],
+	"1.12.0": ["Remade gay adding a voting system", "Added ok count pagination", "Fixed 'lyrics' fmbot embed reply queries", "Updated dependencies"],
 	"1.11.3": ["Added claimed dailies ranking", "Added more gay", "Minor tweaks", "Updated dependencies"],
 	"1.11.2": ["Added more 'bakery' levels up to 30", "Fixed multiple important 'bakery' related bugs"],
 	"1.11.1": [
@@ -379,7 +379,7 @@ function showChangelog(page = 1) {
 	let totalLen = 0;
 	const entryStartIndex = perPage * (page - 1);
 	let entryCurrentIndex = entryStartIndex;
-	for (; entryCurrentIndex < entryStartIndex + perPage; entryCurrentIndex++) {
+	for (; entryCurrentIndex < entryStartIndex + perPage; ++entryCurrentIndex) {
 		const currentEntry = changeEntries[entryCurrentIndex];
 		if (!currentEntry) break;
 

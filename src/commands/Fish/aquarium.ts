@@ -5,6 +5,7 @@ import {
 	ButtonStyle,
 	Colors,
 	EmbedBuilder,
+	Events,
 	MessageFlags,
 	User
 } from "discord.js";
@@ -32,7 +33,7 @@ export const usageDetail =
 const usageEdit =
 	'The usage for this command is:\n`edit [Tank size] [Tank index (1-indexed)] <Fish from your inventory (blank to remove)> OR ["Name"] <New name>`\nE.g. `aquarium edit medium 1 Turtle`';
 
-bot.on("interactionCreate", async interaction => {
+bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton() || !interaction.guild) return;
 
 	const split = interaction.customId.split("-");
