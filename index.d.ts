@@ -435,13 +435,13 @@ declare namespace okbot {
 		source?: string | null; // author, only for Girls
 	}
 	interface GayObjectStats {
-				upvote: number;
-		downvote: number;
-		impressions: number;
+				upvote?: string[];
+		downvote?: string[];
+		impressions?: number;
 	}
 type GayObject = GayObjectPlain & GayObjectStats;
 
-	type CommandPermission = undefined | "EVERYONE" | "GUILD_ADMIN" | "BOT_ADMIN" | "BOT_OWNER"; // undefined defaults to EVERYONE
+	type CommandPermission = undefined | "EVERYONE" | "GUILD_ADMIN" | "BOT_ADMIN" | "BOT_OWNER"; // defaults to EVERYONE
 	interface Command {
 		name: string;
 		category: string; // directory name the source file is in

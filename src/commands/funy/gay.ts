@@ -1,13 +1,19 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ColorResolvable, EmbedBuilder, Events } from "discord.js";
-import { db_gay_add, db_get_gay, db_get_gays_from_collection_by_field } from "../../db/gay.js";
-import { createSimpleMessage, DbLeastOrMost, sendSimpleMessage } from "../../utils.js";
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ColorResolvable,
+	EmbedBuilder,
+	Events,
+	MessageFlags
+} from "discord.js";
+import { db_gay_add, db_gay_toggle_vote, db_get_gay, db_get_gays_from_collection_by_field } from "../../db/gay.js";
+import { createSimpleMessage, DbLeastOrMost, e_blank, sendSimpleMessage } from "../../utils.js";
 import { db_get, db_plr_add } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 
 const COLORS: { [type in okbot.GayType]: ColorResolvable } = Object.freeze({ Girls: "#fd8ba8", Silly: "#ca8bfd" });
-const EMOJI: {
-	[k in keyof okbot.GayObjectStats]: { [type in okbot.GayType | "top"]: string };
-} = Object.freeze({
+const EMOJI: Record<keyof okbot.GayObjectStats | "score", Record<okbot.GayType | "top", string>> = Object.freeze({
 	downvote: { Girls: "🤢", Silly: "😐", top: "downvoted" },
 	upvote: { Girls: "💜", Silly: "🙂", top: "upvoted" },
 	impressions: { Girls: "👁️", Silly: "👁️", top: "shown" },
@@ -28,17 +34,42 @@ bot.on(Events.InteractionCreate, async interaction => {
 	const gay = await db_get_gay(type, _id);
 	if (!gay) return;
 
-	// TODO hide component row after like a minute
-	// TODO validate if not upvoted by user already idk how
-	db_gay_add({ _id, [voteType]: 1 }, type);
+	const userId = interaction.user.id;
+	const hasUpvoted = gay.upvote?.includes(userId) ?? false;
+	const hasDownvoted = gay.downvote?.includes(userId) ?? false;
+	const removing = voteType === "upvote" ? hasUpvoted : hasDownvoted;
 
-	let upvotes = gay.upvote ?? 0;
-	let downvotes = gay.downvote ?? 0;
-	voteType == "upvote" ? ++upvotes : ++downvotes;
+	await db_gay_toggle_vote(_id, type, voteType, userId, removing);
+
+	let upvotes = gay.upvote?.length ?? 0;
+	let downvotes = gay.downvote?.length ?? 0;
+
+	if (voteType === "upvote") {
+		if (removing) upvotes -= 1;
+		else {
+			upvotes += 1;
+			if (hasDownvoted) downvotes -= 1;
+		}
+	} else {
+		if (removing) downvotes -= 1;
+		else {
+			downvotes += 1;
+			if (hasUpvoted) upvotes -= 1;
+		}
+	}
+
+	// TODO probably some confirmation before just removing vote
+	if (removing)
+		interaction.reply({
+			content: `You have already voted - removed your ${EMOJI[voteType][type]}`,
+			flags: [MessageFlags.Ephemeral]
+		});
 
 	const msge = EmbedBuilder.from(interaction.message.embeds[0]);
 	msge.setFooter({ text: buildFooter(type, impressionId, upvotes, downvotes) });
-	interaction.update({ embeds: [msge] });
+
+	if (removing) interaction.message.edit({ embeds: [msge] });
+	else interaction.update({ embeds: [msge] });
 });
 
 export const name = "gay";
@@ -51,8 +82,8 @@ export const usageDetail =
 
 function buildGayEmbed(gay: okbot.GayObject, type: okbot.GayType) {
 	const impressions = (gay.impressions ?? 0) + 1;
-	const upvotes = gay.upvote ?? 0;
-	const downvotes = gay.downvote ?? 0;
+	const upvotes = gay.upvote?.length ?? 0;
+	const downvotes = gay.downvote?.length ?? 0;
 	const msge = new EmbedBuilder()
 		.setTitle(`${type} #${gay._id}`)
 		.setImage(gay.url)
@@ -107,16 +138,28 @@ function buildGayTopEmbed(
 	field: keyof okbot.GayObjectStats,
 	leastOrMostMode: DbLeastOrMost
 ) {
-	if (!gays?.length) return createSimpleMessage("🕸️ No gay stats just yet... You gotta pick up the slack");
+	if (!gays?.length) return createSimpleMessage("🕸️ *No gay stats just yet... You gotta pick up the slack*");
 
 	const title = `${leastOrMostMode === "least" ? "Least" : "Most"} ${EMOJI[field].top} ${type.toLowerCase()}`;
-	let list = "";
+	let rankList = "";
+	let idList = "";
+	let scoreList = "";
 	for (let i = 0; i < gays.length; ++i) {
 		const gay = gays[i];
-		list += `**${i + 1}** - #${gay._id} ${EMOJI[field][type]}${gay[field]}\n`;
+		const value = Array.isArray(gay[field]) ? gay[field].length : (gay[field] ?? 0);
+		rankList += `**#${i + 1}**\n`;
+		idList += `#${gay._id}\n`;
+		scoreList += `${EMOJI[field][type]} ${value}\n`;
 	}
 
-	const msge = new EmbedBuilder().setTitle(title).setDescription(list).setColor(COLORS[type]);
+	const msge = new EmbedBuilder()
+		.setTitle(title)
+		.setColor(COLORS[type])
+		.setFields(
+			{ name: "", value: rankList, inline: true },
+			{ name: "", value: idList, inline: true },
+			{ name: "", value: scoreList, inline: true }
+		);
 
 	return msge;
 }

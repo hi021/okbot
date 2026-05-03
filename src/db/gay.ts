@@ -71,6 +71,20 @@ async function db_get_gay_from_collection_by_id(coll: Collection, id: number) {
 	return (await coll.findOne({ _id: id as any })) as null | okbot.GayObject;
 }
 
+function db_gay_sort_pipeline(field: keyof okbot.GayObject, leastOrMostMode: DbLeastOrMost, positiveOnly = true) {
+	const order = leastOrMostMode === "least" ? 1 : -1;
+	if (field === "upvote" || field === "downvote") {
+		return [
+			{ $addFields: { _sortValue: { $size: { $ifNull: [`$${field}`, []] } } } },
+			...(positiveOnly ? [{ $match: { _sortValue: { $gt: 0 } } }] : []),
+			{ $sort: { _sortValue: order } },
+			{ $project: { _sortValue: 0 } }
+		];
+	}
+
+	return [{ $sort: { [field]: order } }];
+}
+
 export async function db_get_gay_from_collection_by_field(
 	coll: Collection,
 	field: keyof okbot.GayObject,
@@ -78,7 +92,7 @@ export async function db_get_gay_from_collection_by_field(
 	leastOrMostCount = 32
 ) {
 	const aggregate: Array<Record<string, unknown>> = [
-		{ $sort: { [field]: leastOrMostMode === "least" ? 1 : -1 } },
+		...db_gay_sort_pipeline(field, leastOrMostMode, false),
 		{ $limit: Math.max(1, leastOrMostCount) },
 		{ $sample: { size: 1 } }
 	];
@@ -94,7 +108,7 @@ export async function db_get_gays_from_collection_by_field(
 	ignoreNull = true
 ) {
 	const aggregate: Array<Record<string, unknown>> = [
-		{ $sort: { [field]: leastOrMostMode === "least" ? 1 : -1 } },
+		...db_gay_sort_pipeline(field, leastOrMostMode),
 		{ $limit: Math.max(1, leastOrMostCount) }
 	];
 	if (ignoreNull) aggregate.unshift({ $match: { [field]: { $ne: null } } });
@@ -107,6 +121,31 @@ export async function db_gay_add(gay: PartialExcept<okbot.GayObject, "_id">, typ
 	if (!_id) return;
 	delete (gay as any)._id;
 
+	const update: Record<string, any> = {};
+	if (gay.impressions) update.$inc = { impressions: gay.impressions };
+
+	if (!Object.keys(update).length) return;
+
 	const coll = db_get(`gay_${type.toLowerCase()}`);
-	await coll.updateOne({ _id: _id as any }, { $inc: gay as any }, { upsert: true });
+	await coll.updateOne({ _id: _id as any }, update, { upsert: true });
+}
+
+export async function db_gay_toggle_vote(
+	_id: number,
+	type: okbot.GayType,
+	voteType: "upvote" | "downvote",
+	userId: string,
+	remove = false
+) {
+	const coll = db_get(`gay_${type.toLowerCase()}`);
+	const opposite = voteType === "upvote" ? "downvote" : "upvote";
+	const update: Record<string, any> = {};
+	if (remove) {
+		update.$pull = { [voteType]: userId };
+	} else {
+		update.$addToSet = { [voteType]: userId };
+		update.$pull = { [opposite]: userId };
+	}
+
+	await coll.updateOne({ _id: _id as any }, update, { upsert: true });
 }

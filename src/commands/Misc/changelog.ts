@@ -99,7 +99,13 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 });
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
-	"1.12.0": ["Remade gay adding a voting system", "Added ok count pagination", "Fixed 'lyrics' fmbot embed reply queries", "Updated dependencies"],
+	"1.12.0": [
+		"Remade gay with a voting system",
+		"Added ok count pagination",
+		"Minor 'bakery' balance tweaks",
+		"Fixed 'lyrics' fmbot embed reply queries",
+		"Updated dependencies"
+	],
 	"1.11.3": ["Added claimed dailies ranking", "Added more gay", "Minor tweaks", "Updated dependencies"],
 	"1.11.2": ["Added more 'bakery' levels up to 30", "Fixed multiple important 'bakery' related bugs"],
 	"1.11.1": [

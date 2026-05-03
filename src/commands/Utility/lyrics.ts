@@ -28,13 +28,17 @@ function woozyQueryParser(msg: okbot.Message) {
 function fmbotQueryParser(msg: okbot.Message) {
 	// fmbot (.fm command)
 	if (msg.components[0]?.type === ComponentType.Container) {
-		if (msg.components[0].components[0]?.type === ComponentType.Section && msg.components[0].components[0].components[0]?.type === ComponentType.TextDisplay) {
-		// TODO Embed (default) / Embed full: [ContainerComponent]: {[SectionComponent]: {[TextDisplayComponent], ...}}
-
-		// e.g. COMPONENT CONTENT:
-		//'-# Last played <t:1777409242:R> for [hi](<link>) \n' +
-     //   "### [Linda's in Custody](https://www.last.fm/music/Death+Grips/_/Linda%27s+in+Custody)\n" +
-       // '**Death Grips** • *Year of the Snitch*'
+		if (
+			msg.components[0].components[0]?.type === ComponentType.Section &&
+			msg.components[0].components[0].components[0]?.type === ComponentType.TextDisplay
+		) {
+			// Embed (default) / Embed full: [ContainerComponent]: {[SectionComponent]: {[TextDisplayComponent], ...}}
+			const regEmbed = / \[(.*)\]\(.*\)\n\*\*(.*)\*\* • \*(.*)\*/;
+			const regExecEmbed = regEmbed.exec(msg.components[0].components[0].components[0].content);
+			const title = regExecEmbed?.[1];
+			const artist = regExecEmbed?.[2];
+			console.log({ title, artist }); /////
+			if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
 		}
 
 		if (msg.components[0].components[0]?.type === ComponentType.TextDisplay) {
@@ -43,13 +47,13 @@ function fmbotQueryParser(msg: okbot.Message) {
 			const regExecEmbedTiny = regEmbedTiny.exec(msg.components[0].components[0].content);
 			const title = regExecEmbedTiny?.[1];
 			const artist = regExecEmbedTiny?.[2];
-			console.log({ title, artist });
+			console.log({ title, artist }); ////
 			if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
 		}
 	}
 
 	if (!msg.components.length && !msg.embeds.length && msg.content?.length) {
-		console.log(msg.content)
+		console.log(msg.content);
 		// Text single-line: **<Username>** is listening to **<Title>** by **<Artist>**
 		const regText = /^\*\*(?:.+)\*\* is listening to \*\*(.+)\*\* by \*\*(.+)\*\*/;
 		// Text full: *[User]'s last played track:*\n**<Title>**\nBy **<Artist>** | *<Album>*(\nblah blah...)
