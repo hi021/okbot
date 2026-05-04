@@ -24,7 +24,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 });
 
 const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
-	"1.12.0": "2026-04-26",
+	"1.12.0": "2026-05-04",
 	"1.11.3": "2025-10-16",
 	"1.11.2": "2025-06-22",
 	"1.11.1": "2025-06-07",
@@ -100,8 +100,8 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
 	"1.12.0": [
-		"Remade gay with a voting system",
-		"Added ok count pagination",
+		"Remade 'gay' with a voting system",
+		"Added ok 'count' pagination",
 		"Minor 'bakery' balance tweaks",
 		"Fixed 'lyrics' fmbot embed reply queries",
 		"Updated dependencies"
@@ -413,7 +413,7 @@ function showChangelog(page = 1) {
 						new ButtonBuilder()
 							.setCustomId(`changelog_next-${page + 1}`)
 							.setEmoji("➡️")
-							.setStyle(ButtonStyle.Primary)
+							.setStyle(ButtonStyle.Secondary)
 							.setDisabled(changeEntries[entryCurrentIndex] == null)
 					)
 				]

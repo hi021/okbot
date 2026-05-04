@@ -26,7 +26,8 @@ export async function db_store_init(reset = true) {
 		await col.createIndex({ cat: "text" });
 		console.log("Store DB initialized.");
 	} catch (err) {
-		console.warn("Failed to initialize store DB:", err);
+		console.warn("Failed to initialize store DB:\n", err);
+		throw err;
 	}
 }
 

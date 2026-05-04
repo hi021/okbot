@@ -1,25 +1,22 @@
 import fs from "fs";
 import { AnyBulkWriteOperation, Collection } from "mongodb";
 import path from "path";
-import { db_get } from "./db.js";
 import { DbLeastOrMost, PartialExcept } from "../utils.js";
+import { db_get } from "./db.js";
 
 const assetPath = "../assets/gay/";
 
 export async function db_gay_init() {
 	try {
-		const girlsCol = db_get("gay_girls");
-		const sillyCol = db_get("gay_silly");
+		await Promise.all([
+			(async () => await db_gay_update_and_upsert(db_get("gay_girls"), await db_gay_parse("girls.json")))(),
+			(async () => await db_gay_update_and_upsert(db_get("gay_silly"), await db_gay_parse("silly.json")))()
+		]);
 
-		// TODO: Promise.all?
-		const girlsGay = await db_gay_parse("girls.json");
-		const sillyGay = await db_gay_parse("silly.json");
-		await db_gay_update_and_upsert(girlsCol, girlsGay);
-		await db_gay_update_and_upsert(sillyCol, sillyGay);
-
-		if (girlsGay.length && sillyGay.length) console.log("Gay DB initialized.");
+		console.log("Gay DB initialized.");
 	} catch (err) {
-		console.warn("Failed to initialize gay DB:", err);
+		console.warn("Failed to initialize gay DB:\n", err);
+		throw err;
 	}
 }
 
@@ -30,59 +27,8 @@ export async function db_get_gay(type: okbot.GayType, id?: number) {
 		: db_get_gay_from_collection_by_field(coll, "impressions", "least");
 }
 
-async function db_gay_parse(filename: string) {
-	const filePath = path.join(assetPath, filename);
-	try {
-		if (filename == "silly.json") return db_gay_parse_url_array(filePath);
-		return JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" })) as okbot.GayObjectPlain[];
-	} catch (e) {
-		console.warn(`Failed to open or parse '${filePath}'. Continuing gayless.`);
-		return [];
-	}
-}
-
-async function db_gay_parse_url_array(filePath: string) {
-	const urls = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" })) as string[];
-	const gay = new Array<okbot.GayObjectPlain>(urls.length);
-	for (let i = 1; i <= urls.length; ++i) gay[i - 1] = { url: urls[i - 1], _id: i };
-
-	return gay;
-}
-
-async function db_gay_update_and_upsert(coll: Collection, gay: okbot.GayObjectPlain[]) {
-	const operations = new Array<AnyBulkWriteOperation<any>>(gay.length);
-	for (let i = 0; i < gay.length; ++i)
-		operations[i] = {
-			updateOne: {
-				filter: { _id: gay[i]._id as any },
-				update: { $set: gay[i] },
-				upsert: true
-			}
-		};
-
-	await coll.bulkWrite(operations, { ordered: false });
-}
-
 export async function db_get_gay_from_collection(coll: Collection) {
 	return (await coll.aggregate([{ $sample: { size: 1 } }]).next()) as null | okbot.GayObject;
-}
-
-async function db_get_gay_from_collection_by_id(coll: Collection, id: number) {
-	return (await coll.findOne({ _id: id as any })) as null | okbot.GayObject;
-}
-
-function db_gay_sort_pipeline(field: keyof okbot.GayObject, leastOrMostMode: DbLeastOrMost, positiveOnly = true) {
-	const order = leastOrMostMode === "least" ? 1 : -1;
-	if (field === "upvote" || field === "downvote") {
-		return [
-			{ $addFields: { _sortValue: { $size: { $ifNull: [`$${field}`, []] } } } },
-			...(positiveOnly ? [{ $match: { _sortValue: { $gt: 0 } } }] : []),
-			{ $sort: { _sortValue: order } },
-			{ $project: { _sortValue: 0 } }
-		];
-	}
-
-	return [{ $sort: { [field]: order } }];
 }
 
 export async function db_get_gay_from_collection_by_field(
@@ -148,4 +94,78 @@ export async function db_gay_toggle_vote(
 	}
 
 	await coll.updateOne({ _id: _id as any }, update, { upsert: true });
+}
+
+export async function db_get_top_gays_by_collection(
+	coll: Collection,
+	leastOrMostMode: DbLeastOrMost,
+	leastOrMostCount = 15,
+	nonZeroOnly = true
+) {
+	const order = leastOrMostMode === "least" ? 1 : -1;
+	const aggregate = [
+		{
+			$addFields: {
+				score: {
+					$subtract: [{ $size: { $ifNull: ["$upvote", []] } }, { $size: { $ifNull: ["$downvote", []] } }]
+				}
+			}
+		},
+		...(nonZeroOnly ? [{ $match: { score: { $ne: 0 } } }] : []),
+		{ $sort: { score: order } },
+		{ $limit: Math.max(1, leastOrMostCount) }
+	];
+
+	return (await coll.aggregate(aggregate).toArray()) as okbot.GayObjectWithScore[];
+}
+
+function db_gay_sort_pipeline(field: keyof okbot.GayObject, leastOrMostMode: DbLeastOrMost, positiveOnly = true) {
+	const order = leastOrMostMode === "least" ? 1 : -1;
+	if (field === "upvote" || field === "downvote") {
+		return [
+			{ $addFields: { _sortValue: { $size: { $ifNull: [`$${field}`, []] } } } },
+			...(positiveOnly ? [{ $match: { _sortValue: { $gt: 0 } } }] : []),
+			{ $sort: { _sortValue: order } },
+			{ $project: { _sortValue: 0 } }
+		];
+	}
+
+	return [{ $sort: { [field]: order } }];
+}
+
+async function db_gay_parse(filename: string) {
+	const filePath = path.join(assetPath, filename);
+	try {
+		if (filename == "silly.json") return db_gay_parse_url_array(filePath);
+		return JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" })) as okbot.GayObjectPlain[];
+	} catch (e) {
+		console.warn(`Failed to open or parse '${filePath}'. Continuing gayless.`);
+		return [];
+	}
+}
+
+async function db_gay_parse_url_array(filePath: string) {
+	const urls = JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" })) as string[];
+	const gay = new Array<okbot.GayObjectPlain>(urls.length);
+	for (let i = 1; i <= urls.length; ++i) gay[i - 1] = { url: urls[i - 1], _id: i };
+
+	return gay;
+}
+
+async function db_gay_update_and_upsert(coll: Collection, gay: okbot.GayObjectPlain[]) {
+	const operations = new Array<AnyBulkWriteOperation<any>>(gay.length);
+	for (let i = 0; i < gay.length; ++i)
+		operations[i] = {
+			updateOne: {
+				filter: { _id: gay[i]._id as any },
+				update: { $set: gay[i] },
+				upsert: true
+			}
+		};
+
+	await coll.bulkWrite(operations, { ordered: false });
+}
+
+async function db_get_gay_from_collection_by_id(coll: Collection, id: number) {
+	return (await coll.findOne({ _id: id as any })) as null | okbot.GayObject;
 }

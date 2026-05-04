@@ -1,15 +1,21 @@
 import {
+	ActionRowBuilder,
+	ButtonBuilder,
 	ButtonInteraction,
 	ColorResolvable,
 	Colors,
+	ContainerBuilder,
 	EmbedBuilder,
 	GuildMember,
 	Message,
 	MessageFlags,
 	MessageFlagsBitField,
 	MessageType,
+	RGBTuple,
 	SendableChannels,
+	SeparatorBuilder,
 	Snowflake,
+	TextDisplayBuilder,
 	User
 } from "discord.js";
 import { db_get_casino_top, db_plr_get, db_plr_set } from "./db/db.js";
@@ -322,6 +328,27 @@ export function sendSimpleMessage<T>(
 
 export function sendEphemeralReply(interaction: ButtonInteraction, text: string, color?: ColorResolvable) {
 	sendSimpleMessage<ButtonInteraction>(interaction, text, color, true, [MessageFlags.Ephemeral]);
+}
+
+export function createSimpleComponentV2(
+	text: string,
+	title?: string,
+	color: number | RGBTuple | undefined = Colors.Blurple
+) {
+	return new ContainerBuilder()
+		.setAccentColor(color)
+		.addTextDisplayComponents(new TextDisplayBuilder().setContent(title ? `##${title}\n\n${text}` : text));
+}
+
+export function createComponentV2WithButtons(
+	text: string,
+	buttons: ButtonBuilder[],
+	title?: string,
+	color: number | RGBTuple | undefined = Colors.Blurple
+) {
+	return createSimpleComponentV2(text, title, color)
+		.addSeparatorComponents(new SeparatorBuilder())
+		.addActionRowComponents(new ActionRowBuilder<ButtonBuilder>().setComponents(buttons));
 }
 
 /**

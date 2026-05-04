@@ -283,13 +283,13 @@ function sendNoPondMessage<T>(msg: okbot.MessageOrInteraction<T>, user?: User) {
 		msg,
 		user && author != user
 			? `\`${user.displayName}\` doesn't own a pond :(`
-			: `You don't own a pond :(\nYou can open one if you have ${formatDoler(PondLevels[0].cost)} using \`${name} open\`.`
+			: `You don't own a pond :(\nYou can open one for ${formatDoler(PondLevels[0].cost)} using \`${name} open\`.`
 	);
 }
 
 function fish() {
 	// get random fish minus collectors'
-	const r = Math.random() * (Fish.tot - 10); // HARDCODED WARNING 5 collectors
+	const r = Math.random() * (Fish.tot - 10); // WARNING: HARDCODED for 5 collectors items only
 
 	for (const nam in Fish.f) {
 		const caught = Fish.f[nam];
@@ -322,7 +322,7 @@ export function pondUpdateFish(pond: okbot.Pond, now?: number) {
 }
 
 function displayLevels() {
-	const msge = new EmbedBuilder().setColor(Colors.White).setTitle(`Pond upgrades`);
+	const msge = new EmbedBuilder().setColor(Colors.White).setTitle("Pond upgrades");
 
 	for (const i in PondLevels) {
 		const stat = PondLevels[i];

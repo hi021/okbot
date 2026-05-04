@@ -41,7 +41,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 				new ButtonBuilder()
 					.setCustomId("listReaction_next-" + guildId)
 					.setEmoji("➡️")
-					.setStyle(ButtonStyle.Primary)
+					.setStyle(ButtonStyle.Secondary)
 			);
 
 			interaction.update({ embeds: [msgeEdit], components: [row] });
@@ -65,7 +65,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 				new ButtonBuilder()
 					.setCustomId("listReaction_next-" + guildId)
 					.setEmoji("➡️")
-					.setStyle(ButtonStyle.Primary)
+					.setStyle(ButtonStyle.Secondary)
 					.setDisabled(page >= maxPage)
 			);
 
@@ -134,7 +134,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 						new ButtonBuilder()
 							.setCustomId("listReaction_next-" + guildId)
 							.setEmoji("➡️")
-							.setStyle(ButtonStyle.Primary)
+							.setStyle(ButtonStyle.Secondary)
 					)
 				]
 			: [];

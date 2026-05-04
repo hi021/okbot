@@ -273,7 +273,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 				new ButtonBuilder()
 					.setCustomId(`store_next-${category}-${page + 1}-${plrId}`)
 					.setEmoji("➡️")
-					.setStyle(ButtonStyle.Primary)
+					.setStyle(ButtonStyle.Secondary)
 			);
 
 			return interaction.update({
@@ -308,7 +308,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 				new ButtonBuilder()
 					.setCustomId(`store_next-${category}-${page + 1}-${plrId}`)
 					.setEmoji("➡️")
-					.setStyle(ButtonStyle.Primary)
+					.setStyle(ButtonStyle.Secondary)
 					.setDisabled(page >= maxPage)
 			);
 
@@ -471,7 +471,7 @@ function showCategory(
 						new ButtonBuilder()
 							.setCustomId(`store_next-${categoryItems[0].cat}-2-${plrId}`)
 							.setEmoji("➡️")
-							.setStyle(ButtonStyle.Primary)
+							.setStyle(ButtonStyle.Secondary)
 					)
 				]
 			: [];
@@ -662,7 +662,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 							new ButtonBuilder()
 								.setCustomId(`store_next-All-2-${msg.author.id}`)
 								.setEmoji("➡️")
-								.setStyle(ButtonStyle.Primary)
+								.setStyle(ButtonStyle.Secondary)
 						)
 					]
 				: [];

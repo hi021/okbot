@@ -37,7 +37,6 @@ function fmbotQueryParser(msg: okbot.Message) {
 			const regExecEmbed = regEmbed.exec(msg.components[0].components[0].components[0].content);
 			const title = regExecEmbed?.[1];
 			const artist = regExecEmbed?.[2];
-			console.log({ title, artist }); /////
 			if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
 		}
 
@@ -47,13 +46,11 @@ function fmbotQueryParser(msg: okbot.Message) {
 			const regExecEmbedTiny = regEmbedTiny.exec(msg.components[0].components[0].content);
 			const title = regExecEmbedTiny?.[1];
 			const artist = regExecEmbedTiny?.[2];
-			console.log({ title, artist }); ////
 			if (title || artist) return `${artist ?? ""} ${title ?? ""}`;
 		}
 	}
 
 	if (!msg.components.length && !msg.embeds.length && msg.content?.length) {
-		console.log(msg.content);
 		// Text single-line: **<Username>** is listening to **<Title>** by **<Artist>**
 		const regText = /^\*\*(?:.+)\*\* is listening to \*\*(.+)\*\* by \*\*(.+)\*\*/;
 		// Text full: *[User]'s last played track:*\n**<Title>**\nBy **<Artist>** | *<Album>*(\nblah blah...)
@@ -178,7 +175,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 		return msg.reply({ embeds: [msge], allowedMentions: { repliedUser: false } });
 	} catch (e) {
-		console.error("Failed to get song info:", e);
+		console.error("Failed to get song info:\n", e);
 		return sendSimpleMessage(msg, `**Failed to fetch song info**\n\n\`${e}\``);
 	}
 }

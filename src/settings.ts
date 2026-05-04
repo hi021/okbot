@@ -40,34 +40,58 @@ type T_SET = {
 
 export let SET: T_SET;
 export function SET_INIT() {
+	const status = loadSettingsFile();
+	loadPrefixOverrides();
+	loadPrivileges();
+
+	if (!SET.PREFIX)
+		console.warn(
+			'No command prefix set, this may cause unexpected behavior!\nSet it by adding "PREFIX": "k!" to settings.json.'
+		);
+	if (!SET.PREFIX_MOD)
+		console.warn(
+			'No mod command prefix set, this will make it impossible to configure the bot at runtime!\nSet it by adding "PREFIX_MOD": "k@" to settings.json.'
+		);
+
+	if (!SET.BOT_OWNER?.length || (SET.BOT_OWNER.length == 1 && !SET.BOT_OWNER[0]))
+		console.warn(
+			"No bot owners set, this will prevent usage of some restricted commands. Set owners in the .env or settings.json file according to .env.example."
+		);
+	if (!SET.BOT_ADMIN?.length || (SET.BOT_ADMIN.length == 1 && !SET.BOT_ADMIN[0]))
+		console.warn(
+			"No bot admins set, this will prevent usage of some restricted commands. Set admins in the .env or settings.json file according to .env.example."
+		);
+
+	return status;
+}
+
+function setDefaults() {
+	SET = {
+		PREFIX: "k!",
+		PREFIX_MOD: "k@",
+		BOT_OWNER: [],
+		BOT_ADMIN: []
+	};
+}
+
+function loadSettingsFile() {
 	try {
 		SET = JSON.parse(fs.readFileSync("../settings.json", { encoding: "utf-8" }));
-		SET.BOT_OWNER = (process.env.BOT_OWNER ?? "").split(",").map(id => id.trim());
-		SET.BOT_ADMIN = (process.env.BOT_ADMIN ?? "").split(",").map(id => id.trim());
-		if (process.env.PREFIX) SET.PREFIX = process.env.PREFIX;
-		if (process.env.PREFIX_MOD) SET.PREFIX_MOD = process.env.PREFIX_MOD;
-
-		if (!SET.PREFIX)
-			console.warn(
-				'No command prefix set, this may cause unexpected behavior!\nSet it by adding "PREFIX": "k!" to settings.json.'
-			);
-		if (!SET.PREFIX_MOD)
-			console.warn(
-				'No mod command prefix set, this will make it impossible to configure the bot at runtime!\nSet it by adding "PREFIX_MOD": "k@" to settings.json.'
-			);
-
-		if (SET.BOT_OWNER.length == 1 && !SET.BOT_OWNER[0])
-			console.warn(
-				"No bot owner set, this will prevent usage of restricted commands. Set owners in the .env file according to .env.example."
-			);
-		if (SET.BOT_ADMIN.length == 1 && !SET.BOT_ADMIN[0])
-			console.warn(
-				"No bot admin set, this will prevent usage of restricted commands. Set admins in the .env file according to .env.example."
-			);
-
-		return SET;
+		return true;
 	} catch (e) {
-		console.error("Failed to read settings.json:", e);
-		return null;
+		console.error("Failed to read settings.json:\n", e);
+		setDefaults();
+		console.log("Using default settings.");
+		return false;
 	}
+}
+
+function loadPrefixOverrides() {
+	if (process.env.PREFIX) SET.PREFIX = process.env.PREFIX;
+	if (process.env.PREFIX_MOD) SET.PREFIX_MOD = process.env.PREFIX_MOD;
+}
+
+function loadPrivileges() {
+	SET.BOT_OWNER = (process.env.BOT_OWNER ?? "").split(",").map(id => id.trim());
+	SET.BOT_ADMIN = (process.env.BOT_ADMIN ?? "").split(",").map(id => id.trim());
 }

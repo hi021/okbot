@@ -61,7 +61,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 			new ButtonBuilder()
 				.setCustomId(`delReaction_next-${guildId}-${page + 1}`)
 				.setEmoji("➡️")
-				.setStyle(ButtonStyle.Primary)
+				.setStyle(ButtonStyle.Secondary)
 		);
 
 		interaction.update({ embeds: [msgeEdit], components: [row] });
@@ -84,7 +84,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 			new ButtonBuilder()
 				.setCustomId(`delReaction_next-${guildId}-${page + 1}`)
 				.setEmoji("➡️")
-				.setStyle(ButtonStyle.Primary)
+				.setStyle(ButtonStyle.Secondary)
 				.setDisabled(page >= maxPage)
 		);
 
@@ -147,7 +147,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 						new ButtonBuilder()
 							.setCustomId(`delReaction_next-${guildId}-2`)
 							.setEmoji("➡️")
-							.setStyle(ButtonStyle.Primary)
+							.setStyle(ButtonStyle.Secondary)
 					)
 				]
 			: [];

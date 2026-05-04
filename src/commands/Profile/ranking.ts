@@ -56,7 +56,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 			new ButtonBuilder()
 				.setCustomId(`ranking_next-${category}-${usrId}-${page + 1}`)
 				.setEmoji("➡️")
-				.setStyle(ButtonStyle.Primary)
+				.setStyle(ButtonStyle.Secondary)
 		);
 	} else {
 		// ranking_next
@@ -68,7 +68,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 			new ButtonBuilder()
 				.setCustomId(`ranking_next-${category}-${usrId}-${page + 1}`)
 				.setEmoji("➡️")
-				.setStyle(ButtonStyle.Primary)
+				.setStyle(ButtonStyle.Secondary)
 				.setDisabled(!nextPageAvailable)
 		);
 	}
@@ -321,7 +321,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 						new ButtonBuilder()
 							.setCustomId(`ranking_next-${category}-${usr.id}-${page + 1}`)
 							.setEmoji("➡️")
-							.setStyle(ButtonStyle.Primary)
+							.setStyle(ButtonStyle.Secondary)
 							.setDisabled(!nextPageAvailable)
 					)
 				]

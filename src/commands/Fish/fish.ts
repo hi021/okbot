@@ -466,11 +466,11 @@ export function fishInit() {
 		Fish.tot = 0;
 		Fish.f = JSON.parse(fs.readFileSync("../assets/fish.json", { encoding: "utf-8" }));
 		for (const i in Fish.f) Fish.f[i].odds = [Fish.tot, (Fish.tot += Fish.f[i].rare || 0)];
+		return Fish;
 	} catch (e) {
 		console.warn("Failed to initialize fish:", e);
 		return null;
 	}
-	return Fish;
 }
 
 export async function execute(msg: okbot.Message, args: string[]) {

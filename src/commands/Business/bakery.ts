@@ -212,7 +212,7 @@ function buildBakeryLevelsPage(page = 1) {
 			new ButtonBuilder()
 				.setCustomId(`bakerylvl_next-${safePage + 1}`)
 				.setEmoji("➡️")
-				.setStyle(ButtonStyle.Primary)
+				.setStyle(ButtonStyle.Secondary)
 				.setDisabled(safePage >= totalPages)
 		)
 	];

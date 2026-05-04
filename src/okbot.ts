@@ -24,7 +24,7 @@ export const bot = new Discord.Client({
 }) as okbot.Client<boolean>;
 bot.commands = new Discord.Collection();
 bot.commands_mod = new Discord.Collection();
-bot.setMaxListeners(22); // up from 10 to allow more interactionCreate listeners
+bot.setMaxListeners(24); // up from 10 to allow more interactionCreate listeners
 
 export async function loadBot() {
 	if (SET_INIT()) console.log("Loaded settings.");
@@ -33,7 +33,7 @@ export async function loadBot() {
 	else await db_init(process.env.INIT_STORE == "true", process.env.INIT_GAY == "true");
 
 	if (bot.commands.get("fish")?.fishInit()) console.log("Loaded fish.");
-	if (process.env.DB_URL && bot.commands.get("store")?.loadStoreItems()) console.log("Loaded store items.");
+	if (process.env.DB_URL && (await bot.commands.get("store")?.loadStoreItems())) console.log("Loaded store items.");
 
 	if (SET.STATUS_TEXT) bot.user!.setActivity(SET.STATUS_TEXT, { type: Discord.ActivityType.Custom });
 

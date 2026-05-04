@@ -18,18 +18,21 @@ export async function db_init(initStore = true, initGay = true) {
 	}
 
 	try {
-		if (!process.env.DB_URL) throw new Error("No DB URI provided.");
+		_db = await MongoClient.connect(process.env.DB_URL as string);
 
-		_db = await MongoClient.connect(process.env.DB_URL);
-		// TODO: Promise.All?
-		if (initStore) await db_store_init();
-		if (initGay) await db_gay_init();
-		console.log("DB initialized.");
+		try {
+			await Promise.all([
+				initStore ? db_store_init() : Promise.resolve(null),
+				initGay ? db_gay_init() : Promise.resolve(null)
+			]);
 
-		return _db;
+			console.log("DB initialized.");
+		} catch (e) {
+			console.warn("Failed to initialize optional DB collections, see above for details.");
+		}
 	} catch (e) {
-		console.error("Failed to initialize database:\n", e);
-		return null;
+		console.error("DB initialization failed!");
+		throw e;
 	}
 }
 

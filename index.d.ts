@@ -440,6 +440,8 @@ declare namespace okbot {
 		impressions?: number;
 	}
 type GayObject = GayObjectPlain & GayObjectStats;
+type GayRankingKey = keyof GayObjectStats | "score";
+type GayObjectWithScore = GayObject & { score: number };
 
 	type CommandPermission = undefined | "EVERYONE" | "GUILD_ADMIN" | "BOT_ADMIN" | "BOT_OWNER"; // defaults to EVERYONE
 	interface Command {

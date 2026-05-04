@@ -3,27 +3,63 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	ColorResolvable,
+	Colors,
 	EmbedBuilder,
 	Events,
 	MessageFlags
 } from "discord.js";
-import { db_gay_add, db_gay_toggle_vote, db_get_gay, db_get_gays_from_collection_by_field } from "../../db/gay.js";
-import { createSimpleMessage, DbLeastOrMost, e_blank, sendSimpleMessage } from "../../utils.js";
 import { db_get, db_plr_add } from "../../db/db.js";
+import {
+	db_gay_add,
+	db_gay_toggle_vote,
+	db_get_gay,
+	db_get_gays_from_collection_by_field,
+	db_get_top_gays_by_collection
+} from "../../db/gay.js";
 import { bot } from "../../okbot.js";
+import { createComponentV2WithButtons, createSimpleMessage, DbLeastOrMost, sendSimpleMessage } from "../../utils.js";
 
 const COLORS: { [type in okbot.GayType]: ColorResolvable } = Object.freeze({ Girls: "#fd8ba8", Silly: "#ca8bfd" });
-const EMOJI: Record<keyof okbot.GayObjectStats | "score", Record<okbot.GayType | "top", string>> = Object.freeze({
-	downvote: { Girls: "🤢", Silly: "😐", top: "downvoted" },
-	upvote: { Girls: "💜", Silly: "🙂", top: "upvoted" },
-	impressions: { Girls: "👁️", Silly: "👁️", top: "shown" },
-	score: { Girls: "🏆", Silly: "🏆", top: "scored" } // TODO: add top score, though should probably say Highest/Lowest instead of Most/Least
+const EMOJI: Record<
+	keyof okbot.GayObjectStats | "score",
+	Record<okbot.GayType | DbLeastOrMost | "top", string>
+> = Object.freeze({
+	downvote: { Girls: "🤢", Silly: "😐", top: "downvoted", most: "Most", least: "Least" },
+	upvote: { Girls: "💜", Silly: "🙂", top: "upvoted", most: "Most", least: "Least" },
+	impressions: { Girls: "👁️", Silly: "👁️", top: "shown", most: "Most", least: "Least" },
+	score: { Girls: "🏆", Silly: "🏆", top: "scored", most: "Highest", least: "Lowest" }
 });
 
 bot.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isButton()) return;
 	const split = interaction.customId.split("-");
 	if (split[0] !== "gay") return;
+
+	if (split[1] === "confirm" || split[1] === "cancel") {
+		const _id = +split[2];
+		const type = split[3] as okbot.GayType;
+		const voteType = split[4] as "upvote" | "downvote";
+		const impressionId = +split[5];
+
+		const isConfirm = split[1] === "confirm";
+		if (isConfirm) {
+			await db_gay_toggle_vote(_id, type, voteType, interaction.user.id, true);
+			const gay = await db_get_gay(type, _id);
+			if (gay) {
+				const gayMsg = await interaction.message.fetchReference();
+				if (!gayMsg) return;
+
+				const upvotes = gay.upvote?.length ?? 0;
+				const downvotes = gay.downvote?.length ?? 0;
+				const msge = EmbedBuilder.from(gayMsg.embeds[0]);
+				msge.setFooter({ text: buildFooter(type, impressionId, upvotes, downvotes) });
+				gayMsg.edit({ embeds: [msge] });
+			}
+		}
+
+		await interaction.update({});
+		return interaction.deleteReply(interaction.message);
+	}
 
 	const _id = +split[1];
 	const type = split[2] as okbot.GayType;
@@ -39,37 +75,38 @@ bot.on(Events.InteractionCreate, async interaction => {
 	const hasDownvoted = gay.downvote?.includes(userId) ?? false;
 	const removing = voteType === "upvote" ? hasUpvoted : hasDownvoted;
 
-	await db_gay_toggle_vote(_id, type, voteType, userId, removing);
+	if (removing) {
+		const confirmId = `gay-confirm-${_id}-${type}-${voteType}-${impressionId}`;
+		const cancelId = `gay-cancel-${_id}-${type}-${voteType}-${impressionId}`;
+		const component = createComponentV2WithButtons(
+			`You have already voted ${EMOJI[voteType][type]}.\n\nRemove your vote?`,
+			[
+				new ButtonBuilder().setCustomId(confirmId).setLabel("Confirm").setStyle(ButtonStyle.Success),
+				new ButtonBuilder().setCustomId(cancelId).setLabel("Cancel").setStyle(ButtonStyle.Secondary)
+			]
+		);
 
-	let upvotes = gay.upvote?.length ?? 0;
-	let downvotes = gay.downvote?.length ?? 0;
+		interaction.reply({
+			components: [component],
+			flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+		});
+	} else {
+		await db_gay_toggle_vote(_id, type, voteType, userId, false);
+		let upvotes = gay.upvote?.length ?? 0;
+		let downvotes = gay.downvote?.length ?? 0;
 
-	if (voteType === "upvote") {
-		if (removing) upvotes -= 1;
-		else {
+		if (voteType === "upvote") {
 			upvotes += 1;
 			if (hasDownvoted) downvotes -= 1;
-		}
-	} else {
-		if (removing) downvotes -= 1;
-		else {
+		} else {
 			downvotes += 1;
 			if (hasUpvoted) upvotes -= 1;
 		}
+
+		const msge = EmbedBuilder.from(interaction.message.embeds[0]);
+		msge.setFooter({ text: buildFooter(type, impressionId, upvotes, downvotes) });
+		interaction.update({ embeds: [msge] });
 	}
-
-	// TODO probably some confirmation before just removing vote
-	if (removing)
-		interaction.reply({
-			content: `You have already voted - removed your ${EMOJI[voteType][type]}`,
-			flags: [MessageFlags.Ephemeral]
-		});
-
-	const msge = EmbedBuilder.from(interaction.message.embeds[0]);
-	msge.setFooter({ text: buildFooter(type, impressionId, upvotes, downvotes) });
-
-	if (removing) interaction.message.edit({ embeds: [msge] });
-	else interaction.update({ embeds: [msge] });
 });
 
 export const name = "gay";
@@ -78,7 +115,7 @@ export const description = "👉👈";
 export const usage =
 	'<"Girls" OR "Silly" OR "Top" (anything else defaults to random)> <Numeric image id (1-indexed) OR "Girls" OR "Silly"> <"impressions" OR "upvotes" OR "downvotes"> <"least" OR "most">';
 export const usageDetail =
-	"E.g. 'Girls 5' will show an image with the id of 5, 'Silly' will show a random silly image\n'Top Girls impressions' will show a list of the most frequently shown girl images";
+	"E.g. 'Girls 5' will show an image with the id of 5, 'Silly' will show a random silly image\n'Top Girls impressions' will show a list of the most frequently shown girl images\nKeep in mind impressions are kinda fake since they count per impression across the entire channel, not per person";
 
 function buildGayEmbed(gay: okbot.GayObject, type: okbot.GayType) {
 	const impressions = (gay.impressions ?? 0) + 1;
@@ -108,7 +145,6 @@ function buildGayEmbed(gay: okbot.GayObject, type: okbot.GayType) {
 	return { msge, voteButtons };
 }
 
-// TODO maybe only show the score & engagement (like score/impression - idk impressions kinda fake cuz it's 1 per entire channel of people)
 function buildFooter(type: okbot.GayType, impressions?: number, upvotes?: number, downvotes?: number) {
 	return `${EMOJI.impressions[type]} ${impressions}${upvotes ? ` ● ${EMOJI.upvote[type]} ${upvotes}` : ""}${downvotes ? ` ● ${EMOJI.downvote[type]} ${downvotes}` : ""}`;
 }
@@ -133,20 +169,21 @@ async function doGay(msg: okbot.Message, type?: okbot.GayType, id?: number) {
 }
 
 function buildGayTopEmbed(
-	gays: okbot.GayObject[],
+	gays: okbot.GayObjectWithScore[],
 	type: okbot.GayType,
-	field: keyof okbot.GayObjectStats,
+	field: keyof okbot.GayObjectStats | "score",
 	leastOrMostMode: DbLeastOrMost
 ) {
-	if (!gays?.length) return createSimpleMessage("🕸️ *No gay stats just yet... You gotta pick up the slack*");
+	if (!gays?.length)
+		return createSimpleMessage("🕸️ *No gay stats just yet... You gotta pick up the slack*", Colors.Grey);
 
-	const title = `${leastOrMostMode === "least" ? "Least" : "Most"} ${EMOJI[field].top} ${type.toLowerCase()}`;
+	const title = `${EMOJI[field][leastOrMostMode]} ${EMOJI[field].top} ${type.toLowerCase()}`;
 	let rankList = "";
 	let idList = "";
 	let scoreList = "";
 	for (let i = 0; i < gays.length; ++i) {
 		const gay = gays[i];
-		const value = Array.isArray(gay[field]) ? gay[field].length : (gay[field] ?? 0);
+		const value = field === "score" ? gay.score : Array.isArray(gay[field]) ? gay[field].length : (gay[field] ?? 0);
 		rankList += `**#${i + 1}**\n`;
 		idList += `#${gay._id}\n`;
 		scoreList += `${EMOJI[field][type]} ${value}\n`;
@@ -164,18 +201,24 @@ function buildGayTopEmbed(
 	return msge;
 }
 
+// TODO: add a mode for showing top scored instead of least viewed
 async function doGayTop(msg: okbot.Message, args: string[]) {
 	const typeArg = args[1]?.toLowerCase();
 	const type: okbot.GayType = typeArg === "silly" || typeArg === "funny" || typeArg === "meme" ? "Silly" : "Girls";
 	const fieldArg = args[2]?.toLowerCase();
-	const field: keyof okbot.GayObject =
-		fieldArg === "upvote" || fieldArg === "downvote" || fieldArg === "impressions" ? fieldArg : "impressions";
+	const field: okbot.GayRankingKey =
+		fieldArg === "upvote" || fieldArg === "downvote" || fieldArg === "impressions" || fieldArg === "score"
+			? fieldArg
+			: "score";
 	const leastOrMostArg = args[3]?.toLowerCase();
-	const leastOrMostMode: DbLeastOrMost =
-		leastOrMostArg === "least" || leastOrMostArg === "most" ? leastOrMostArg : "most";
+	const leastOrMostMode: DbLeastOrMost = (leastOrMostArg === "least" || leastOrMostArg === "lowest") ? "least" : "most";
 
 	// TODO?: Pagination
-	const gays = await db_get_gays_from_collection_by_field(db_get(`gay_${type.toLowerCase()}`), field, leastOrMostMode);
+	const coll = db_get(`gay_${type.toLowerCase()}`);
+	const gays =
+		field == "score"
+			? await db_get_top_gays_by_collection(coll, leastOrMostMode)
+			: ((await db_get_gays_from_collection_by_field(coll, field, leastOrMostMode)) as okbot.GayObjectWithScore[]);
 
 	const msge = buildGayTopEmbed(gays, type, field, leastOrMostMode);
 	msg.reply({ embeds: [msge], allowedMentions: { repliedUser: false } });
