@@ -11,15 +11,15 @@
 		"d3": "^7.9.0",
 		"discord.js": "^14.26.4",
 		"dotenv": "^17.4.2",
-		"genius-lyrics-api": "file:../genius-lyrics-api",
+		"genius-lyrics-api": "file:..\\genius-lyrics-api",
 		"jsdom": "^28.1.0",
-		"mongodb": "^7.2.0",
+		"mongodb": "^7.3.0",
 		"socket.io-client": "^4.8.3"
 	},
 	"devDependencies": {
 		"@types/d3": "^7.4.3",
-		"@types/jsdom": "^28.0.1",
-		"@types/node": "^25.6.0",
+		"@types/jsdom": "^28.0.3",
+		"@types/node": "^25.9.4",
 		"typescript": "^6.0.3"
 	},
 	"packageManager": "pnpm@10.33.2"

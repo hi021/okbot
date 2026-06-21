@@ -1,6 +1,6 @@
 import { db_get_client } from "./db.js";
 
-// WARNING: Relies on poggers.ltd osu! rankings to be in the same database!
+// WARNING: Relies on poggers.moe osu! rankings to be in the same database!
 
 export async function db_osu_get_players(ids: number[], projection?: any) {
 	try {

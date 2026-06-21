@@ -24,6 +24,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 });
 
 const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
+	"1.12.1": "2026-TBD",
 	"1.12.0": "2026-05-04",
 	"1.11.3": "2025-10-16",
 	"1.11.2": "2025-06-22",
@@ -99,6 +100,9 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 });
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
+	"1.12.1": [
+		"Update poggers.ltd links to point to poggers.moe"
+	],
 	"1.12.0": [
 		"Remade 'gay' with a voting system",
 		"Added ok 'count' pagination",

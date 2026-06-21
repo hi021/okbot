@@ -6,7 +6,7 @@ import jsdom from "jsdom";
 import path from "path";
 const { JSDOM } = jsdom;
 const DOM = new JSDOM("<!DOCTYPE html><html><body></body></html>");
-const API_URL = "https://poggers.ltd/api/";
+const API_URL = "https://poggers.moe/api/";
 
 export async function osu_getId(name: string): Promise<number | null> {
 	try {
