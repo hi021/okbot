@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"strict": true,
-		"target": "es2025",
+		"target": "es2027",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
 

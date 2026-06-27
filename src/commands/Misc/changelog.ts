@@ -104,11 +104,11 @@ const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
 		"Update poggers.ltd links to point to poggers.moe"
 	],
 	"1.12.0": [
-		"Remade 'gay' with a voting system",
+		"Remade 'gay' with a voting system and leaderboards",
 		"Added ok 'count' pagination",
 		"Minor 'bakery' balance tweaks",
 		"Fixed 'lyrics' fmbot embed reply queries",
-		"Updated dependencies"
+		"Updated dependencies & some refactoring"
 	],
 	"1.11.3": ["Added claimed dailies ranking", "Added more gay", "Minor tweaks", "Updated dependencies"],
 	"1.11.2": ["Added more 'bakery' levels up to 30", "Fixed multiple important 'bakery' related bugs"],

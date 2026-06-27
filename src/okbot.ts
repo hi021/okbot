@@ -8,7 +8,7 @@ import { SET, SET_INIT } from "./settings.js";
 import { rankingSocket } from "./socket.js";
 import { getGuildPrefix, isOnCooldown, objLength, randomFromArray } from "./utils.js";
 import { Flag_games, Guilds } from "./volatile.js";
-let sayBingo: (msg: okbot.Message) => any; // have to await the import so it doesn't try using bot client before initialization
+let sayBingo: (msg: okbot.Message) => void; // have to await the import so it doesn't try using bot client before initialization
 dotenv.config({ path: "../.env" });
 
 const intents = Discord.GatewayIntentBits;
@@ -22,8 +22,8 @@ export const bot = new Discord.Client({
 		intents.MessageContent
 	]
 }) as okbot.Client<boolean>;
-bot.commands = new Discord.Collection();
-bot.commands_mod = new Discord.Collection();
+bot.commands = new Discord.Collection<string, okbot.Command>();
+bot.commands_mod = new Discord.Collection<string, okbot.Command>();
 bot.setMaxListeners(24); // up from 10 to allow more interactionCreate listeners
 
 export async function loadBot() {
@@ -69,8 +69,8 @@ function countOk(msg: Discord.OmitPartialGroupDMChannel<Discord.Message<true>>) 
 	db_plr_add({ _id: msg.author.id, okTot: 1 });
 }
 
-async function executeCommandOrAction(msg: Discord.OmitPartialGroupDMChannel<Discord.Message<true>>, prefix: string) {
-	let collection: "commands" | "commands_mod", prefixLength;
+async function executeCommandOrAction(msg: okbot.Message, prefix: string) {
+	let collection: "commands" | "commands_mod" | undefined, prefixLength;
 
 	if (msg.content.startsWith(prefix)) {
 		collection = "commands";
@@ -78,19 +78,11 @@ async function executeCommandOrAction(msg: Discord.OmitPartialGroupDMChannel<Dis
 	} else if (msg.content.startsWith(SET.PREFIX_MOD)) {
 		collection = "commands_mod";
 		prefixLength = SET.PREFIX_MOD.length;
-	} else {
-		const guild = Guilds[msg.guild.id];
-		const guildGlobal = Guilds["_GLOBAL"];
-		const reaction = guild?.cr?.[msg.content]
-			? randomFromArray(guild!.cr![msg.content])
-			: guildGlobal?.cr?.[msg.content]
-				? randomFromArray(guildGlobal!.cr![msg.content])
-				: undefined;
-		if (reaction) msg.channel.send(reaction);
-
-		if (Flag_games[msg.channel.id]) roundAnswer(msg.channel.id, msg.content.toLowerCase(), msg.author.id);
-		return;
 	}
+
+		checkAndHandleReaction(msg);
+		if (Flag_games[msg.channel.id]) roundAnswer(msg.channel.id, msg.content.toLowerCase(), msg.author.id);
+		if(!collection) return;
 
 	const args = msg.content.slice(prefixLength).split(/ +/); // will always be at least [""]
 	const cmdName = args.shift()!.toLowerCase();
@@ -115,24 +107,35 @@ async function executeCommandOrAction(msg: Discord.OmitPartialGroupDMChannel<Dis
 	cmd.execute(msg, args);
 }
 
+function checkAndHandleReaction(msg: okbot.Message) {
+	const guild = Guilds[msg.guild.id];
+		const guildGlobal = Guilds["_GLOBAL"];
+		const reaction = guild?.cr?.[msg.content]
+			? randomFromArray(guild!.cr![msg.content])
+			: guildGlobal?.cr?.[msg.content]
+				? randomFromArray(guildGlobal!.cr![msg.content])
+				: undefined;
+		if (reaction) msg.channel.send(reaction);
+}
+
 bot.login(process.env.TOKEN);
 importCmds("commands");
 importCmds("commands_mod");
 
-bot.on("clientReady", async () => {
+bot.on(Discord.Events.ClientReady, async () => {
 	if (!bot.user) return console.error("Invalid client user.");
 
 	console.log(`Logged in as ${bot.user.tag}`);
 	await loadBot();
 
-	bot.on("messageCreate", async msg => {
+	bot.on(Discord.Events.MessageCreate, async msg => {
 		if (msg.author.id === bot.user!.id) return;
 		// DM channel
 		if (!msg.inGuild()) return msg.channel.send("What are you doing in here, silly?");
 		// ignore blacklisted channels
-		if (!msg.content.startsWith(SET.PREFIX_MOD) && Guilds[msg.guild.id]?.blacklist?.includes(msg.channel.id)) return;
+		if (!msg.content.startsWith(SET.PREFIX_MOD) && Guilds[msg.guildId]?.blacklist?.includes(msg.channel.id)) return;
 
-		const prefix = getGuildPrefix(msg.guild.id);
+		const prefix = getGuildPrefix(msg.guildId);
 
 		if (msg.content === `<@${bot.user!.id}>`)
 			return msg.reply(`Hi! My prefix here is \`${prefix}\`.\nYou can use \`${prefix}help\` to view my commands.`);

@@ -11,7 +11,7 @@ const perPage = 20;
 
 // pagination
 bot.on(Events.InteractionCreate, async interaction => {
-	if (interaction.isButton()) {
+	if (!interaction.isButton()) return;
 		const split = interaction.customId.split("-");
 		if (split[0] !== "listReaction_prev" && split[0] !== "listReaction_next") return;
 
@@ -30,7 +30,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 			}
 
 			addReactionsToMsgEmbed(msgeEdit.spliceFields(0, perPage), reactionEntries, page);
-			msgeEdit.setFooter({ text: `Page ${page} ● Every 🔹 marks a separate response` });
+			msgeEdit.setFooter({ text: `Page ${page} ● Every list item marks a separate response` });
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
@@ -55,7 +55,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 			}
 
 			addReactionsToMsgEmbed(msgeEdit.spliceFields(0, perPage), reactionEntries, page);
-			msgeEdit.setFooter({ text: `Page ${page} ● Every 🔹 marks a separate response` });
+			msgeEdit.setFooter({ text: `Page ${page} ● Every list item marks a separate response` });
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
@@ -72,7 +72,6 @@ bot.on(Events.InteractionCreate, async interaction => {
 			interaction.update({ embeds: [msgeEdit], components: [row] });
 			return;
 		}
-	}
 });
 
 function addReactionsToMsgEmbed(msge: EmbedBuilder, reactionEntries: [string, string[]][], page = 1) {
@@ -85,11 +84,11 @@ function addReactionsToMsgEmbed(msge: EmbedBuilder, reactionEntries: [string, st
 		desc += `**${react[0]}**:\n`;
 		for (const j in react[1]) {
 			const response = react[1][j];
-			const descTmp = `🔹 ${response.split("\n").join("\n" + e_blank + " ")}\n`;
+			const descTmp = `- ${response.split("\n").join("\n" + e_blank + " ")}\n`;
 
 			if (descTmp.length + desc.length > 4096) {
 				const missingResponses = react[1].length - Number(j);
-				const lengthDisclaimer = `...\n\`<Truncated ${missingResponses} response${missingResponses == 1 ? "" : "s"}>\``;
+				const lengthDisclaimer = `…\n\`<Truncated ${missingResponses} response${missingResponses == 1 ? "" : "s"}>\``;
 
 				desc = desc.slice(0, 4096 - lengthDisclaimer.length - 2) + lengthDisclaimer;
 				return msge.setDescription(desc);
@@ -119,7 +118,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 
 	const msge = new EmbedBuilder()
 		.setTitle(`${guildId === "_GLOBAL" ? "Global" : "Guild"} reactions (${reactionEntries.length})`)
-		.setFooter({ text: "Page 1 ● Every 🔹 marks a separate response" })
+		.setFooter({ text: "Page 1 ● Every list item marks a separate response" })
 		.setColor(Colors.White);
 
 	const components =
