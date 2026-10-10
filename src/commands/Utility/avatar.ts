@@ -13,7 +13,7 @@ import { getUserFromMsg, sendSimpleMessage } from "../../utils.js";
 
 export const name = "avatar";
 export const alias = ["av"];
-export const description = "🧑 Get your avatar (or someone else's!)";
+export const description = "🧑 Get your avatar (or someone else's! stalker.)";
 export const usage = "<Username OR Mention>";
 
 bot.on(Events.InteractionCreate, async interaction => {

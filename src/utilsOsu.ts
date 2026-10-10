@@ -1,5 +1,4 @@
 import canvasModule from "canvas";
-import fetch from "cross-fetch";
 import * as d3 from "d3";
 import fs from "fs";
 import jsdom from "jsdom";

@@ -1,4 +1,2 @@
 allowBuilds:
-  canvas: set this to true or false
-onlyBuiltDependencies:
-  - canvas
+  canvas: true

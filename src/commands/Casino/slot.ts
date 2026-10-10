@@ -35,7 +35,7 @@ export const slot_pay: { [element: string]: { pay2: number; pay3: number } } = {
 
 export const name = "slot";
 export const alias = ["slut"];
-export const description = "🎰 Spinny numbers to distract you from your debt";
+export const description = "🎰 Spinny numbers to distract from your debt";
 export const usage = '<Bet amount (5-1M/3M 💵) OR "All" OR "Top">';
 
 const BET_RANGES = { def: { min: 5, max: 1000000 }, vip: { min: 10, max: 3000000 } };

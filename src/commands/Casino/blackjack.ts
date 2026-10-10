@@ -24,7 +24,7 @@ import { Blackjack_games } from "../../volatile.js";
 
 export const name = "blackjack";
 export const alias = ["bj", "21"];
-export const description = "🃏 Play blackjack (21)";
+export const description = "🃏 Play blackjack and try not to bust (9+10)";
 export const usage = '[Bet amount (10-10M/33M 💵) OR "All" OR "Top"]';
 
 const BET_RANGES = { def: { min: 10, max: 10000000 }, vip: { min: 50000, max: 33000000 } };

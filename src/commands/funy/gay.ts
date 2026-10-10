@@ -211,7 +211,7 @@ async function doGayTop(msg: okbot.Message, args: string[]) {
 			? fieldArg
 			: "score";
 	const leastOrMostArg = args[3]?.toLowerCase();
-	const leastOrMostMode: DbLeastOrMost = (leastOrMostArg === "least" || leastOrMostArg === "lowest") ? "least" : "most";
+	const leastOrMostMode: DbLeastOrMost = leastOrMostArg === "least" || leastOrMostArg === "lowest" ? "least" : "most";
 
 	// TODO?: Pagination
 	const coll = db_get(`gay_${type.toLowerCase()}`);

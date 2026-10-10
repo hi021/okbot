@@ -35,7 +35,8 @@ function applyThreshold(ctx: canvasModule.CanvasRenderingContext2D, threshold = 
 }
 
 export const name = "pinkify";
-export const description = "<:color_lightPink:1008342282153513020> Makes images ridiculously pink (or any other color)";
+export const description =
+	"<:color_lightPink:1008342282153513020> Makes images ridiculously pink (or any other color) (it's not a phase mom)";
 export const alias = ["twinkify", "sandpaper"];
 export const usage =
 	"[Image OR Image URL OR Mention OR Username (spaces replaced with _)] <Threshold (0-255)> <Max dimensions (WxH)> <Noise threshold (0-1)> <#Hex color>";

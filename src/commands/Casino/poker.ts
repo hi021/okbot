@@ -22,7 +22,8 @@ import { Poker_games } from "../../volatile.js";
 export const name = "poker";
 export const alias = ["holdem"];
 export const description = "🃏 Play like poker money like a broker";
-export const usage = '["Start" OR "Join" OR "Top"] [Created table max bet amount (100-10M 💵)]';
+export const usage =
+	'UNDER CONSTRUCTION since 2024 :( ["Start" OR "Join" OR "Top"] [Created table max bet amount (100-10M 💵)]';
 
 const MAX_BET = 10000000;
 const MIN_BET = 100;

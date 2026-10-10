@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageType, Colors, EmbedBuilder, Events } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events } from "discord.js";
 import { db_add_casino_top, db_plr_add, db_plr_get } from "../../db/db.js";
 import { bot } from "../../okbot.js";
 import { SET } from "../../settings.js";
@@ -18,11 +18,11 @@ import {
 import { Bingo_games } from "../../volatile.js";
 
 export const name = "bingo";
-export const description = "🔢 Play hardcore bingo";
+export const description = "🔢 Hardcore bingo action";
 export const usage =
 	'<"Start" OR "Cancel" OR "Top" (blank to join existing game)> <Bet amount (0-2M 💵)> <16 space-separated numbers 0-99>';
 export const usageDetail =
-	"The board is 4x4 so actually it's just bing\nLeave out the numbers to get a randomly generated board\nGet back your bet multiplied by number of players if you win";
+	"The board is 4x4 so actually it's just bing\nLeave out the numbers to get a randomly generated board\nGet back your bet multiplied by number of players if you win\nDon't forget to yell 'bingo!' if you have a winning board!";
 
 const MIN_BET = 0;
 const MAX_BET = 2000000;

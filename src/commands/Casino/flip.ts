@@ -63,7 +63,7 @@ async function runFlip(msg: okbot.Message, odds: number, bet: number, plrdat: { 
 
 export const name = "flip";
 export const alias = ["bet", "coin"];
-export const description = ":coin: Flip a coin and lose";
+export const description = "🪙 Flip a coin and lose";
 export const usage = '<Bet amount (0-10M/50M 💵) OR "All" OR "Top"> <Odds (5-95%)>';
 
 export async function execute(msg: okbot.Message, args: string[]) {

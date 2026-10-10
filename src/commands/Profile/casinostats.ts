@@ -4,7 +4,7 @@ import { e_blank, formatDoler, formatNumber, getUserFromMsg } from "../../utils.
 
 export const name = "casinostats";
 export const alias = ["cs", "cstat"];
-export const description = ":face_holding_back_tears: casino states";
+export const description = "🥹 casino states";
 export const usage = "<Username OR Mention> <Casino game>";
 export const usageDetail =
 	"Stats tracked since v1.7.0 (Jan 15, 2023)\nList of available casino games:\n- bingo\n- blackjack\n- dice\n- flip\n- jackpot\n- roulette\n- slot";

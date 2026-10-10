@@ -80,9 +80,9 @@ async function executeCommandOrAction(msg: okbot.Message, prefix: string) {
 		prefixLength = SET.PREFIX_MOD.length;
 	}
 
-		checkAndHandleReaction(msg);
-		if (Flag_games[msg.channel.id]) roundAnswer(msg.channel.id, msg.content.toLowerCase(), msg.author.id);
-		if(!collection) return;
+	checkAndHandleReaction(msg);
+	if (Flag_games[msg.channel.id]) roundAnswer(msg.channel.id, msg.content.toLowerCase(), msg.author.id);
+	if (!collection) return;
 
 	const args = msg.content.slice(prefixLength).split(/ +/); // will always be at least [""]
 	const cmdName = args.shift()!.toLowerCase();
@@ -109,13 +109,13 @@ async function executeCommandOrAction(msg: okbot.Message, prefix: string) {
 
 function checkAndHandleReaction(msg: okbot.Message) {
 	const guild = Guilds[msg.guild.id];
-		const guildGlobal = Guilds["_GLOBAL"];
-		const reaction = guild?.cr?.[msg.content]
-			? randomFromArray(guild!.cr![msg.content])
-			: guildGlobal?.cr?.[msg.content]
-				? randomFromArray(guildGlobal!.cr![msg.content])
-				: undefined;
-		if (reaction) msg.channel.send(reaction);
+	const guildGlobal = Guilds["_GLOBAL"];
+	const reaction = guild?.cr?.[msg.content]
+		? randomFromArray(guild!.cr![msg.content])
+		: guildGlobal?.cr?.[msg.content]
+			? randomFromArray(guildGlobal!.cr![msg.content])
+			: undefined;
+	if (reaction) msg.channel.send(reaction);
 }
 
 bot.login(process.env.TOKEN);
