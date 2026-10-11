@@ -8,15 +8,23 @@ const assetPath = "../assets/gay/";
 
 export async function db_gay_init() {
 	try {
-		await Promise.all([
-			(async () => await db_gay_update_and_upsert(db_get("gay_girls"), await db_gay_parse("girls.json")))(),
-			(async () => await db_gay_update_and_upsert(db_get("gay_silly"), await db_gay_parse("silly.json")))()
+		const res = await Promise.all([
+			(async () =>
+				Object.assign(
+					{ type: "girls" },
+					{ count: await db_gay_update_and_upsert(db_get("gay_girls"), await db_gay_parse("girls.json")) }
+				))(),
+			(async () =>
+				Object.assign(
+					{ type: "silly" },
+					{ count: await db_gay_update_and_upsert(db_get("gay_silly"), await db_gay_parse("silly.json")) }
+				))()
 		]);
 
-		console.log("Gay DB initialized.");
-	} catch (err) {
-		console.warn("Failed to initialize gay DB:\n", err);
-		throw err;
+		console.log(`Gay DB initialized (${res[0].count} girls, ${res[1].count} silly).`);
+	} catch (e) {
+		console.warn("Failed to initialize gay DB:\n", e);
+		throw e;
 	}
 }
 
@@ -133,10 +141,11 @@ function db_gay_sort_pipeline(field: keyof okbot.GayObject, leastOrMostMode: DbL
 	return [{ $sort: { [field]: order } }];
 }
 
+// TODO?: could validate duplicate ids
 async function db_gay_parse(filename: string) {
 	const filePath = path.join(assetPath, filename);
 	try {
-		if (filename == "silly.json") return db_gay_parse_url_array(filePath);
+		if (filename === "silly.json") return db_gay_parse_url_array(filePath);
 		return JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" })) as okbot.GayObjectPlain[];
 	} catch (e) {
 		console.warn(`Failed to open or parse '${filePath}'. Continuing gayless.`);
@@ -163,7 +172,8 @@ async function db_gay_update_and_upsert(coll: Collection, gay: okbot.GayObjectPl
 			}
 		};
 
-	await coll.bulkWrite(operations, { ordered: false });
+	const res = await coll.bulkWrite(operations, { ordered: false });
+	return res.matchedCount + res.upsertedCount;
 }
 
 async function db_get_gay_from_collection_by_id(coll: Collection, id: number) {

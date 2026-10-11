@@ -4,15 +4,18 @@ import { db_fish_add, db_fish_get, db_plr_add, db_plr_get } from "../../db/db.js
 import { SET } from "../../settings.js";
 import {
 	calcMoneyLevelsGain,
+	checkAndNotifyIfOnCooldown,
 	checkBoosterValidity,
 	createSimpleMessage,
 	formatDoler,
 	formatNumber,
 	getUserFromMsg,
-	isOnCooldown,
+	nowSeconds,
+	objLength,
 	randomInt,
 	sendSimpleMessage
 } from "../../utils.js";
+import { Cooldowns } from "../../volatile.js";
 
 export const Fish: { tot: number; f: { [nam: string]: okbot.Fish } } = { tot: 0, f: {} };
 
@@ -90,7 +93,7 @@ Lost crown [ 489912, 489914 ]
 Pure euphoria [ 489914, 489916 ]*/
 
 async function fish(msg: okbot.Message) {
-	if (isOnCooldown("fish", msg.author.id, msg, "before casting again.")) return;
+	if (checkAndNotifyIfOnCooldown("fish", msg.author.id, msg, "before casting again.", false)) return;
 
 	const plrdat = await db_plr_get({ _id: msg.author.id, mon: 1, fishPower: 1, boosters: 1 });
 	let numFish = 1 + (plrdat?.fishPower ?? 0);
@@ -107,6 +110,8 @@ async function fish(msg: okbot.Message) {
 	const moneyNeed = (SET.FISH_COST ?? 0) * numFish;
 	if ((plrdat?.mon ?? 0) < moneyNeed)
 		return sendSimpleMessage(msg, `You need at least ${formatDoler(moneyNeed)} to cast!`);
+
+	Cooldowns["fish"][msg.author.id] = nowSeconds();
 
 	// get `numFish` random fish
 	let collectorsPartGlobal;
@@ -466,6 +471,8 @@ export function fishInit() {
 		Fish.tot = 0;
 		Fish.f = JSON.parse(fs.readFileSync("../assets/fish.json", { encoding: "utf-8" }));
 		for (const i in Fish.f) Fish.f[i].odds = [Fish.tot, (Fish.tot += Fish.f[i].rare || 0)];
+
+		console.log(`Loaded fish (${objLength(Fish.f)}).`);
 		return Fish;
 	} catch (e) {
 		console.warn("Failed to initialize fish:", e);

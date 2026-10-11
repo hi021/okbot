@@ -7,15 +7,12 @@ import { formatNumber } from "../utils.js";
 import { Casino_tops } from "../volatile.js";
 import { db_gay_init } from "./gay.js";
 import { db_store_init } from "./store.js";
-dotenv.config();
+dotenv.config({ quiet: true, fast: true });
 
 let _db: MongoClient;
 
 export async function db_init(initStore = true, initGay = true) {
-	if (_db) {
-		console.warn("Trying to init a previously initialized DB!");
-		return _db;
-	}
+	if (_db) return console.warn("Trying to init a previously initialized DB!");
 
 	try {
 		_db = await MongoClient.connect(process.env.DB_URL as string);
@@ -31,7 +28,7 @@ export async function db_init(initStore = true, initGay = true) {
 			console.warn("Failed to initialize optional DB collections, see above for details.");
 		}
 	} catch (e) {
-		console.error("DB initialization failed!");
+		console.error("DB initialization failed! See below for details.");
 		throw e;
 	}
 }

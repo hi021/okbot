@@ -6,10 +6,10 @@ import { db_init, db_ok_add, db_plr_add } from "./db/db.js";
 import { db_guild_init } from "./db/guild.js";
 import { SET, SET_INIT } from "./settings.js";
 import { rankingSocket } from "./socket.js";
-import { getGuildPrefix, isOnCooldown, objLength, randomFromArray } from "./utils.js";
+import { getGuildPrefix, checkAndNotifyIfOnCooldown, objLength, randomFromArray } from "./utils.js";
 import { Flag_games, Guilds } from "./volatile.js";
 let sayBingo: (msg: okbot.Message) => void; // have to await the import so it doesn't try using bot client before initialization
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: "../.env", quiet: true, fast: true });
 
 const intents = Discord.GatewayIntentBits;
 export const bot = new Discord.Client({
@@ -30,22 +30,22 @@ export async function loadBot() {
 	if (SET_INIT()) console.log("Loaded settings.");
 
 	if (!process.env.DB_URL) console.log("No DB_URL provided - initializing without database access.");
-	else await db_init(process.env.INIT_STORE == "true", process.env.INIT_GAY == "true");
+	else await db_init(process.env.INIT_STORE === "true", process.env.INIT_GAY === "true");
 
-	if (bot.commands.get("fish")?.fishInit()) console.log("Loaded fish.");
-	if (process.env.DB_URL && (await bot.commands.get("store")?.loadStoreItems())) console.log("Loaded store items.");
-
-	if (SET.STATUS_TEXT) bot.user!.setActivity(SET.STATUS_TEXT, { type: Discord.ActivityType.Custom });
+	await bot.commands.get("fish")?.fishInit();
+	if (process.env.DB_URL) await bot.commands.get("store")?.loadStoreItems();
 
 	if (process.env.DB_URL && (await db_guild_init(Guilds)))
-		console.log(`Loaded guild preferences (${objLength(Guilds)}).`);
+		console.log(`Loaded guild preferences (${objLength(Guilds) - 1} guilds).`);
+
+	if (SET.STATUS_TEXT) bot.user!.setActivity(SET.STATUS_TEXT, { type: Discord.ActivityType.Custom });
 
 	if (process.env.SOCKET_URI) rankingSocket();
 	else console.log("No SOCKET_URI provided - initializing without socket.");
 
 	sayBingo = (await import("./commands/Casino/bingo.js")).sayBingo;
 
-	console.log("okbot ready :)");
+	console.log("\nokbot ready :)");
 }
 
 async function importCmds(directory: "commands" | "commands_mod") {
@@ -63,7 +63,7 @@ function countOk(msg: Discord.OmitPartialGroupDMChannel<Discord.Message<true>>) 
 	// matches only the first ok, will not match unseparated okays e.g. "okok" :(
 	const okArr = msg.content.match(/(^|\W+)(o*(okie?dokie?|ok[ae]ys?|oki[es]?|ok[es]?)[yesik]*)(\W+|$)/im);
 	const ok = okArr?.[3];
-	if (!ok || isOnCooldown("ok", msg.author.id)) return;
+	if (!ok || checkAndNotifyIfOnCooldown("ok", msg.author.id, undefined, undefined, true)) return;
 
 	db_ok_add(ok, msg.guildId);
 	db_plr_add({ _id: msg.author.id, okTot: 1 });
@@ -88,7 +88,7 @@ async function executeCommandOrAction(msg: okbot.Message, prefix: string) {
 	const cmdName = args.shift()!.toLowerCase();
 	if (process.env.VERBOSE) console.log(`[${msg.author.username}] "${cmdName}"`, args);
 
-	const cmd = bot[collection].get(cmdName) ?? bot[collection].find(cmd => cmd.alias?.includes(cmdName));
+	const cmd = bot[collection].get(cmdName) ?? bot[collection].find(cmd => cmd.alias?.includes(cmdName)); // TODO: put aliases in the map too
 	if (!cmd) return;
 
 	if (cmd.restrict && cmd.restrict !== "EVERYONE") {

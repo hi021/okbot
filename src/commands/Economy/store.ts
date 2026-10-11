@@ -66,6 +66,7 @@ export async function loadStoreItems() {
 	}
 	for (const item of items) Store_Items.push(item);
 
+	console.log(`Loaded store items (${Store_Items.length}).`);
 	return Store_Items;
 }
 
