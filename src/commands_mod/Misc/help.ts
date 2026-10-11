@@ -16,7 +16,7 @@ export function displayAllCommands(commandType: "commands" | "commands_mod", pre
 	const repositoryHelp = SET.REPOSITORY_URL ? `🐱 My [GitHub repository](${SET.REPOSITORY_URL})` : "";
 	const msge = new EmbedBuilder()
 		.setColor(Colors.LightGrey)
-		.setTitle(commandType == "commands" ? "ok commands" : "ok mod commands")
+		.setTitle(commandType === "commands" ? "ok commands" : "ok mod commands")
 		.setDescription(commandHelp + ownerHelp + repositoryHelp + "\n" + e_blank)
 		.setFooter({
 			text: `okbot ${SET.BOT_VER}`,
@@ -24,7 +24,11 @@ export function displayAllCommands(commandType: "commands" | "commands_mod", pre
 		});
 
 	const cmds: { [category: string]: okbot.Command[] } = {};
-	for (const [_, cmd] of bot[commandType]) {
+	const seenCommands = new Set<okbot.Command>();
+	for (const cmd of bot[commandType].values()) {
+		if (seenCommands.has(cmd)) continue;
+		seenCommands.add(cmd);
+
 		if (!cmd.hidden) cmds[cmd.category] = [...(cmds[cmd.category] ?? []), cmd];
 	}
 
@@ -70,7 +74,7 @@ export function execute(msg: okbot.Message, args: string[]) {
 
 	const bot = msg.client as okbot.Client<true>;
 	const cmdName = args.join(" ").toLowerCase();
-	const cmd = bot[commandType].get(cmdName) || bot[commandType].find(c => c.alias?.includes(cmdName));
+	const cmd = bot[commandType].get(cmdName);
 
 	if (!cmd)
 		return sendSimpleMessage<okbot.Message>(

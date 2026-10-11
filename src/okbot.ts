@@ -50,12 +50,32 @@ export async function loadBot() {
 
 async function importCmds(directory: "commands" | "commands_mod") {
 	const directories = fs.readdirSync(`./${directory}`);
-	for (const category of directories) {
-		const cmdFiles = fs.readdirSync(`./${directory}/${category}`).filter(file => file.endsWith(".js"));
-		for (const file of cmdFiles) {
-			const cmd = await import(`./${directory}/${category}/${file}`);
-			bot[directory].set(cmd.name, { ...cmd, category });
+	const cmdFiles = directories.flatMap(category =>
+		fs
+			.readdirSync(`./${directory}/${category}`)
+			.filter(file => file.endsWith(".js"))
+			.map(file => ({ category, file }))
+	);
+	const importedCommands = await Promise.all(
+		cmdFiles.map(async ({ category, file }) => ({
+			category,
+			cmd: await import(`./${directory}/${category}/${file}`)
+		}))
+	);
+
+	for (const { category, cmd } of importedCommands) {
+		const command = { ...cmd, category };
+		const names = [command.name, ...(command.alias ?? [])].map(name => name.toLowerCase());
+		const registeredNames = new Set<string>();
+
+		for (const name of names) {
+			if (registeredNames.has(name) || bot[directory].has(name))
+				throw new Error(`Duplicate command name or alias "${name}" in ${directory}.`);
+
+			registeredNames.add(name);
 		}
+
+		for (const name of registeredNames) bot[directory].set(name, command);
 	}
 }
 
@@ -88,7 +108,7 @@ async function executeCommandOrAction(msg: okbot.Message, prefix: string) {
 	const cmdName = args.shift()!.toLowerCase();
 	if (process.env.VERBOSE) console.log(`[${msg.author.username}] "${cmdName}"`, args);
 
-	const cmd = bot[collection].get(cmdName) ?? bot[collection].find(cmd => cmd.alias?.includes(cmdName)); // TODO: put aliases in the map too
+	const cmd = bot[collection].get(cmdName);
 	if (!cmd) return;
 
 	if (cmd.restrict && cmd.restrict !== "EVERYONE") {

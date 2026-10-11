@@ -14,7 +14,7 @@ export function execute(msg: okbot.Message, args: string[]) {
 
 	const bot = msg.client as okbot.Client<true>;
 	const cmdName = args.join(" ").toLowerCase();
-	const cmd = bot[commandType].get(cmdName) || bot[commandType].find(c => c.alias?.includes(cmdName));
+	const cmd = bot[commandType].get(cmdName);
 
 	if (!cmd)
 		return sendSimpleMessage<okbot.Message>(
