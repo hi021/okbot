@@ -50,7 +50,15 @@ const great = ["🪙", "💰", "⚜️", "7️⃣", "💎"] as const;
 const good = ["🍊", "🍒", "🇱🇻", "🔱", "⭐"] as const;
 const bad = ["🆓", "🧀", "🥔", "🐟", "🍑"] as const;
 
-export function oneElement() {
+export function rollElement() {
+	const rand = Math.random();
+	if (rand < 0.522) return randomFromArray(bad);
+	if (rand < 0.8975) return randomFromArray(good);
+	if (rand < 0.981) return randomFromArray(great);
+	return jackpot;
+}
+
+function rollLeftoverElement(bad: string[], good: string[], great: string[]) {
 	const rand = Math.random();
 	if (rand < 0.522) return randomFromArray(bad);
 	if (rand < 0.8975) return randomFromArray(good);
@@ -59,7 +67,7 @@ export function oneElement() {
 }
 
 function runSlot(msg: okbot.Message, bet: number) {
-	const mainSlotRow = [oneElement(), oneElement(), oneElement()];
+	const mainSlotRow = [rollElement(), rollElement(), rollElement()];
 	const { element, count } = findMostPrevalentRowElement(mainSlotRow);
 
 	let pay = 0;
@@ -67,14 +75,22 @@ function runSlot(msg: okbot.Message, bet: number) {
 	else if (count === 3) pay = slot_pay[element].pay3;
 	const winnings = bet * pay;
 
-	const allPossibleElements: SlotWinningsTable = JSON.parse(JSON.stringify(slot_pay));
-	delete allPossibleElements[mainSlotRow[0]];
-	delete allPossibleElements[mainSlotRow[1]];
-	delete allPossibleElements[mainSlotRow[2]];
-	const otherPossibleElements = Object.keys(allPossibleElements);
+	const leftoverBad = bad.filter(e => !mainSlotRow.includes(e));
+	const leftoverGood = good.filter(e => !mainSlotRow.includes(e));
+	const leftoverGreat = great.filter(e => !mainSlotRow.includes(e));
 
-	const topSlotRow = `${randomFromArray(otherPossibleElements)} ${randomFromArray(otherPossibleElements)} ${randomFromArray(otherPossibleElements)}`;
-	const bottomSlotRow = `${randomFromArray(otherPossibleElements)} ${randomFromArray(otherPossibleElements)} ${randomFromArray(otherPossibleElements)}`;
+	const topSlotRow =
+		rollLeftoverElement(leftoverBad, leftoverGood, leftoverGreat) +
+		" " +
+		rollLeftoverElement(leftoverBad, leftoverGood, leftoverGreat) +
+		" " +
+		rollLeftoverElement(leftoverBad, leftoverGood, leftoverGreat);
+	const bottomSlotRow =
+		rollLeftoverElement(leftoverBad, leftoverGood, leftoverGreat) +
+		" " +
+		rollLeftoverElement(leftoverBad, leftoverGood, leftoverGreat) +
+		" " +
+		rollLeftoverElement(leftoverBad, leftoverGood, leftoverGreat);
 
 	msg.reply({
 		embeds: [buildSlotResultEmbed({ mainSlotRow, topSlotRow, bottomSlotRow, bet, pay, winnings, element, count })],
@@ -159,7 +175,7 @@ export async function execute(msg: okbot.Message, args: string[]) {
 			allowedMentions: { repliedUser: false }
 		});
 
-	if (checkAndNotifyIfOnCooldown("slot", msg.author.id, msg, "before turning the lever again.", false)) return;
+	if (checkAndNotifyIfOnCooldown("slot", msg.author.id, msg, "before pulling the lever again.", false)) return;
 
 	const plrdat = await db_plr_get({
 		_id: msg.author.id,

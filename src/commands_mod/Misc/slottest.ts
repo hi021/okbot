@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import { findMostPrevalentRowElement, oneElement, slot_pay } from "../../commands/Casino/slot.js";
+import { findMostPrevalentRowElement, rollElement, slot_pay } from "../../commands/Casino/slot.js";
 import { formatDoler } from "../../utils.js";
 
 export const name = "slottest";
@@ -8,7 +8,7 @@ export const usage = "[Repetitions] <Bet amount>";
 export const restrict = "BOT_OWNER";
 
 function runSlot() {
-	const mainSlotRow = [oneElement(), oneElement(), oneElement()];
+	const mainSlotRow = [rollElement(), rollElement(), rollElement()];
 	const { element, count } = findMostPrevalentRowElement(mainSlotRow);
 
 	return count >= 2 ? slot_pay[element][`pay${count}` as "pay2" | "pay3"] : 0;
