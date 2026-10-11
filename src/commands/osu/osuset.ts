@@ -3,7 +3,7 @@ import { osu_getId } from "../../utilsOsu.js";
 
 export const name = "osuset";
 export const alias = ["setosu"];
-export const description = "Assign yourself an osu! profile";
+export const description = "👤 Assign yourself an osu! profile";
 export const usage = "<osu! username (blank to unlink)>";
 
 export async function execute(msg: okbot.Message, args: string[]) {

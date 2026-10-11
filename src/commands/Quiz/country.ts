@@ -4,7 +4,7 @@ import { capitalizeFirstLetter, sendSimpleMessage } from "../../utils.js";
 
 export const name = "country";
 export const alias = ["countryinfo", "flaginfo"];
-export const description = ":flag_aq: Check up on the 16 people living in remote french territories";
+export const description = "🇦🇶 Check up on the 16 people living in remote french territories";
 export const usage = "<Country Name OR 2-letter Country Code>";
 
 function getCountryAndCode(query: string) {

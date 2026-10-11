@@ -26,7 +26,7 @@ import { Dice_games } from "../../volatile.js";
 
 export const name = "diceduel";
 export const alias = ["dice", "duel"];
-export const description = "🎲 Duel somebody in dice";
+export const description = "🎲 Hope you roll higher than your opponent";
 export const usage = '[Username OR Mention OR "Top"] [Bet amount (1-10M/50M 💵) OR "All"]';
 
 const BET_RANGES = { def: { min: 1, max: 10000000 }, vip: { min: 1, max: 50000000 } };

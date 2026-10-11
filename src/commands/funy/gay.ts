@@ -115,7 +115,7 @@ export const description = "👉👈";
 export const usage =
 	'<"Girls" OR "Silly" OR "Top" (anything else defaults to random)> <Numeric image id (1-indexed) OR "Girls" OR "Silly"> <"impressions" OR "upvotes" OR "downvotes"> <"least" OR "most">';
 export const usageDetail =
-	"E.g. 'Girls 5' will show an image with the id of 5, 'Silly' will show a random silly image\n'Top Girls impressions' will show a list of the most frequently shown girl images\nKeep in mind impressions are kinda fake since they count per impression across the entire channel, not per person";
+	"E.g.\n- 'Girls 5' will show an image with the id of 5,\n- 'Silly' will show a random silly image\n- 'Top Girls impressions' will show a list of the most frequently shown girl images\n- 'Top Silly downvote least' will show silly images with at least one downvote sorted ascending by downvote count\n\nKeep in mind impressions are kinda fake since they count per impression across the entire channel, not per person";
 
 function buildGayEmbed(gay: okbot.GayObject, type: okbot.GayType) {
 	const impressions = (gay.impressions ?? 0) + 1;
@@ -211,7 +211,7 @@ async function doGayTop(msg: okbot.Message, args: string[]) {
 			? fieldArg
 			: "score";
 	const leastOrMostArg = args[3]?.toLowerCase();
-	const leastOrMostMode: DbLeastOrMost = (leastOrMostArg === "least" || leastOrMostArg === "lowest") ? "least" : "most";
+	const leastOrMostMode: DbLeastOrMost = leastOrMostArg === "least" || leastOrMostArg === "lowest" ? "least" : "most";
 
 	// TODO?: Pagination
 	const coll = db_get(`gay_${type.toLowerCase()}`);

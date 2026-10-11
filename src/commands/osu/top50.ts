@@ -15,7 +15,7 @@ import {
 
 export const name = "top50";
 export const alias = ["t50", "osu"];
-export const description = "🟣 View osu! top 50 stats from poggers.ltd";
+export const description = "🟣 View osu! top 50 stats from poggers.moe";
 export const usage =
 	"<osu! username OR Discord nickname OR Mention> <, Second player for comparison> (-id, -pos, -noDiscord)";
 export const usageDetail =
@@ -235,7 +235,7 @@ async function sendT50(msg: okbot.Message, id: string | number) {
 				.setAuthor({
 					name: stats.mainInfo,
 					iconURL: stats.countryFlag || av,
-					url: "https://poggers.ltd/player/" + id
+					url: "https://poggers.moe/player/" + id
 				})
 				.setColor(clr1)
 				.setThumbnail(av)
@@ -267,8 +267,8 @@ async function sendT50(msg: okbot.Message, id: string | number) {
 					}
 				])
 				.setFooter({
-					text: `poggers.ltd ● ${stats.date}${stats.isUpToDate ? "" : " ● OUTDATED"}`,
-					iconURL: "https://poggers.ltd/senkoicon.png"
+					text: `poggers.moe ● ${stats.date}${stats.isUpToDate ? "" : " ● OUTDATED"}`,
+					iconURL: "https://poggers.moe/senkoicon.png"
 				})
 				.setImage(`attachment://${filename}`)
 		],
@@ -350,7 +350,7 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 	if (avMerged) files.push(new AttachmentBuilder(avMerged));
 	if (chart) files.push(new AttachmentBuilder(chart));
 
-	let footerText = `poggers.ltd ● ${stats1.info?.date}`;
+	let footerText = `poggers.moe ● ${stats1.info?.date}`;
 	if (!stats1Formatted.isUpToDate || !stats2Formatted.isUpToDate) footerText += " ● OUTDATED";
 	if (daysUntilOvertake)
 		footerText += `\n${daysUntilOvertake} days until ${
@@ -365,7 +365,7 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 						? `${stats1.info.nam} vs ${stats2.info.nam}`
 						: `${stats1.stats[1].nam} vs ${stats2.stats[1].nam}`
 				)
-				.setURL("https://poggers.ltd/player/" + id[0])
+				.setURL("https://poggers.moe/player/" + id[0])
 				.setColor(clr1)
 				.setThumbnail(avMerged ? `attachment://${filenameAv}` : "")
 				.addFields([
@@ -446,7 +446,7 @@ async function sendT50Compare(msg: okbot.Message, id: Array<string | number>) {
 				])
 				.setFooter({
 					text: footerText,
-					iconURL: "https://poggers.ltd/senkoicon.png"
+					iconURL: "https://poggers.moe/senkoicon.png"
 				})
 				.setImage(`attachment://${filenameChart}`)
 		],

@@ -32,11 +32,11 @@ export type DbLeastOrMost = "least" | "most";
 export const e_blank = "<:blank:986204417512575036>";
 
 //UTIL
-export function randomFromArray<T>(array: Array<T>): T {
+export function randomFromArray<T>(array: readonly T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
 
-export function shuffleArray<T>(array: Array<T>) {
+export function shuffleArray<T>(array: T[]) {
 	for (let i = array.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
@@ -62,7 +62,7 @@ export const capitalizeFirstLetter = (str?: string) => (str ? str[0].toUpperCase
 export const isVowel = (letter: string) => ["a", "e", "i", "o", "u", "y"].includes(letter.toLowerCase());
 
 /**
- * @returns `true` if array has one element or all elements are sorted ascending and separated by exactly 1 unit on the number line
+ * @returns `true` if array has < 2 elements or all elements are sorted ascending and separated by exactly 1 unit on the number line
  */
 export function areValuesConsecutive(array: Array<number | string>) {
 	for (let i = 0; i < array.length - 1; i++) {
@@ -619,11 +619,12 @@ export function parseReaction(args: string[]) {
 
 export const getGuildPrefix = (guildId?: string | null) => (guildId && Guilds[guildId]?.pre) || SET.PREFIX;
 
-export function isOnCooldown(
+export function checkAndNotifyIfOnCooldown(
 	activity: okbot.CooldownActivity,
 	usrId: Snowflake,
 	msg?: okbot.Message,
 	customMessage = "",
+	setCooldown = false,
 	now = nowSeconds()
 ) {
 	const cooldown = SET[`${activity.toUpperCase() as Uppercase<okbot.CooldownActivity>}_COOLDOWN`] ?? 0;
@@ -639,6 +640,7 @@ export function isOnCooldown(
 					)
 				: true;
 	}
-	Cooldowns[activity][usrId] = now;
+
+	if (setCooldown) Cooldowns[activity][usrId] = now;
 	return false;
 }

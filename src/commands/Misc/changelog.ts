@@ -24,6 +24,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 });
 
 const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
+	"1.12.1": "2026-10-11",
 	"1.12.0": "2026-05-04",
 	"1.11.3": "2025-10-16",
 	"1.11.2": "2025-06-22",
@@ -96,15 +97,25 @@ const versions: Readonly<{ [ver: string]: string }> = Object.freeze({
 	"0.10.4": "2022-06-02",
 	"0.10.3": "2022-06-02",
 	"0.10.2": "2022-06-02"
-});
+} as const);
 
 const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
+	"1.12.1": [
+		"Allowed reaction triggers to start with the bot's prefix",
+		"Sligthly buffed 'slot' odds & tweaked visual",
+		"Improved 'slot' and 'fish' cooldowns to only run if the command is actually executed",
+		"Updated poggers.ltd links to point to poggers.moe",
+		"Added more gay",
+		"Updated command descriptions",
+		"Updated dependencies & more refactoring",
+		"Added readme command list generator script"
+	],
 	"1.12.0": [
-		"Remade 'gay' with a voting system",
+		"Remade 'gay' with a voting system and leaderboards",
 		"Added ok 'count' pagination",
 		"Minor 'bakery' balance tweaks",
 		"Fixed 'lyrics' fmbot embed reply queries",
-		"Updated dependencies"
+		"Updated dependencies & some refactoring"
 	],
 	"1.11.3": ["Added claimed dailies ranking", "Added more gay", "Minor tweaks", "Updated dependencies"],
 	"1.11.2": ["Added more 'bakery' levels up to 30", "Fixed multiple important 'bakery' related bugs"],
@@ -359,7 +370,7 @@ const changes: Readonly<{ [ver: string]: string[] }> = Object.freeze({
 		"Improved 'top50' argument parsing",
 		"Reformatted 'help'"
 	]
-});
+} as const);
 const changeEntries = Object.entries(changes);
 
 const parseVersionNumber = (input: string) => {

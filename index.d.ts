@@ -1,5 +1,5 @@
 declare namespace okbot {
-	type Message = import("discord.js").OmitPartialGroupDMChannel<import("discord.js").Message>;
+	type Message = import("discord.js").OmitPartialGroupDMChannel<import("discord.js").Message<true>>;
 	type MessageOrInteraction<T> = T extends import("discord.js").ButtonInteraction
 		? import("discord.js").ButtonInteraction
 		: okbot.Message;
@@ -435,13 +435,13 @@ declare namespace okbot {
 		source?: string | null; // author, only for Girls
 	}
 	interface GayObjectStats {
-				upvote?: string[];
+		upvote?: string[];
 		downvote?: string[];
 		impressions?: number;
 	}
-type GayObject = GayObjectPlain & GayObjectStats;
-type GayRankingKey = keyof GayObjectStats | "score";
-type GayObjectWithScore = GayObject & { score: number };
+	type GayObject = GayObjectPlain & GayObjectStats;
+	type GayRankingKey = keyof GayObjectStats | "score";
+	type GayObjectWithScore = GayObject & { score: number };
 
 	type CommandPermission = undefined | "EVERYONE" | "GUILD_ADMIN" | "BOT_ADMIN" | "BOT_OWNER"; // defaults to EVERYONE
 	interface Command {

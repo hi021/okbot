@@ -4,7 +4,7 @@ import { formatDoler, getUserFromMsg } from "../../utils.js";
 
 export const name = "profile";
 export const alias = ["balance"];
-export const description = "🕵️‍♀️ view your profile's profile";
+export const description = "🕵️‍♀️ Make sure you look good from every profile";
 export const usage = "<Username OR Mention>";
 
 export async function execute(msg: okbot.Message, args: string[]) {

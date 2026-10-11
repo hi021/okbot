@@ -16,7 +16,7 @@ export async function db_store_init(reset = true) {
 			const items: okbot.Item[] = JSON.parse(fs.readFileSync(storePath + f, { encoding: "utf-8" }));
 			for (const i in items) {
 				// IDs conform to AAA0000 with underscores allowed: ^([A-Z]|_){3}\d{4}$
-				if (items[i]._id == undefined)
+				if (items[i]._id == null)
 					items[i]._id = items[i].cat.toUpperCase().slice(0, 3).replace("/[^A-Z]", "_") + i.padStart(4, "0");
 				store.push(items[i]);
 			}
@@ -24,10 +24,10 @@ export async function db_store_init(reset = true) {
 
 		await col.insertMany(store as any);
 		await col.createIndex({ cat: "text" });
-		console.log("Store DB initialized.");
-	} catch (err) {
-		console.warn("Failed to initialize store DB:\n", err);
-		throw err;
+		console.log(`Store DB initialized (${store.length} items).`);
+	} catch (e) {
+		console.warn("Failed to initialize store DB:\n", e);
+		throw e;
 	}
 }
 
@@ -44,8 +44,8 @@ export async function db_store_get_category(cat: string | RegExp) {
 export async function db_store_get_all() {
 	try {
 		return (await db_get("store").find().toArray()) as unknown as okbot.Item[] | null;
-	} catch (err) {
-		console.error(err);
+	} catch (e) {
+		console.error(e);
 		return null;
 	}
 }

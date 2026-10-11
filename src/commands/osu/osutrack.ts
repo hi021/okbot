@@ -5,7 +5,7 @@ import { osu_getId } from "../../utilsOsu.js";
 
 export const name = "osutrack";
 export const alias = ["otrack", "t50track"];
-export const description = "View and edit osu! top 50 tracking settings";
+export const description = "⚙️ View and edit osu! top 50 tracking settings";
 export const usage = "<Action> <Field name> <Comma-separated values> (-id)";
 
 export async function execute(msg: okbot.Message, args: string[]) {

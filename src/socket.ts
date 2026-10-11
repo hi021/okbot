@@ -55,15 +55,15 @@ function socketHandler(resolve: (value: boolean) => void, reject: (reason: strin
 			// convert array to map _id => {...player info}
 			const plrMap = new Map();
 			for (const i of plrArr) plrMap.set(i._id, { ...i });
-			const poggerslink = "https://poggers.ltd/ranking/gains/" + formatDate(new Date(), "alphabetical");
+			const poggerslink = "https://poggers.moe/ranking/gains/" + formatDate(new Date(), "alphabetical");
 
 			// send to text channels
 			for (const trackSettings of destinationGuilds) {
 				const msge = new EmbedBuilder()
 					.setTitle("Tracked top 50s update")
 					.setFooter({
-						text: "poggers.ltd",
-						iconURL: "https://poggers.ltd/senkoicon.png"
+						text: "poggers.moe",
+						iconURL: "https://poggers.moe/senkoicon.png"
 					})
 					.setColor(Colors.LuminousVividPink)
 					.setURL(poggerslink);

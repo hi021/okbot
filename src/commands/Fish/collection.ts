@@ -27,7 +27,7 @@ import { Fish } from "./fish.js";
 
 export const name = "collection";
 export const alias = ["collectors", "coll"];
-export const description = "👽 View collection of extreme rarities";
+export const description = "👽 View collections of extreme rarities";
 export const usage = "<Username OR Mention>";
 
 const displayItem = (item: okbot.CollectionItem) => {

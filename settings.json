@@ -3,7 +3,7 @@
 	"PREFIX_MOD": "k@",
 
 	"STATUS_TEXT": "it's gay to be okay",
-	"BOT_VER": "v1.12.0",
+	"BOT_VER": "v1.12.1",
 
 	"REPOSITORY_URL": "https://github.com/hi021/okbot",
 	"INVITE_URL": "https://discord.com/api/oauth2/authorize?client_id=837068150947971092&permissions=137439242304&scope=bot",

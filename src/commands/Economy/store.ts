@@ -66,6 +66,7 @@ export async function loadStoreItems() {
 	}
 	for (const item of items) Store_Items.push(item);
 
+	console.log(`Loaded store items (${Store_Items.length}).`);
 	return Store_Items;
 }
 
@@ -232,7 +233,7 @@ async function purchase_finalize(usr: User, purchaseOrders: okbot.StorePurchaseO
 
 export const name = "store";
 export const alias = ["shop"];
-export const description = "🛒 Browse the store, a category, or a specific item";
+export const description = "🛒 Browse the store, a category, or specific item";
 export const usage = '<Category OR Item name OR "All">';
 const perPage = 20;
 
