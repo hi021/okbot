@@ -3,10 +3,10 @@
 The little Discord bot that could.
 
 **Utility, social & economy.**
-&nbsp;\
-&nbsp;\
-&nbsp;\
-As per the help command:
+
+This is a new repository, pre v1.11 changes can be found in `src/commands/Misc/changelog.tsc`.
+
+## As per the help command
 
 ### Business
 
